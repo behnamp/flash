@@ -18,8 +18,14 @@ export default function HostDashboard() {
       setUser(user)
 
       const { data } = await supabase
-        .from('event_summary')
-        .select('*')
+        .from('events')
+        .select(`
+          id, name, join_code, is_active, revealed, reveal_mode,
+          shot_limit, created_at, event_type,
+          guests(count),
+          shots(count)
+        `)
+        .eq('host_id', user.id)
         .order('created_at', { ascending: false })
       setEvents(data || [])
       setLoading(false)
@@ -86,7 +92,7 @@ export default function HostDashboard() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ev.name}</div>
                       <div style={{ fontSize: 11, color: 'var(--dim)' }}>
-                        {ev.guest_count || 0} guests · {ev.shot_count || 0} shots
+                        {(ev as any).guests?.[0]?.count || 0} guests · {(ev as any).shots?.[0]?.count || 0} shots
                         {ev.is_active && !ev.revealed && <span style={{ color: 'var(--accent)', marginLeft: 8 }}>● Live</span>}
                         {ev.revealed && <span style={{ color: 'var(--green)', marginLeft: 8 }}>✓ Revealed</span>}
                       </div>
