@@ -84,7 +84,7 @@ export default function CreateEvent() {
     scavengerHunt: false, scavengerPrompts: SCAVENGER_PROMPTS.slice(0, 6),
     guestBook: false, liveSlideshow: false, aiReel: true,
     printEnabled: false, allowCaptions: true, allowVoice: false,
-    whiteLabel: false, brandName: '', statsCard: true,
+    whiteLabel: false, brandName: '', brandLogoPreview: '', brandLogoFile: null as File | null, statsCard: true,
   })
 
   const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }))
@@ -113,6 +113,7 @@ export default function CreateEvent() {
         ai_reel: form.aiReel, print_enabled: form.printEnabled,
         allow_captions: form.allowCaptions, allow_voice: form.allowVoice,
         white_label: form.whiteLabel, brand_name: form.whiteLabel ? form.brandName : null,
+        brand_logo_url: null, // TODO: upload brandLogoFile to storage
         stats_card_enabled: form.statsCard, is_active: true,
       }).select().single()
       if (err) throw err
@@ -255,16 +256,29 @@ export default function CreateEvent() {
               })}
             </div>
             {Object.entries(PHOTO_MODES).map(([cat, modes]) => (
-              <div key={cat} style={{ marginBottom: 20 }}>
+              <div key={cat} style={{ marginBottom: 24 }}>
                 <Label>{cat}</Label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 7 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
                   {(modes as any[]).map((m: any) => {
                     const sel = form.selectedModes.includes(m.id)
                     return (
-                      <div key={m.id} onClick={() => toggleMode(m.id)} style={{ background: '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', position: 'relative' }}>
-                        {sel && <div style={{ position: 'absolute', top: 6, right: 6, width: 16, height: 16, background: '#e8ff47', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}><Check size={8} color="#000" weight="bold" /></div>}
-                        <div style={{ height: 52, background: m.bg }} />
-                        <div style={{ padding: '7px 6px', textAlign: 'center', fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: sel ? '#e8ff47' : '#444' }}>{m.name}</div>
+                      <div key={m.id} onClick={() => toggleMode(m.id)} style={{ background: '#0e0e0e', border: `1px solid ${sel ? '#e8ff47' : '#1a1a1a'}`, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', position: 'relative', transition: 'border .15s' }}>
+                        {sel && <div style={{ position: 'absolute', top: 7, right: 7, width: 17, height: 17, background: '#e8ff47', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}><Check size={9} color="#000" weight="bold" /></div>}
+                        {/* Sample photo preview */}
+                        <div style={{ height: 80, background: m.bg, position: 'relative', overflow: 'hidden' }}>
+                          {/* Simulated photo scene */}
+                          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {m.sampleScene && <span style={{ fontSize: 28, opacity: 0.55, filter: 'grayscale(0.2)' }}>{m.sampleScene}</span>}
+                          </div>
+                          {/* Vignette overlay */}
+                          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 100%)', pointerEvents: 'none' }} />
+                          {/* Mode name overlay at bottom */}
+                          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 6px 5px', background: 'linear-gradient(to top, rgba(0,0,0,0.75), transparent)', textAlign: 'center' }}>
+                          </div>
+                        </div>
+                        <div style={{ padding: '7px 6px 9px', textAlign: 'center' }}>
+                          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', color: sel ? '#e8ff47' : '#555' }}>{m.name}</div>
+                        </div>
                       </div>
                     )
                   })}
@@ -277,19 +291,66 @@ export default function CreateEvent() {
         {step === 5 && (
           <div>
             <Label>Primary Language</Label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7, maxHeight: 280, overflowY: 'auto', marginBottom: 24 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 320, overflowY: 'auto', marginBottom: 24 }}>
               {(LANGUAGES as unknown as any[]).map((l: any) => {
                 const sel = form.language === l.code
                 return (
-                  <div key={l.code} onClick={() => set('language', l.code)} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 11, padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, direction: l.dir }}>
-                    <span style={{ fontSize: 18, flexShrink: 0 }}>{l.flag}</span>
-                    <span style={{ fontSize: 13, fontWeight: 500, color: sel ? '#e8ff47' : '#888' }}>{l.name}</span>
+                  <div key={l.code} onClick={() => set('language', l.code)} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1a1a1a'}`, borderRadius: 11, padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, direction: 'ltr', transition: 'border .15s' }}>
+                    <span style={{ fontSize: 20, flexShrink: 0, lineHeight: 1 }}>{l.flag}</span>
+                    <span style={{ fontSize: 14, fontWeight: 500, color: sel ? '#e8ff47' : '#999', flex: 1 }}>{l.name}</span>
+                    {l.dir === 'rtl' && <span style={{ fontSize: 10, color: '#333', letterSpacing: 0.5 }}>RTL</span>}
+                    {sel && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e8ff47', flexShrink: 0 }} />}
                   </div>
                 )
               })}
             </div>
-            <Toggle on={form.whiteLabel} onChange={v => set('whiteLabel', v)} label="White-label Branding" sub="Add your venue or brand name to the guest experience" />
-            {form.whiteLabel && <Inp label="Brand / Venue Name" placeholder="e.g. 777 Game Club" value={form.brandName} onChange={(e: any) => set('brandName', e.target.value)} style={{ marginTop: 14 }} />}
+            <Toggle on={form.whiteLabel} onChange={v => set('whiteLabel', v)} label="White-label Branding" sub="Add your venue or brand to the guest experience" />
+            {form.whiteLabel && (
+              <div style={{ marginTop: 16 }}>
+                <Inp label="Brand / Venue Name" placeholder="e.g. 777 Game Club" value={form.brandName} onChange={(e: any) => set('brandName', e.target.value)} />
+                <div style={{ marginTop: 4 }}>
+                  <Label>Brand Logo</Label>
+                  {/* Logo upload area */}
+                  <label style={{ display: 'block', cursor: 'pointer' }}>
+                    <input type="file" accept="image/png" style={{ display: 'none' }} onChange={(e: any) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      const reader = new FileReader()
+                      reader.onload = (ev) => set('brandLogoPreview', ev.target?.result as string)
+                      reader.readAsDataURL(file)
+                      set('brandLogoFile', file)
+                    }} />
+                    <div style={{ background: '#0e0e0e', border: `2px dashed ${form.brandLogoPreview ? '#e8ff47' : '#222'}`, borderRadius: 14, padding: '24px 16px', textAlign: 'center', transition: 'border .2s' }}>
+                      {form.brandLogoPreview ? (
+                        <div>
+                          <div style={{ background: '#111', borderRadius: 10, padding: 16, marginBottom: 12, display: 'inline-block' }}>
+                            <img src={form.brandLogoPreview} alt="Logo preview" style={{ height: 48, maxWidth: 160, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+                          </div>
+                          <div style={{ fontSize: 11, color: '#e8ff47', fontWeight: 600 }}>Logo uploaded ✓</div>
+                          <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>Tap to change</div>
+                        </div>
+                      ) : (
+                        <div>
+                          <div style={{ fontSize: 28, marginBottom: 10, opacity: 0.3 }}>↑</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: '#666', marginBottom: 4 }}>Upload PNG Logo</div>
+                          <div style={{ fontSize: 11, color: '#444' }}>Tap to select from your files</div>
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                  {/* Requirement notice */}
+                  <div style={{ marginTop: 10, background: 'rgba(232,255,71,0.04)', border: '1px solid rgba(232,255,71,0.12)', borderRadius: 10, padding: '12px 14px' }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: '#e8ff47', marginBottom: 5, letterSpacing: 0.5 }}>⚠ Logo requirements</div>
+                    <div style={{ fontSize: 12, color: '#555', lineHeight: 1.7 }}>
+                      • PNG format only<br/>
+                      • White logo, transparent background<br/>
+                      • Minimum 200×80px recommended<br/>
+                      • Will appear on join screen and gallery header
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
