@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { REVEAL_MODES } from '@/constants/revealModes'
 import { PHOTO_MODES } from '@/constants/photoModes'
+import { MODE_PREVIEWS } from '@/lib/modePreviews'
 import { LANGUAGES } from '@/constants/languages'
 import {
   ArrowLeft, Check,
@@ -264,17 +265,27 @@ export default function CreateEvent() {
                     return (
                       <div key={m.id} onClick={() => toggleMode(m.id)} style={{ background: '#0e0e0e', border: `1px solid ${sel ? '#e8ff47' : '#1a1a1a'}`, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', position: 'relative', transition: 'border .15s' }}>
                         {sel && <div style={{ position: 'absolute', top: 7, right: 7, width: 17, height: 17, background: '#e8ff47', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}><Check size={9} color="#000" weight="bold" /></div>}
-                        {/* Sample photo preview */}
-                        <div style={{ height: 80, background: m.bg, position: 'relative', overflow: 'hidden' }}>
-                          {/* Simulated photo scene */}
-                          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {m.sampleScene && <span style={{ fontSize: 28, opacity: 0.55, filter: 'grayscale(0.2)' }}>{m.sampleScene}</span>}
-                          </div>
-                          {/* Vignette overlay */}
-                          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 100%)', pointerEvents: 'none' }} />
-                          {/* Mode name overlay at bottom */}
-                          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 6px 5px', background: 'linear-gradient(to top, rgba(0,0,0,0.75), transparent)', textAlign: 'center' }}>
-                          </div>
+                        {/* Real photo preview with CSS filter */}
+                        <div style={{ height: 90, position: 'relative', overflow: 'hidden', background: '#0a0a0a' }}>
+                          {MODE_PREVIEWS[m.id] ? (
+                            <img
+                              src={MODE_PREVIEWS[m.id].photo}
+                              alt={m.name}
+                              loading="lazy"
+                              style={{
+                                width: '100%', height: '100%', objectFit: 'cover',
+                                filter: MODE_PREVIEWS[m.id].filter,
+                                transition: 'filter .3s',
+                                display: 'block',
+                              }}
+                            />
+                          ) : (
+                            <div style={{ width: '100%', height: '100%', background: m.bg }} />
+                          )}
+                          {/* Vignette */}
+                          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.45) 100%)', pointerEvents: 'none' }} />
+                          {/* Selected overlay */}
+                          {sel && <div style={{ position: 'absolute', inset: 0, border: '2px solid #e8ff47', borderRadius: 14, pointerEvents: 'none' }} />}
                         </div>
                         <div style={{ padding: '7px 6px 9px', textAlign: 'center' }}>
                           <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', color: sel ? '#e8ff47' : '#555' }}>{m.name}</div>
