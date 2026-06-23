@@ -1,4 +1,5 @@
 'use client'
+import { IconFlash } from '@/components/icons'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -38,7 +39,7 @@ export default function LoginPage() {
   return (
     <main style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 22px' }}>
       <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 44, textDecoration: 'none' }}>
-        <div style={{ width: 40, height: 40, background: 'var(--accent)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>📷</div>
+        <div style={{ width: 40, height: 40, background: 'var(--accent)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconFlash size={20} color="#0a0a0a" /></div>
         <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>Flash</span>
       </Link>
 

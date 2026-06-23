@@ -1,4 +1,5 @@
 'use client'
+import { IconBack, IconLogout, IconPlus, IconQR, IconStats, IconGuests, IconGallery, IconLive, IconReveal } from '@/components/icons'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'

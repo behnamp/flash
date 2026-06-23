@@ -1,4 +1,5 @@
 'use client'
+import { IconShutter, IconGallery, IconSave, IconBack } from '@/components/icons'
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -180,7 +181,7 @@ export default function GuestGalleryPage() {
       <div style={{ display: 'flex', borderTop: '1px solid var(--border)', background: 'rgba(10,10,10,0.97)' }}>
         {[['📷', 'Camera', () => router.push(`/join/${code}/camera`)], ['🖼', 'Gallery', () => {}]].map(([icon, label, fn]: any) => (
           <button key={label as string} onClick={fn} style={{ flex: 1, padding: '12px 0', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 10, fontWeight: 700, color: (label as string) === 'Gallery' ? 'var(--accent)' : 'var(--muted)', textTransform: 'uppercase', letterSpacing: 0.8, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-            <span style={{ fontSize: 19 }}>{icon as string}</span>{label as string}
+            {icon === '📷' ? <IconShutter size={20} color={label === 'Camera' ? 'var(--accent)' : 'var(--muted)'} /> : <IconGallery size={20} color={label === 'Gallery' ? 'var(--accent)' : 'var(--muted)'} />}{label as string}
           </button>
         ))}
       </div>
