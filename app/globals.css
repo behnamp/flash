@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface2: #1a1a1a;
+  --surface3: #242424;
+  --border: #2a2a2a;
+  --text: #f0f0f0;
+  --dim: #777777;
+  --muted: #444444;
+  --accent: #e8ff47;
+  --accent-dim: rgba(232,255,71,0.10);
+  --red: #ff4757;
+  --green: #2ed573;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; overscroll-behavior: none; }
+input, button, textarea, select { font-family: inherit; }
+
+input[type=range] { -webkit-appearance: none; width: 100%; height: 4px; background: var(--surface3); border-radius: 2px; outline: none; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 0 5px rgba(232,255,71,0.18); }
+
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+@keyframes flash-white { 0% { opacity: 0.95; } 100% { opacity: 0; } }
+@keyframes slide-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse-anim { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.flash-anim { animation: flash-white 0.18s ease-out forwards; }
+.slide-up { animation: slide-up 0.28s ease forwards; }
+.pulse { animation: pulse-anim 2s infinite; }
+.spin { animation: spin 1s linear infinite; }
+
+body { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+.font-mono, [class*="font-mono"] { font-family: 'Space Mono', monospace; }
