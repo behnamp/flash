@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 import { IconFlash, IconShutter, IconFilm, IconGuests } from '@/components/icons'
 

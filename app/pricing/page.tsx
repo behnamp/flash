@@ -1,4 +1,5 @@
 'use client'
+'use client'
 import { useRouter } from 'next/navigation'
 import { IconBack, IconCheck, IconFlash, IconShutter, IconGuests, IconFilm, IconReel, IconPrint, IconStats, IconTarget } from '@/components/icons'
 
