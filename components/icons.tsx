@@ -73,10 +73,16 @@ export const IconReel = ({ size = 24, color = 'white', weight }: { size?: number
 
 export const IconWedding = ({ size = 24, color = 'white', weight }: { size?: number; color?: string; weight?: string }) => (
   <svg width={size} height={size} viewBox="0 0 256 256" fill="none" stroke={color} strokeWidth="16" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="128" cy="88" r="48"/>
-    <path d="M80,88h96"/>
-    <path d="M128,40v96"/>
-    <path d="M64,192a64,64,0,0,1,128,0"/>
+    {/* Outer ring */}
+    <circle cx="128" cy="156" r="76"/>
+    {/* Inner ring hollow */}
+    <circle cx="128" cy="156" r="50"/>
+    {/* Diamond gem */}
+    <path d="M100 88 L128 40 L156 88 L128 112 Z"/>
+    <line x1="100" y1="88" x2="156" y2="88"/>
+    {/* Band connecting gem to ring */}
+    <path d="M108 106 C96 120 90 136 90 156"/>
+    <path d="M148 106 C160 120 166 136 166 156"/>
   </svg>
 )
 
