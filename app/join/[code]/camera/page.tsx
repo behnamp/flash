@@ -3,7 +3,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ALL_MODES } from '@/constants/photoModes'
-import { IconBack, IconFlip, IconGallery, IconShutter } from '@/components/icons'
+import { IconFlash, IconBack, IconFlip, IconGallery, IconShutter } from '@/components/icons'
 
 export default function CameraPage() {
   const params = useParams()
@@ -130,7 +130,7 @@ export default function CameraPage() {
         <canvas ref={canvasRef} style={{ display: 'none' }} />
         {!cameraReady && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="spin"><IconShutter size={40} color="rgba(255,255,255,0.4)" /></div>
+            <div className="flash-loading"><IconFlash size={44} /></div>
           </div>
         )}
         {flashing && <div style={{ position: 'absolute', inset: 0, background: 'white', zIndex: 20 }} className="flash-anim" />}

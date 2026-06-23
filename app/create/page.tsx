@@ -155,20 +155,57 @@ export default function CreateEvent() {
 
         {/* STEP 1 — Event Type */}
         {step === 1 && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
-            {EVENT_TYPES.map(({ id, label, Icon }) => {
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {/* Wedding & Birthday — big featured row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              {EVENT_TYPES.slice(0, 2).map(({ id, label, Icon }) => {
+                const sel = form.eventType === id
+                return (
+                  <div key={id} onClick={() => set('eventType', id)} style={{
+                    background: sel ? 'rgba(232,255,71,0.07)' : '#111',
+                    border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`,
+                    borderRadius: 16, padding: '26px 16px 20px', cursor: 'pointer',
+                    textAlign: 'center', transition: 'all .18s',
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
+                      <Icon size={34} color={sel ? '#e8ff47' : '#383838'} strokeWidth={1.2} />
+                    </div>
+                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: sel ? '#e8ff47' : '#444' }}>{label}</div>
+                  </div>
+                )
+              })}
+            </div>
+            {/* Middle 6 — 3 columns */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
+              {EVENT_TYPES.slice(2, 8).map(({ id, label, Icon }) => {
+                const sel = form.eventType === id
+                return (
+                  <div key={id} onClick={() => set('eventType', id)} style={{
+                    background: sel ? 'rgba(232,255,71,0.07)' : '#111',
+                    border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`,
+                    borderRadius: 14, padding: '20px 8px 15px', cursor: 'pointer',
+                    textAlign: 'center', transition: 'all .18s',
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 11 }}>
+                      <Icon size={28} color={sel ? '#e8ff47' : '#383838'} strokeWidth={1.2} />
+                    </div>
+                    <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: sel ? '#e8ff47' : '#444' }}>{label}</div>
+                  </div>
+                )
+              })}
+            </div>
+            {/* Other — full width */}
+            {EVENT_TYPES.slice(8).map(({ id, label, Icon }) => {
               const sel = form.eventType === id
               return (
                 <div key={id} onClick={() => set('eventType', id)} style={{
-                  background: sel ? 'rgba(232,255,71,0.06)' : '#111',
+                  background: sel ? 'rgba(232,255,71,0.07)' : '#111',
                   border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`,
-                  borderRadius: 14, padding: '20px 8px 16px', cursor: 'pointer',
-                  textAlign: 'center', transition: 'all .15s',
+                  borderRadius: 14, padding: '16px 20px', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: 14, transition: 'all .18s',
                 }}>
-                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
-                    <Icon size={22} color={sel ? '#e8ff47' : '#555'} />
-                  </div>
-                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: sel ? '#e8ff47' : '#444' }}>{label}</div>
+                  <Icon size={22} color={sel ? '#e8ff47' : '#383838'} strokeWidth={1.2} />
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: sel ? '#e8ff47' : '#444' }}>{label}</div>
                 </div>
               )
             })}

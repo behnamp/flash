@@ -1,5 +1,5 @@
 'use client'
-import { IconBack, IconLogout, IconPlus, IconQR, IconStats, IconGuests, IconGallery, IconLive, IconReveal } from '@/components/icons'
+import { IconFlash, IconBack, IconLogout, IconPlus, IconQR, IconStats, IconGuests, IconGallery, IconLive, IconReveal } from '@/components/icons'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -41,7 +41,7 @@ export default function HostDashboard() {
 
   if (loading) return (
     <main style={{ height: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ fontSize: 32 }} className="spin">📷</div>
+      <div className="flash-loading"><IconFlash size={40} /></div>
     </main>
   )
 

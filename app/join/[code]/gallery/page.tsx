@@ -1,5 +1,5 @@
 'use client'
-import { IconShutter, IconGallery, IconSave, IconBack } from '@/components/icons'
+import { IconFlash, IconShutter, IconGallery, IconSave, IconBack } from '@/components/icons'
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -75,7 +75,7 @@ export default function GuestGalleryPage() {
 
   if (loading) return (
     <main style={{ height: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ fontSize: 32 }} className="spin">📷</div>
+      <div className="flash-loading"><IconFlash size={40} /></div>
     </main>
   )
 
