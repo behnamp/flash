@@ -1,4 +1,5 @@
 'use client'
+import React from 'react'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -7,7 +8,8 @@ import {
   IconFlash, IconBack, IconLogout, IconPlus, IconShutter,
   IconWedding, IconBirthday, IconParty, IconTrip, IconCorporate,
   IconFestival, IconSports, IconNightlife, IconQuestion,
-  IconLive, IconReveal, IconClose, IconCheck, IconTarget
+  IconLive, IconReveal, IconClose, IconCheck, IconTarget,
+  IconEdit, IconDelete, IconDuplicate, IconLink, IconStop, IconArrowRight, IconQR
 } from '@/components/icons'
 
 const EVENT_TYPE_ICONS: Record<string, any> = {
@@ -262,17 +264,17 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
       {/* Dropdown menu */}
       {isMenuOpen && (
         <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 6, background: '#161616', border: '1px solid #222', borderRadius: 14, padding: '6px', zIndex: 50, width: 220, boxShadow: '0 16px 48px rgba(0,0,0,0.7)' }}>
-          <MenuItem icon="→" label="Open Dashboard" onClick={() => { setMenuOpen(null); router.push(`/host/${ev.id}`) }} />
-          <MenuItem icon="🔗" label="Copy Join Link" onClick={() => onCopyLink(ev.join_code)} />
-          <MenuItem icon="✏️" label="Edit Event" onClick={() => { setMenuOpen(null); router.push(`/host/${ev.id}/edit`) }} />
-          <MenuItem icon="⧉" label="Duplicate" onClick={() => onDuplicate(ev)} />
+          <MenuItem icon={<IconArrowRight size={15} color="#666" />} label="Open Dashboard" onClick={() => { setMenuOpen(null); router.push(`/host/${ev.id}`) }} />
+          <MenuItem icon={<IconQR size={15} color="#666" />} label="Copy Join Link" onClick={() => onCopyLink(ev.join_code)} />
+          <MenuItem icon={<IconEdit size={15} color="#666" />} label="Edit Event" onClick={() => { setMenuOpen(null); router.push(`/host/${ev.id}/edit`) }} />
+          <MenuItem icon={<IconDuplicate size={15} color="#666" />} label="Duplicate" onClick={() => onDuplicate(ev)} />
           {ev.is_active && !ev.revealed && <>
             <div style={{ height: 1, background: '#222', margin: '6px 0' }} />
-            <MenuItem icon="🎭" label="Reveal Gallery" onClick={() => onReveal(ev.id)} accent="#e8ff47" />
-            <MenuItem icon="⏹" label="End Event" onClick={() => onEnd(ev.id)} />
+            <MenuItem icon={<IconReveal size={15} color="#e8ff47" />} label="Reveal Gallery" onClick={() => onReveal(ev.id)} accent="#e8ff47" />
+            <MenuItem icon={<IconStop size={15} color="#666" />} label="End Event" onClick={() => onEnd(ev.id)} />
           </>}
           <div style={{ height: 1, background: '#222', margin: '6px 0' }} />
-          <MenuItem icon="🗑" label="Delete Event" onClick={() => { setMenuOpen(null); setDeleteConfirm(ev.id) }} danger />
+          <MenuItem icon={<IconDelete size={15} color="#ff4757" />} label="Delete Event" onClick={() => { setMenuOpen(null); setDeleteConfirm(ev.id) }} danger />
         </div>
       )}
 
@@ -291,12 +293,12 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
   )
 }
 
-function MenuItem({ icon, label, onClick, danger, accent }: { icon: string; label: string; onClick: () => void; danger?: boolean; accent?: string }) {
+function MenuItem({ icon, label, onClick, danger, accent }: { icon: React.ReactNode; label: string; onClick: () => void; danger?: boolean; accent?: string }) {
   return (
     <button onClick={onClick} style={{ width: '100%', background: 'transparent', border: 'none', borderRadius: 9, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', fontFamily: 'inherit', transition: 'background .12s', textAlign: 'left' }}
       onMouseEnter={e => (e.currentTarget.style.background = '#1e1e1e')}
       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
-      <span style={{ fontSize: 14, width: 20, textAlign: 'center' }}>{icon}</span>
+      <span style={{ width: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', color: danger ? '#ff4757' : accent || '#666' }}>{icon}</span>
       <span style={{ fontSize: 13, fontWeight: 500, color: danger ? '#ff4757' : accent || '#aaa' }}>{label}</span>
     </button>
   )

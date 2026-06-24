@@ -1,5 +1,5 @@
 'use client'
-import { IconFlash, IconBack, IconQR, IconStats, IconGuests, IconGallery, IconReveal, IconCopy, IconClose } from '@/components/icons'
+import { IconFlash, IconBack, IconQR, IconStats, IconGuests, IconGallery, IconReveal, IconCopy, IconClose, IconShutter, IconHourglass, IconEdit, IconDelete, IconArrowRight, IconCheck, IconWarning, IconLive, IconStar } from '@/components/icons'
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -89,7 +89,7 @@ export default function EventDashboard() {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 14, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{event?.name}</div>
           <div style={{ fontSize: 10, color: event?.is_active ? 'var(--accent)' : 'var(--muted)', fontWeight: 600 }}>
-            {event?.revealed ? '✓ Revealed' : event?.is_active ? '● Live' : '○ Ended'} · {guests.length} guests · {shots.length} shots
+            {event?.revealed ? 'Revealed' : event?.is_active ? 'Live' : 'Ended'} · {guests.length} guests · {shots.length} shots
           </div>
         </div>
         <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, color: 'var(--accent)', background: 'var(--accent-dim)', border: '1px solid rgba(232,255,71,0.3)', borderRadius: 7, padding: '4px 9px' }}>{event?.join_code}</div>
@@ -184,7 +184,7 @@ export default function EventDashboard() {
             <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--dim)', marginBottom: 12 }}>All Guests ({guests.length})</div>
             {guests.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--muted)', fontSize: 14 }}>
-                <div style={{ fontSize: 32, marginBottom: 10 }}>👥</div>
+                <div style={{ fontSize: 32, marginBottom: 10 }}></div>
                 Waiting for guests to scan the QR...
               </div>
             ) : guests.map(g => (
@@ -208,7 +208,7 @@ export default function EventDashboard() {
           <div>
             {shots.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--muted)', fontSize: 14 }}>
-                <div style={{ fontSize: 36, marginBottom: 10 }}>📷</div>
+                <div style={{ fontSize: 36, marginBottom: 10 }}></div>
                 No shots yet — share the QR code!
               </div>
             ) : (
@@ -218,7 +218,7 @@ export default function EventDashboard() {
                     {s.storage_url
                       ? <img src={s.thumbnail_url || s.storage_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       : <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                          <span style={{ fontSize: 16, opacity: 0.3 }}>📷</span>
+                          <span style={{ fontSize: 16, opacity: 0.3 }}></span>
                           <span style={{ fontSize: 8, color: 'var(--muted)' }}>Processing</span>
                         </div>
                     }
