@@ -1,7 +1,7 @@
 'use client'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import {
@@ -24,8 +24,10 @@ const STATUS = (ev: any) => {
   return { label: 'Live', color: '#e8ff47', dot: '#e8ff47' }
 }
 
-export default function HostDashboard() {
+function HostDashboardInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const paymentSuccess = searchParams.get('payment') === 'success'
   const supabase = createClient()
   const [user, setUser] = useState<any>(null)
   const [events, setEvents] = useState<any[]>([])
@@ -142,6 +144,19 @@ export default function HostDashboard() {
             {user?.user_metadata?.display_name || user?.email?.split('@')[0]}
           </h1>
         </div>
+
+        {/* Payment success banner */}
+        {paymentSuccess && (
+          <div style={{ background: 'rgba(46,213,115,0.08)', border: '1px solid rgba(46,213,115,0.2)', borderRadius: 14, padding: '16px 18px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 36, height: 36, background: 'rgba(46,213,115,0.15)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <IconCheck size={18} color="#2ed573" weight="bold" />
+            </div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#2ed573', marginBottom: 2 }}>Payment confirmed!</div>
+              <div style={{ fontSize: 12, color: '#555' }}>Your event is now live. Share the QR code with your guests.</div>
+            </div>
+          </div>
+        )}
 
         {/* Create button */}
         <Link href="/create" style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
@@ -302,4 +317,9 @@ function MenuItem({ icon, label, onClick, danger, accent }: { icon: React.ReactN
       <span style={{ fontSize: 13, fontWeight: 500, color: danger ? '#ff4757' : accent || '#aaa' }}>{label}</span>
     </button>
   )
+}
+
+
+export default function HostDashboard() {
+  return <Suspense><HostDashboardInner /></Suspense>
 }

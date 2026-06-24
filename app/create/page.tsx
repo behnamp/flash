@@ -397,7 +397,7 @@ export default function CreateEvent() {
       <div style={{ padding: '14px 20px 34px', borderTop: '1px solid #161616', background: 'rgba(10,10,10,0.98)' }}>
         <button onClick={step < TOTAL ? () => setStep(s => s + 1) : handleCreate} disabled={saving}
           style={{ width: '100%', background: saving ? '#1a1a1a' : '#e8ff47', color: saving ? '#333' : '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'inherit', letterSpacing: -0.3 }}>
-          {saving ? 'Creating...' : step < TOTAL ? 'Continue' : 'Create Event'}
+          {saving ? 'Creating...' : step < TOTAL ? 'Continue' : 'Continue to Payment →'}
         </button>
       </div>
     </main>
