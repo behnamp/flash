@@ -1,39 +1,33 @@
 name: Set Vercel Env & Redeploy
 on:
   push:
-    paths:
-      - '.github/workflows/set-vercel-env.yml'
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  set-env-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Set Stripe keys on Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          STRIPE_SK: ${{ secrets.STRIPE_SECRET_KEY }}
-          STRIPE_PK: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+      - name: Set STRIPE_SECRET_KEY on Vercel
         run: |
-          # Set secret key
-          curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
+          RESPONSE=$(curl -s -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d "{\"key\":\"STRIPE_SECRET_KEY\",\"value\":\"$STRIPE_SK\",\"type\":\"encrypted\",\"target\":[\"production\"]}" \
-            && echo "✓ STRIPE_SECRET_KEY set" || echo "already exists - updating"
+            -d "{\"key\":\"STRIPE_SECRET_KEY\",\"value\":\"${{ secrets.STRIPE_SECRET_KEY }}\",\"type\":\"encrypted\",\"target\":[\"production\"]}")
+          echo "$RESPONSE" | grep -q '"id"' && echo "✓ STRIPE_SECRET_KEY set" || echo "Response: $RESPONSE"
 
-          # Set publishable key  
-          curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"key\":\"NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY\",\"value\":\"$STRIPE_PK\",\"type\":\"plain\",\"target\":[\"production\"]}" \
-            && echo "✓ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY set" || echo "already exists - updating"
-
-      - name: Redeploy on Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - name: Set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY on Vercel
         run: |
-          curl -sf -X POST "https://api.vercel.com/v13/deployments" \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
+          RESPONSE=$(curl -s -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d '{"name":"flash-roan","gitSource":{"type":"github","org":"behnamp","repo":"flash","ref":"main"}}' \
-            && echo "✓ Redeploy triggered"
+            -d "{\"key\":\"NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY\",\"value\":\"${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}\",\"type\":\"plain\",\"target\":[\"production\"]}")
+          echo "$RESPONSE" | grep -q '"id"' && echo "✓ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY set" || echo "Response: $RESPONSE"
+
+      - name: Trigger Vercel redeploy
+        run: |
+          RESPONSE=$(curl -s -X POST "https://api.vercel.com/v13/deployments" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"name":"flash-roan","gitSource":{"type":"github","org":"behnamp","repo":"flash","ref":"main"}}')
+          echo "$RESPONSE" | grep -q '"id"' && echo "✓ Redeploy triggered" || echo "Response: $RESPONSE"
