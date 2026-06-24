@@ -3,6 +3,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ALL_MODES } from '@/constants/photoModes'
+import { MODE_PREVIEWS } from '@/lib/modePreviews'
 import { IconFlash, IconBack, IconFlip, IconGallery, IconShutter } from '@/components/icons'
 
 export default function CameraPage() {
@@ -75,7 +76,12 @@ export default function CameraPage() {
     setFlashing(true); setTimeout(() => setFlashing(false), 160)
     const canvas = canvasRef.current; const video = videoRef.current
     canvas.width = video.videoWidth || 1280; canvas.height = video.videoHeight || 720
-    const ctx = canvas.getContext('2d')!; ctx.drawImage(video, 0, 0)
+    const ctx = canvas.getContext('2d')!
+    // Apply CSS filter to canvas — bakes the film look into the photo
+    const cssFilter = MODE_PREVIEWS[filter.id]?.filter || 'none'
+    ctx.filter = cssFilter
+    ctx.drawImage(video, 0, 0)
+    ctx.filter = 'none'
     canvas.toBlob(async (blob) => {
       if (!blob || !event || !guest) return
       setUploading(true)
@@ -126,13 +132,15 @@ export default function CameraPage() {
     <main style={{ height: '100vh', background: '#000', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
         <video ref={videoRef} autoPlay playsInline muted
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none' }} />
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none', filter: MODE_PREVIEWS[filter.id]?.filter || 'none', transition: 'filter 0.3s' }} />
         <canvas ref={canvasRef} style={{ display: 'none' }} />
         {!cameraReady && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div className="flash-loading"><IconFlash size={44} /></div>
           </div>
         )}
+        {/* Vignette overlay for film look */}
+        <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.55) 100%)', pointerEvents:'none', zIndex:1 }} />
         {flashing && <div style={{ position: 'absolute', inset: 0, background: 'white', zIndex: 20 }} className="flash-anim" />}
 
         {/* Corner guides */}
