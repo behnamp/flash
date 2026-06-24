@@ -1,12 +1,15 @@
 'use client'
+import { Suspense } from 'react'
 import { IconFlash } from '@/components/icons'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 
-export default function LoginPage() {
+function LoginPageInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const next = searchParams.get('next') || '/host'
   const supabase = createClient()
   const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [email, setEmail] = useState('')
@@ -29,7 +32,7 @@ export default function LoginPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
-        router.push('/host')
+        router.push(next)
       }
     } catch (e: any) {
       setError(e.message || 'Something went wrong')
@@ -101,4 +104,9 @@ export default function LoginPage() {
       </div>
     </main>
   )
+}
+
+
+export default function LoginPage() {
+  return <Suspense><LoginPageInner /></Suspense>
 }
