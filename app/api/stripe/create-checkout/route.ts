@@ -54,8 +54,8 @@ export async function POST(req: NextRequest) {
         guest_cap: String(t.guests),
       },
       customer_email: user.email!,
-      success_url: `${origin}/host${eventId ? `/${eventId}` : ''}?payment=success`,
-      cancel_url: `${origin}/pricing?cancelled=true`,
+      success_url: `${origin}/payment/success?event_id=${eventId}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/pricing?eventId=${eventId}&cancelled=true`,
     })
 
     return NextResponse.json({ url: session.url })
