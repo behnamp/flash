@@ -3,7 +3,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ALL_MODES } from '@/constants/photoModes'
-import { MODE_PREVIEWS } from '@/lib/modePreviews'
+import { applyFilterToCanvas, CANVAS_FILTERS } from '@/lib/filterCanvas'
 import { IconFlash, IconBack, IconFlip, IconGallery, IconShutter } from '@/components/icons'
 
 export default function CameraPage() {
@@ -74,37 +74,53 @@ export default function CameraPage() {
   const shoot = useCallback(async () => {
     if (shotsUsed >= shotLimit || !canvasRef.current || !videoRef.current || uploading) return
     setFlashing(true); setTimeout(() => setFlashing(false), 160)
-    const canvas = canvasRef.current; const video = videoRef.current
-    canvas.width = video.videoWidth || 1280; canvas.height = video.videoHeight || 720
+
+    // 1. Draw raw video frame to canvas
+    const canvas = canvasRef.current
+    const video = videoRef.current
+    canvas.width = video.videoWidth || 1280
+    canvas.height = video.videoHeight || 720
     const ctx = canvas.getContext('2d')!
-    // Apply CSS filter to canvas — bakes the film look into the photo
-    const cssFilter = MODE_PREVIEWS[filter.id]?.filter || 'none'
-    ctx.filter = cssFilter
     ctx.drawImage(video, 0, 0)
-    ctx.filter = 'none'
-    canvas.toBlob(async (blob) => {
-      if (!blob || !event || !guest) return
-      setUploading(true)
-      try {
-        const fileName = `${event.id}/${guest.id}/${Date.now()}.jpg`
-        const { error: uploadError } = await supabase.storage.from('shots').upload(fileName, blob, { contentType: 'image/jpeg', upsert: false })
-        if (uploadError) throw uploadError
-        const { data: shot, error: shotError } = await supabase.from('shots').insert({
-          event_id: event.id, guest_id: guest.id, media_type: 'photo',
-          storage_path: fileName, mode_id: filter.id, mode_name: filter.name,
-          revealed: event.reveal_mode === 'instant',
-        }).select().single()
-        if (shotError) throw shotError
-        const newUsed = shotsUsed + 1; setShotsUsed(newUsed); setLastShotId(shot.id)
-        const left = shotLimit - newUsed
-        const msg = left === 0 ? 'Film used up!' : left === 1 ? 'Last shot!' : `${left} left`
-        setFeedback(msg); setShowFeedback(true)
-        clearTimeout(fbTimerRef.current); fbTimerRef.current = setTimeout(() => setShowFeedback(false), 1800)
-        if (event.allow_captions) setShowCaption(true)
-      } catch (e) {
-        setFeedback('Upload failed'); setShowFeedback(true)
-      } finally { setUploading(false) }
-    }, 'image/jpeg', 0.88)
+
+    setUploading(true)
+    try {
+      // 2. Apply film filter in-browser (free, instant, no API)
+      const filteredBlob = await applyFilterToCanvas(canvas, filter.id, 0.88)
+
+      if (!event || !guest) return
+      const fileName = `${event.id}/${guest.id}/${Date.now()}.jpg`
+
+      // 3. Upload filtered photo to Supabase storage
+      const { error: uploadError } = await supabase.storage
+        .from('shots')
+        .upload(fileName, filteredBlob, { contentType: 'image/jpeg', upsert: false })
+      if (uploadError) throw uploadError
+
+      // 4. Save shot record
+      const { data: shot, error: shotError } = await supabase.from('shots').insert({
+        event_id: event.id, guest_id: guest.id, media_type: 'photo',
+        storage_path: fileName, mode_id: filter.id, mode_name: filter.name,
+        revealed: event.reveal_mode === 'instant',
+      }).select().single()
+      if (shotError) throw shotError
+
+      const newUsed = shotsUsed + 1
+      setShotsUsed(newUsed)
+      setLastShotId(shot.id)
+      const left = shotLimit - newUsed
+      setFeedback(left === 0 ? 'Film used up!' : left === 1 ? 'Last shot!' : `${left} left`)
+      setShowFeedback(true)
+      clearTimeout(fbTimerRef.current)
+      fbTimerRef.current = setTimeout(() => setShowFeedback(false), 1800)
+      if (event.allow_captions) setShowCaption(true)
+    } catch (e: any) {
+      console.error('Shot failed:', e)
+      setFeedback('Upload failed')
+      setShowFeedback(true)
+    } finally {
+      setUploading(false)
+    }
   }, [shotsUsed, shotLimit, uploading, event, guest, filter])
 
   const saveCaption = async () => {
@@ -132,7 +148,7 @@ export default function CameraPage() {
     <main style={{ height: '100vh', background: '#000', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
         <video ref={videoRef} autoPlay playsInline muted
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none', filter: MODE_PREVIEWS[filter.id]?.filter || 'none', transition: 'filter 0.3s' }} />
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none', filter: CANVAS_FILTERS[filter.id]?.filter || 'none', transition: 'filter 0.3s' }} />
         <canvas ref={canvasRef} style={{ display: 'none' }} />
         {!cameraReady && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
