@@ -53,6 +53,35 @@ function PricingPageInner() {
   const cancelled = searchParams.get('cancelled')
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState('')
+  const [promoCode, setPromoCode] = useState('')
+  const [promoResult, setPromoResult] = useState<any>(null)
+  const [promoLoading, setPromoLoading] = useState(false)
+  const [promoError, setPromoError] = useState('')
+
+  const validatePromo = async (tierId: string) => {
+    if (!promoCode.trim()) return null
+    setPromoLoading(true); setPromoError('')
+    try {
+      const { createClient } = await import('@/lib/supabase/client')
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data, error } = await supabase.rpc('validate_promo_code', {
+        p_code: promoCode.trim().toUpperCase(),
+        p_tier: tierId,
+        p_user_id: user?.id,
+      })
+      if (error || !data?.valid) {
+        setPromoError(data?.error || 'Invalid promo code')
+        setPromoResult(null)
+        return null
+      }
+      setPromoResult(data)
+      return data
+    } catch (e: any) {
+      setPromoError('Could not validate code')
+      return null
+    } finally { setPromoLoading(false) }
+  }
 
   const handlePurchase = async (tierId: string) => {
     setLoading(tierId)
@@ -61,10 +90,15 @@ function PricingPageInner() {
       const res = await fetch('/api/stripe/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: tierId, eventId: eventId || '' }),
+        body: JSON.stringify({ tier: tierId, eventId: eventId || '', promoCode: promoCode.trim().toUpperCase() || undefined }),
       })
       const data = await res.json()
       if (data.error) throw new Error(data.error)
+      // Free promo — no Stripe needed
+      if (data.free) {
+        window.location.href = data.redirectUrl
+        return
+      }
       window.location.href = data.url
     } catch (e: any) {
       setError(e.message || 'Payment failed. Try again.')
@@ -151,6 +185,28 @@ function PricingPageInner() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Promo code */}
+        <div style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 14, padding: '16px 18px', marginBottom: 12 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444', marginBottom: 10 }}>Promo Code</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <input
+              value={promoCode} onChange={e => { setPromoCode(e.target.value.toUpperCase()); setPromoResult(null); setPromoError('') }}
+              placeholder="ENTER CODE"
+              style={{ background: '#0e0e0e', border: `1px solid ${promoResult ? 'rgba(46,213,115,0.3)' : promoError ? 'rgba(255,71,87,0.3)' : '#222'}`, borderRadius: 9, padding: '11px 14px', color: '#f0f0f0', fontSize: 14, flex: 1, outline: 'none', fontFamily: 'Space Mono, monospace', letterSpacing: 2 }}
+              maxLength={16}
+            />
+            <button onClick={() => validatePromo('all')} disabled={!promoCode.trim() || promoLoading} style={{ background: promoResult ? 'rgba(46,213,115,0.1)' : '#1a1a1a', border: `1px solid ${promoResult ? 'rgba(46,213,115,0.3)' : '#222'}`, borderRadius: 9, padding: '0 16px', color: promoResult ? '#2ed573' : '#666', cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
+              {promoLoading ? '...' : promoResult ? '✓ Applied' : 'Apply'}
+            </button>
+          </div>
+          {promoResult && (
+            <div style={{ marginTop: 8, fontSize: 12, color: '#2ed573', display: 'flex', alignItems: 'center', gap: 6 }}>
+              ✓ {promoResult.type === 'free' ? '100% discount — this event is FREE!' : `${promoResult.discount_percent}% off applied`}
+            </div>
+          )}
+          {promoError && <div style={{ marginTop: 8, fontSize: 12, color: '#ff4757' }}>{promoError}</div>}
         </div>
 
         {error && (
