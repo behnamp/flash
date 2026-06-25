@@ -115,11 +115,15 @@ export const IconFlash = ({ size = 24, color = '#e8ff47', style }: { size?: numb
 // Wedding ring with diamond
 export const IconWedding = ({ size = 24, color = 'white', weight }: { size?: number; color?: string; weight?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 7l3-4 3 4-3 3-3-3z" />
-    <path d="M9 7h6" />
-    <path d="M9.5 9.8C8.5 11 8 12.5 8 14a4 4 0 0 0 8 0c0-1.5-.5-3-1.5-4.2" />
-    <circle cx="12" cy="14" r="4" />
-    <circle cx="12" cy="14" r="1.5" />
+    {/* Ring band - full circle viewed front-on */}
+    <circle cx="12" cy="15" r="5.5" />
+    <circle cx="12" cy="15" r="3" />
+    {/* Diamond on top of ring */}
+    <path d="M9.5 8.5L12 5l2.5 3.5L12 11z" />
+    <path d="M9.5 8.5h5" />
+    {/* Stem connecting diamond to ring */}
+    <path d="M10.5 10.5C10 11.5 9.5 12.5 9.5 15" />
+    <path d="M13.5 10.5C14 11.5 14.5 12.5 14.5 15" />
   </svg>
 )
 
