@@ -59,7 +59,13 @@ export default function CameraPage() {
     if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop())
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facing, width: { ideal: 1920 }, height: { ideal: 1080 } },
+        video: {
+          facingMode: facing,
+          width: { ideal: 4096, min: 1280 },
+          height: { ideal: 2160, min: 720 },
+          aspectRatio: { ideal: 16/9 },
+          frameRate: { ideal: 30 },
+        },
         audio: false,
       })
       streamRef.current = stream
@@ -118,8 +124,9 @@ export default function CameraPage() {
     setFlashing(true); setTimeout(() => setFlashing(false), 160)
     const canvas = canvasRef.current
     const video = videoRef.current
-    canvas.width = video.videoWidth || 1280
-    canvas.height = video.videoHeight || 720
+    // Use full native resolution of the camera feed
+    canvas.width = video.videoWidth || 1920
+    canvas.height = video.videoHeight || 1080
     const ctx = canvas.getContext('2d')!
     ctx.drawImage(video, 0, 0)
     setUploading(true)
@@ -191,12 +198,12 @@ export default function CameraPage() {
   const filmPct = (shotsUsed / shotLimit) * 100
 
   return (
-    <main style={{ height: '100dvh', background: '#000', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative', touchAction: 'manipulation' }}>
+    <main style={{ position: 'fixed', inset: 0, background: '#000', display: 'flex', flexDirection: 'column', overflow: 'hidden', touchAction: 'manipulation', userSelect: 'none', WebkitUserSelect: 'none' }}>
       {/* Camera viewfinder */}
       <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
         <video
           ref={videoRef} autoPlay playsInline muted
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none', filter: CANVAS_FILTERS[filter.id]?.filter || 'none', transition: 'filter 0.3s', touchAction: 'manipulation' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none', filter: CANVAS_FILTERS[filter.id]?.filter || 'none', transition: 'filter 0.3s' }}
         />
         {!cameraReady && !cameraError && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000' }}>
@@ -265,11 +272,11 @@ export default function CameraPage() {
         </div>
       )}
 
-      {/* Bottom controls */}
-      <div style={{ background: '#0a0a0a', paddingBottom: 'env(safe-area-inset-bottom)', touchAction: 'manipulation' }}>
+      {/* Bottom controls — fixed, never zoom */}
+      <div style={{ background: '#0a0a0a', paddingBottom: 'env(safe-area-inset-bottom)', touchAction: 'none', flexShrink: 0, position: 'relative', zIndex: 10 }}>
 
-        {/* Mode selector — 5 modes, scrollable */}
-        <div style={{ display: 'flex', gap: 8, padding: '10px 16px', overflowX: 'auto', scrollbarWidth: 'none' }}>
+        {/* Mode selector — 5 modes, scrollable, no zoom */}
+        <div style={{ display: 'flex', gap: 8, padding: '10px 16px', overflowX: 'auto', scrollbarWidth: 'none', touchAction: 'pan-x', WebkitOverflowScrolling: 'touch' }}>
           {ALL_MODES.map(m => (
             <button key={m.id} onClick={() => setFilter(m)}
               style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 2px' }}>
