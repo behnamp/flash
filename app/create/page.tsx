@@ -87,7 +87,7 @@ export default function CreateEvent() {
     guestBook: false, liveSlideshow: false, aiReel: true,
     printEnabled: false, allowCaptions: true, allowVoice: false,
     whiteLabel: false, brandName: '', brandLogoPreview: '', brandLogoFile: null as File | null, statsCard: true,
-    coverColor: '#0a0a0a', coverEmoji: '⚡', coverImageUrl: '', coverImageFile: null as File | null,
+    coverColor: '#0a0a0a', coverEmoji: '⚡', coverImageUrl: '', coverImageFile: null as File | null, coverOverlay: 'none',
   })
 
   const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }))
@@ -348,34 +348,89 @@ export default function CreateEvent() {
 
         {step === 6 && (
           <div>
-            {/* Cover preview */}
-            {/* Cover preview */}
-            <div style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16, aspectRatio: '9/16', maxHeight: 300, background: form.coverColor, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', padding: '0 20px 28px', position: 'relative', cursor: 'pointer' }}
-              onClick={() => coverInputRef.current?.click()}>
+            {/* ── COVER CARD ── full width, 9:16 */}
+            <div style={{ borderRadius: 20, overflow: 'hidden', width: '100%', aspectRatio: '9/16', background: form.coverColor, position: 'relative', marginBottom: 14 }}>
+
+              {/* Background photo */}
               {form.coverImageUrl && (
                 <img src={form.coverImageUrl} alt="cover" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
               )}
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 35%, rgba(0,0,0,0.75) 100%)' }} />
-              <div style={{ position: 'relative', textAlign: 'center', width: '100%' }}>
-                {!form.coverImageUrl && <div style={{ fontSize: 28, marginBottom: 8 }}>{form.coverEmoji}</div>}
-                <div style={{ fontSize: 17, fontWeight: 700, color: 'white', marginBottom: 6, lineHeight: 1.2 }}>{form.eventName || 'Your Event'}</div>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginBottom: 18 }}>Tap to take your camera →</div>
-                <div style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '10px 14px', border: '1px solid rgba(255,255,255,0.12)' }}>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>Enter your name</div>
+
+              {/* Color overlay */}
+              {form.coverOverlay && form.coverOverlay !== 'none' && (
+                <div style={{ position: 'absolute', inset: 0, background: form.coverOverlay, mixBlendMode: 'multiply' }} />
+              )}
+
+              {/* Gradient */}
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, transparent 30%, rgba(0,0,0,0.65) 70%, rgba(0,0,0,0.9) 100%)' }} />
+
+              {/* ── TOP: color overlays + emoji picker ── */}
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '14px 14px 0' }}>
+                {/* Overlay colors */}
+                <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.35)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Overlay</div>
+                <div style={{ display: 'flex', gap: 7, marginBottom: 12 }}>
+                  {[
+                    { label: 'None', v: 'none', bg: 'transparent', border: '1px solid rgba(255,255,255,0.3)' },
+                    { label: 'Black', v: 'rgba(0,0,0,0.45)', bg: '#000' },
+                    { label: 'Warm', v: 'rgba(180,80,0,0.45)', bg: '#b45000' },
+                    { label: 'Blue', v: 'rgba(0,40,160,0.45)', bg: '#0028a0' },
+                    { label: 'Pink', v: 'rgba(160,0,80,0.45)', bg: '#a00050' },
+                    { label: 'Green', v: 'rgba(0,80,40,0.45)', bg: '#005028' },
+                    { label: 'Gold', v: 'rgba(160,120,0,0.45)', bg: '#a07800' },
+                  ].map(ov => (
+                    <div key={ov.v} onClick={() => set('coverOverlay', ov.v)}
+                      style={{ width: 28, height: 28, borderRadius: 8, background: ov.bg, border: form.coverOverlay === ov.v ? '2px solid #e8ff47' : (ov.border || '2px solid transparent'), cursor: 'pointer', flexShrink: 0, boxShadow: '0 2px 6px rgba(0,0,0,0.6)' }} />
+                  ))}
+                </div>
+
+                {/* Emoji icons */}
+                <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.35)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Icon</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {['⚡','💍','🎂','🎉','✈️','🏆','🎵','📷','🌅','🎬','🌿','🔥','🎊','🥂','🎈','❤️'].map(em => (
+                    <div key={em} onClick={() => set('coverEmoji', em)}
+                      style={{ width: 34, height: 34, borderRadius: 9, background: form.coverEmoji === em ? 'rgba(232,255,71,0.3)' : 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', border: `1.5px solid ${form.coverEmoji === em ? '#e8ff47' : 'rgba(255,255,255,0.15)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, cursor: 'pointer', transition: 'all .15s' }}>
+                      {em}
+                    </div>
+                  ))}
                 </div>
               </div>
-              {/* Edit overlay hint */}
-              <div style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '5px 10px', fontSize: 10, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>
-                {form.coverImageUrl ? 'Change Photo' : 'Add Photo'}
+
+              {/* ── BOTTOM: event info + upload button ── */}
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 18px 22px' }}>
+                <div style={{ fontSize: 28, marginBottom: 6 }}>{form.coverEmoji || '⚡'}</div>
+                <div style={{ fontSize: 19, fontWeight: 700, color: 'white', marginBottom: 3, lineHeight: 1.2 }}>
+                  {form.eventName || 'Your Event'}
+                </div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginBottom: 16 }}>
+                  Tap to open your camera →
+                </div>
+                {/* Upload photo button */}
+                <button onClick={() => coverInputRef.current?.click()}
+                  style={{ width: '100%', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: 13, padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9, cursor: 'pointer', color: 'white', fontSize: 14, fontWeight: 700, fontFamily: 'inherit', letterSpacing: -0.2 }}>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+                    <rect x="3" y="3" width="18" height="18" rx="3"/>
+                    <circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none"/>
+                    <polyline points="21,15 16,10 5,21"/>
+                  </svg>
+                  {form.coverImageUrl ? 'Change Cover Photo' : 'Upload Your Photo'}
+                </button>
               </div>
+
+              {/* Remove button */}
+              {form.coverImageUrl && (
+                <button onClick={() => { set('coverImageUrl', ''); set('coverImageFile', null) }}
+                  style={{ position: 'absolute', top: 14, right: 14, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '5px 11px', fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.75)', cursor: 'pointer', fontFamily: 'inherit' }}>
+                  Remove
+                </button>
+              )}
             </div>
+
             <input ref={coverInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
               const file = e.target.files?.[0]; if (!file) return
-              const url = URL.createObjectURL(file)
-              set('coverImageUrl', url); set('coverImageFile', file)
+              set('coverImageUrl', URL.createObjectURL(file))
+              set('coverImageFile', file)
               e.target.value = ''
             }} />
-            {/* Remove photo */}
           </div>
         )}
 
