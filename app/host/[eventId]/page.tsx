@@ -24,6 +24,7 @@ export default function EventDashboard() {
   const [loading, setLoading] = useState(true)
   const [revealing, setRevealing] = useState(false)
   const [tab, setTab] = useState<'qr' | 'dashboard' | 'guests' | 'gallery'>('qr')
+  const [selectedShot, setSelectedShot] = useState<any>(null)
   const [toast, setToast] = useState('')
   const toastRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
@@ -62,12 +63,19 @@ export default function EventDashboard() {
     load()
   }, [eventId])
 
-  const handleDeleteShot = async (shotId: string, storagePath: string) => {
+  const handleDeleteShot = async (shotId: string, storagePath?: string) => {
     if (!confirm('Delete this photo?')) return
     try {
-      if (storagePath) await supabase.storage.from('shots').remove([storagePath])
+      // Fetch storage_path from shots table if not provided (shot_gallery view doesn't include it)
+      let path = storagePath
+      if (!path) {
+        const { data } = await supabase.from('shots').select('storage_path').eq('id', shotId).single()
+        path = data?.storage_path
+      }
+      if (path) await supabase.storage.from('shots').remove([path])
       await supabase.from('shots').delete().eq('id', shotId)
       setShots(prev => prev.filter((s: any) => s.id !== shotId))
+      setSelectedShot(null)
       showToast('Photo deleted')
     } catch (e) { showToast('Failed to delete') }
   }
@@ -230,26 +238,59 @@ export default function EventDashboard() {
           <div>
             {shots.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--muted)', fontSize: 14 }}>
-                <div style={{ fontSize: 36, marginBottom: 10 }}></div>
-                No shots yet
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="1.2" strokeLinecap="round" style={{ marginBottom: 12, display: 'block', margin: '0 auto 12px' }}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="#333" stroke="none"/></svg>
+                <div>No photos yet</div>
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 2, padding: 2 }}>
                 {shots.map((s: any) => (
-                  <div key={s.id} style={{ aspectRatio: '1', background: 'var(--surface2)', overflow: 'hidden', position: 'relative' }}>
+                  <div key={s.id} onClick={() => setSelectedShot(s)}
+                    style={{ aspectRatio: '1', background: 'var(--surface2)', overflow: 'hidden', position: 'relative', cursor: 'pointer' }}>
                     {s.storage_url
                       ? <img src={s.thumbnail_url || s.storage_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      : <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                          <span style={{ fontSize: 16, opacity: 0.3 }}></span>
-                          <span style={{ fontSize: 8, color: 'var(--muted)' }}>Processing</span>
-                        </div>
+                      : <div style={{ width: '100%', height: '100%', background: '#1a1a1a' }} />
                     }
-                    {!s.revealed && <div style={{ position: 'absolute', top: 4, right: 4, background: 'rgba(0,0,0,0.6)', borderRadius: 5, padding: '2px 5px', fontSize: 8, color: 'var(--muted)' }}>⏳</div>}
-                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '4px 6px', background: 'linear-gradient(to top,rgba(0,0,0,0.7),transparent)', fontSize: 9, color: 'white', fontWeight: 600 }}>{s.shooter_name}</div>
+                    {!s.revealed && (
+                      <div style={{ position: 'absolute', top: 4, right: 4, width: 20, height: 20, background: 'rgba(0,0,0,0.65)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M18 8h-1V6A5 5 0 0 0 6 6v2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zm-6 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm3.1-9H8.9V6a3.1 3.1 0 0 1 6.2 0v2z"/></svg>
+                      </div>
+                    )}
+                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '12px 6px 4px', background: 'linear-gradient(to top,rgba(0,0,0,0.75),transparent)', fontSize: 9, color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>
+                      {s.shooter_name}
+                    </div>
                   </div>
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* HOST PHOTO LIGHTBOX */}
+        {selectedShot && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.96)', zIndex: 200, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', paddingTop: 'max(14px, env(safe-area-inset-top))', flexShrink: 0 }}>
+              <button onClick={() => setSelectedShot(null)}
+                style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#f0f0f0' }}>{selectedShot.shooter_name}</div>
+                <div style={{ fontSize: 11, color: '#555' }}>{selectedShot.mode_name} · {new Date(selectedShot.taken_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+              </div>
+              <button onClick={() => handleDeleteShot(selectedShot.id, selectedShot.storage_path)}
+                style={{ width: 36, height: 36, background: '#1a0a0a', border: '1px solid rgba(255,71,87,0.3)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff4757" strokeWidth="2" strokeLinecap="round">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+                </svg>
+              </button>
+            </div>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 8px' }}>
+              {selectedShot.storage_url
+                ? <img src={selectedShot.storage_url} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 10 }} />
+                : <div style={{ width: '80%', aspectRatio: '3/4', background: '#111', borderRadius: 10 }} />
+              }
+            </div>
+            <div style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }} />
           </div>
         )}
       </div>
