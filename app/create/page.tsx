@@ -8,7 +8,7 @@ import { MODE_PREVIEWS } from '@/lib/modePreviews'
 import { LANGUAGES } from '@/constants/languages'
 import {
   ArrowLeft, Check,
-  Diamond, Cake, Confetti, Airplane, Briefcase, MusicNote, Trophy, Moon, Question,
+  Cake, Confetti, Airplane, Briefcase, MusicNote, Trophy, Moon, Question,
   Lightning, PlayCircle, ArrowsClockwise, SunHorizon, Star,
 } from '@phosphor-icons/react'
 import { IconFlash, IconCheck, IconMorning, IconBack, IconShutter, IconFilm, IconGuests, IconReel, IconStats, IconPrint, IconWedding, IconBirthday, IconParty, IconTrip, IconCorporate, IconFestival, IconSports, IconNightlife, IconQuestion, IconInstant, IconEndEvent, IconRolling, IconMilestone } from '@/components/icons'
@@ -28,7 +28,7 @@ const MODE_CONTROLS = [
 ]
 
 const EVENT_TYPES = [
-  { id: 'wedding', label: 'Wedding', Icon: Diamond },
+  { id: 'wedding', label: 'Wedding', Icon: IconWedding },
   { id: 'birthday', label: 'Birthday', Icon: Cake },
   { id: 'party', label: 'Party', Icon: Confetti },
   { id: 'trip', label: 'Trip', Icon: Airplane },
