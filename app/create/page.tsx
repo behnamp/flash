@@ -370,30 +370,6 @@ export default function CreateEvent() {
               e.target.value = ''
             }} />
             {/* Remove photo */}
-            {form.coverImageUrl && (
-              <button onClick={() => { set('coverImageUrl', ''); set('coverImageFile', null) }}
-                style={{ width: '100%', background: 'transparent', border: 'none', color: '#555', fontSize: 12, cursor: 'pointer', marginBottom: 12, fontFamily: 'inherit' }}>
-                Remove photo
-              </button>
-            )}
-
-            {/* Background color */}
-            <Label>Cover Color</Label>
-            <div style={{ display: 'flex', gap: 10, marginBottom: 22, flexWrap: 'wrap' }}>
-              {['#0a0a0a','#1a0a00','#0a0a1a','#1a000a','#001a0a','#1a1500','#0d0d0d'].map(col => (
-                <div key={col} onClick={() => set('coverColor', col)} style={{ width: 36, height: 36, borderRadius: 10, background: col, border: `2px solid ${form.coverColor === col ? '#e8ff47' : 'transparent'}`, cursor: 'pointer', flexShrink: 0, transition: 'border .15s' }} />
-              ))}
-            </div>
-
-            {/* Cover emoji */}
-            <Label>Cover Icon</Label>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 22 }}>
-              {['⚡','💍','🎂','🎉','✈️','🏆','🎵','📷','🌅','🎬','🌿','🔥'].map(em => (
-                <div key={em} onClick={() => set('coverEmoji', em)} style={{ width: 44, height: 44, borderRadius: 11, background: form.coverEmoji === em ? 'rgba(232,255,71,0.12)' : '#111', border: `1px solid ${form.coverEmoji === em ? '#e8ff47' : '#1e1e1e'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, cursor: 'pointer', transition: 'all .15s' }}>
-                  {em}
-                </div>
-              ))}
-            </div>
           </div>
         )}
 
