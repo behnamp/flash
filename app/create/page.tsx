@@ -47,7 +47,7 @@ const REVEAL_ICONS: Record<string, any> = {
   milestone: Star,
 }
 
-const TOTAL = 6
+const TOTAL = 7
 
 const Label = ({ children }: { children: React.ReactNode }) => (
   <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 2.5, textTransform: 'uppercase', color: '#444', marginBottom: 10 }}>{children}</div>
@@ -86,6 +86,7 @@ export default function CreateEvent() {
     guestBook: false, liveSlideshow: false, aiReel: true,
     printEnabled: false, allowCaptions: true, allowVoice: false,
     whiteLabel: false, brandName: '', brandLogoPreview: '', brandLogoFile: null as File | null, statsCard: true,
+    coverColor: '#0a0a0a', coverEmoji: '⚡',
   })
 
   const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }))
@@ -131,7 +132,7 @@ export default function CreateEvent() {
     return true
   }
 
-  const TITLES = ["What's the occasion?", "Name your event", "Set the rules", "Photo modes", "Language & branding", "Reveal mode"]
+  const TITLES = ["What's the occasion?", "Name your event", "Set the rules", "Photo modes", "When to reveal?", "Design your cover", "Final settings"]
 
   return (
     <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
@@ -304,72 +305,6 @@ export default function CreateEvent() {
 
         {step === 5 && (
           <div>
-            <Label>Primary Language</Label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 320, overflowY: 'auto', marginBottom: 24 }}>
-              {(LANGUAGES as unknown as any[]).map((l: any) => {
-                const sel = form.language === l.code
-                return (
-                  <div key={l.code} onClick={() => set('language', l.code)} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1a1a1a'}`, borderRadius: 11, padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, direction: 'ltr', transition: 'border .15s' }}>
-                    <span style={{ fontSize: 20, flexShrink: 0, lineHeight: 1 }}>{l.flag}</span>
-                    <span style={{ fontSize: 14, fontWeight: 500, color: sel ? '#e8ff47' : '#999', flex: 1 }}>{l.name}</span>
-                    {l.dir === 'rtl' && <span style={{ fontSize: 10, color: '#333', letterSpacing: 0.5 }}>RTL</span>}
-                    {sel && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e8ff47', flexShrink: 0 }} />}
-                  </div>
-                )
-              })}
-            </div>
-            <Toggle on={form.whiteLabel} onChange={v => set('whiteLabel', v)} label="White-label Branding" sub="Add your venue or brand to the guest experience" />
-            {form.whiteLabel && (
-              <div style={{ marginTop: 16 }}>
-                <Inp label="Brand / Venue Name" placeholder="e.g. 777 Game Club" value={form.brandName} onChange={(e: any) => set('brandName', e.target.value)} />
-                <div style={{ marginTop: 4 }}>
-                  <Label>Brand Logo</Label>
-                  {/* Logo upload area */}
-                  <label style={{ display: 'block', cursor: 'pointer' }}>
-                    <input type="file" accept="image/png" style={{ display: 'none' }} onChange={(e: any) => {
-                      const file = e.target.files?.[0]
-                      if (!file) return
-                      const reader = new FileReader()
-                      reader.onload = (ev) => set('brandLogoPreview', ev.target?.result as string)
-                      reader.readAsDataURL(file)
-                      set('brandLogoFile', file)
-                    }} />
-                    <div style={{ background: '#0e0e0e', border: `2px dashed ${form.brandLogoPreview ? '#e8ff47' : '#222'}`, borderRadius: 14, padding: '24px 16px', textAlign: 'center', transition: 'border .2s' }}>
-                      {form.brandLogoPreview ? (
-                        <div>
-                          <div style={{ background: '#111', borderRadius: 10, padding: 16, marginBottom: 12, display: 'inline-block' }}>
-                            <img src={form.brandLogoPreview} alt="Logo preview" style={{ height: 48, maxWidth: 160, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
-                          </div>
-                          <div style={{ fontSize: 11, color: '#e8ff47', fontWeight: 600 }}>Logo uploaded ✓</div>
-                          <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>Tap to change</div>
-                        </div>
-                      ) : (
-                        <div>
-                          <div style={{ fontSize: 28, marginBottom: 10, opacity: 0.3 }}>↑</div>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: '#666', marginBottom: 4 }}>Upload PNG Logo</div>
-                          <div style={{ fontSize: 11, color: '#444' }}>Tap to select from your files</div>
-                        </div>
-                      )}
-                    </div>
-                  </label>
-                  {/* Requirement notice */}
-                  <div style={{ marginTop: 10, background: 'rgba(232,255,71,0.04)', border: '1px solid rgba(232,255,71,0.12)', borderRadius: 10, padding: '12px 14px' }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: '#e8ff47', marginBottom: 5, letterSpacing: 0.5 }}>⚠ Logo requirements</div>
-                    <div style={{ fontSize: 12, color: '#555', lineHeight: 1.7 }}>
-                      • PNG format only<br/>
-                      • White logo, transparent background<br/>
-                      • Minimum 200×80px recommended<br/>
-                      • Will appear on join screen and gallery header
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {step === 6 && (
-          <div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28 }}>
               {(REVEAL_MODES as unknown as any[]).map((r: any) => {
                 const sel = form.revealMode === r.id
@@ -377,7 +312,7 @@ export default function CreateEvent() {
                 return (
                   <div key={r.id} onClick={() => set('revealMode', r.id)} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 14, padding: '16px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 14 }}>
                     <div style={{ width: 36, height: 36, borderRadius: 10, background: sel ? 'rgba(232,255,71,0.12)' : '#161616', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {Icon && <Icon size={18} color={sel ? '#e8ff47' : '#555'} weight={sel ? 'regular' : 'light'} />}
+                      {Icon && <Icon size={18} color={sel ? '#e8ff47' : '#555'} />}
                     </div>
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 600, color: sel ? '#e8ff47' : '#ccc', marginBottom: 4 }}>{r.name}</div>
@@ -387,20 +322,60 @@ export default function CreateEvent() {
                 )
               })}
             </div>
-            <div style={{ height: 1, background: '#161616', marginBottom: 20 }} />
-            <Label>Post-Event</Label>
-            <Toggle on={form.aiReel} onChange={v => set('aiReel', v)} label="AI Highlight Reel" sub="Auto-generate a 30-sec video of the best shots" />
+          </div>
+        )}
+
+        {step === 6 && (
+          <div>
+            {/* Cover preview */}
+            <div style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 24, aspectRatio: '9/16', maxHeight: 320, background: form.coverColor, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', padding: '0 24px 32px', position: 'relative' }}>
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.7) 100%)' }} />
+              <div style={{ position: 'relative', textAlign: 'center', width: '100%' }}>
+                <div style={{ fontSize: 32, marginBottom: 10 }}>{form.coverEmoji}</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: 'white', marginBottom: 6, lineHeight: 1.2 }}>{form.eventName || 'Your Event'}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 20 }}>Tap to take your camera →</div>
+                <div style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 12, padding: '12px 16px', border: '1px solid rgba(255,255,255,0.15)' }}>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>Enter your name</div>
+                  <div style={{ height: 1, background: 'rgba(255,255,255,0.1)' }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Background color */}
+            <Label>Cover Color</Label>
+            <div style={{ display: 'flex', gap: 10, marginBottom: 22, flexWrap: 'wrap' }}>
+              {['#0a0a0a','#1a0a00','#0a0a1a','#1a000a','#001a0a','#1a1500','#0d0d0d'].map(col => (
+                <div key={col} onClick={() => set('coverColor', col)} style={{ width: 36, height: 36, borderRadius: 10, background: col, border: `2px solid ${form.coverColor === col ? '#e8ff47' : 'transparent'}`, cursor: 'pointer', flexShrink: 0, transition: 'border .15s' }} />
+              ))}
+            </div>
+
+            {/* Cover emoji */}
+            <Label>Cover Icon</Label>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 22 }}>
+              {['⚡','💍','🎂','🎉','✈️','🏆','🎵','📷','🌅','🎬','🌿','🔥'].map(em => (
+                <div key={em} onClick={() => set('coverEmoji', em)} style={{ width: 44, height: 44, borderRadius: 11, background: form.coverEmoji === em ? 'rgba(232,255,71,0.12)' : '#111', border: `1px solid ${form.coverEmoji === em ? '#e8ff47' : '#1e1e1e'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, cursor: 'pointer', transition: 'all .15s' }}>
+                  {em}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {step === 7 && (
+          <div>
+            <Toggle on={form.aiReel} onChange={v => set('aiReel', v)} label="AI Highlight Reel" sub="Auto-generate a cinematic 30-sec video of the best shots" />
             <Toggle on={form.printEnabled} onChange={v => set('printEnabled', v)} label="Print Integration" sub="Guests can order physical prints from the gallery" />
-            <Toggle on={form.statsCard} onChange={v => set('statsCard', v)} label="Event Stats Card" sub="Shareable recap card after reveal" />
+            <Toggle on={form.statsCard} onChange={v => set('statsCard', v)} label="Event Stats Card" sub="Shareable recap card shown after the reveal" />
             {error && <div style={{ color: '#ff4757', fontSize: 13, marginTop: 16, textAlign: 'center' }}>{error}</div>}
           </div>
         )}
+
       </div>
 
       <div style={{ padding: '14px 20px 34px', borderTop: '1px solid #161616', background: 'rgba(10,10,10,0.98)' }}>
         <button onClick={step < TOTAL ? () => setStep(s => s + 1) : handleCreate} disabled={saving}
           style={{ width: '100%', background: saving ? '#1a1a1a' : '#e8ff47', color: saving ? '#333' : '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'inherit', letterSpacing: -0.3 }}>
-          {saving ? 'Creating...' : step < TOTAL ? 'Continue' : 'Continue to Payment →'}
+          {saving ? 'Creating...' : step < TOTAL ? 'Continue →' : 'Continue to Payment →'}
         </button>
       </div>
     </main>

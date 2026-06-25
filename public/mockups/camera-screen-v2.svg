@@ -1,0 +1,116 @@
+<svg width="390" height="844" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg">
+  <!-- Phone body -->
+  <rect width="390" height="844" fill="#0a0a0a"/>
+
+  <!-- Camera viewfinder — warm party scene -->
+  <rect x="0" y="0" width="390" height="680" fill="#1a1208"/>
+  <radialGradient id="scene" cx="45%" cy="35%" r="65%">
+    <stop offset="0%" stop-color="#3d2a0a"/>
+    <stop offset="60%" stop-color="#1a0f04"/>
+    <stop offset="100%" stop-color="#080504"/>
+  </radialGradient>
+  <rect x="0" y="0" width="390" height="680" fill="url(#scene)"/>
+
+  <!-- Bokeh party lights -->
+  <circle cx="60"  cy="110" r="22" fill="#e8b040" opacity="0.18"/>
+  <circle cx="320" cy="80"  r="15" fill="#e87020" opacity="0.14"/>
+  <circle cx="195" cy="180" r="28" fill="#c86010" opacity="0.10"/>
+  <circle cx="340" cy="280" r="18" fill="#e8b040" opacity="0.09"/>
+  <circle cx="30"  cy="350" r="20" fill="#e87020" opacity="0.11"/>
+  <circle cx="280" cy="420" r="14" fill="#c8a030" opacity="0.10"/>
+
+  <!-- Silhouettes of people -->
+  <ellipse cx="110" cy="540" rx="55" ry="100" fill="#050302" opacity="0.5"/>
+  <ellipse cx="260" cy="520" rx="50" ry="110" fill="#050302" opacity="0.45"/>
+  <ellipse cx="350" cy="560" rx="35" ry="80"  fill="#050302" opacity="0.4"/>
+
+  <!-- Top bar gradient -->
+  <linearGradient id="topfade" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%"   stop-color="#000" stop-opacity="0.65"/>
+    <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+  </linearGradient>
+  <rect x="0" y="0" width="390" height="120" fill="url(#topfade)"/>
+
+  <!-- STATUS BAR -->
+  <text x="24" y="22" font-family="monospace" font-size="13" font-weight="700" fill="white">9:41</text>
+  <!-- Battery -->
+  <rect x="350" y="12" width="28" height="14" rx="3" fill="none" stroke="white" stroke-width="1.5" opacity="0.8"/>
+  <rect x="378" y="16" width="3" height="6" rx="1.5" fill="white" opacity="0.8"/>
+  <rect x="352" y="14" width="22" height="10" rx="2" fill="white" opacity="0.8"/>
+  <!-- Signal -->
+  <rect x="316" y="16" width="3" height="8"  rx="1" fill="white" opacity="0.8"/>
+  <rect x="321" y="14" width="3" height="10" rx="1" fill="white" opacity="0.8"/>
+  <rect x="326" y="12" width="3" height="12" rx="1" fill="white" opacity="0.8"/>
+  <rect x="331" y="10" width="3" height="14" rx="1" fill="white" opacity="0.5"/>
+
+  <!-- CAMERA TOP BAR -->
+  <!-- Back button -->
+  <rect x="16" y="52" width="40" height="40" rx="13" fill="#000" fill-opacity="0.45" style="backdrop-filter:blur(12px)"/>
+  <polyline points="29,72 24,67 29,62" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Shot counter pill — centered -->
+  <rect x="120" y="54" width="150" height="36" rx="18" fill="#000" fill-opacity="0.5"/>
+  <!-- Used dots (grey) -->
+  <circle cx="143" cy="72" r="4.5" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="156" cy="72" r="4.5" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="169" cy="72" r="4.5" fill="rgba(255,255,255,0.2)"/>
+  <!-- Current dot (yellow) -->
+  <circle cx="182" cy="72" r="4.5" fill="#e8ff47"/>
+  <!-- Remaining dots (white) -->
+  <circle cx="195" cy="72" r="4.5" fill="rgba(255,255,255,0.55)"/>
+  <circle cx="208" cy="72" r="4.5" fill="rgba(255,255,255,0.55)"/>
+  <circle cx="221" cy="72" r="4.5" fill="rgba(255,255,255,0.55)"/>
+  <!-- Number -->
+  <text x="243" y="77" font-family="'Courier New', monospace" font-size="14" font-weight="700" fill="white">7</text>
+
+  <!-- Flip camera button -->
+  <rect x="334" y="52" width="40" height="40" rx="13" fill="#000" fill-opacity="0.45"/>
+  <!-- Flip arrows icon -->
+  <path d="M348 67 Q355 61 363 67" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <polyline points="362,62 363,67 358,67" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M366 78 Q359 84 351 78" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <polyline points="352,83 351,78 356,78" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Delete last shot icon (bottom right of viewfinder) -->
+  <rect x="334" y="620" width="40" height="40" rx="11" fill="#000" fill-opacity="0.5" stroke="rgba(255,71,87,0.45)" stroke-width="1"/>
+  <line x1="346" y1="634" x2="362" y2="634" stroke="#ff4757" stroke-width="1.8" stroke-linecap="round"/>
+  <rect x="349" y="636" width="12" height="14" rx="2" stroke="#ff4757" stroke-width="1.8" fill="none"/>
+  <line x1="352" y1="640" x2="352" y2="646" stroke="#ff4757" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="358" y1="640" x2="358" y2="646" stroke="#ff4757" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- BOTTOM SECTION -->
+  <rect x="0" y="680" width="390" height="164" fill="#0a0a0a"/>
+
+  <!-- ZOOM PILL — centered above shutter -->
+  <rect x="103" y="692" width="184" height="38" rx="19" fill="#000" fill-opacity="0.6"/>
+  <!-- .5x -->
+  <text x="136" y="716" font-family="'Courier New', monospace" font-size="13" font-weight="700" fill="rgba(255,255,255,0.55)" text-anchor="middle">.5x</text>
+  <!-- 1x — ACTIVE -->
+  <rect x="153" y="695" width="42" height="32" rx="16" fill="#e8ff47"/>
+  <text x="174" y="716" font-family="'Courier New', monospace" font-size="13" font-weight="700" fill="#0a0a0a" text-anchor="middle">1x</text>
+  <!-- 2x -->
+  <text x="216" y="716" font-family="'Courier New', monospace" font-size="13" font-weight="700" fill="rgba(255,255,255,0.55)" text-anchor="middle">2x</text>
+  <!-- 3x -->
+  <text x="258" y="716" font-family="'Courier New', monospace" font-size="13" font-weight="700" fill="rgba(255,255,255,0.55)" text-anchor="middle">3x</text>
+
+  <!-- SHUTTER ROW -->
+  <!-- Upload icon — left -->
+  <rect x="56" y="742" width="54" height="54" rx="15" fill="#161616" stroke="#222" stroke-width="1"/>
+  <!-- Photo upload icon -->
+  <rect x="70" y="753" width="26" height="22" rx="3" stroke="#666" stroke-width="1.7" fill="none"/>
+  <circle cx="76" cy="760" r="2.5" fill="#666"/>
+  <polyline points="96,775 90,769 72,775" stroke="#666" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- SHUTTER BUTTON — hero -->
+  <circle cx="195" cy="769" r="43" fill="none" stroke="#e8ff47" stroke-width="3.5"/>
+  <circle cx="195" cy="769" r="34" fill="white"/>
+
+  <!-- Folder/Gallery icon — right -->
+  <rect x="280" y="742" width="54" height="54" rx="15" fill="#161616" stroke="#222" stroke-width="1"/>
+  <!-- Folder icon -->
+  <path d="M294 758 L294 776 Q294 778 296 778 L318 778 Q320 778 320 776 L320 754 Q320 752 318 752 L308 752 L305 748 L296 748 Q294 748 294 750 Z"
+        stroke="#666" stroke-width="1.7" fill="none" stroke-linejoin="round"/>
+
+  <!-- Home indicator -->
+  <rect x="155" y="828" width="80" height="5" rx="2.5" fill="white" opacity="0.3"/>
+</svg>
