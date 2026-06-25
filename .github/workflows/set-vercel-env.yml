@@ -6,45 +6,25 @@ jobs:
   set-env-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Set STRIPE_SECRET_KEY
+      - name: Set all env vars on Vercel
         run: |
-          curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"key\":\"STRIPE_SECRET_KEY\",\"value\":\"${{ secrets.STRIPE_SECRET_KEY }}\",\"type\":\"encrypted\",\"target\":[\"production\"]}" \
-            && echo "✓ STRIPE_SECRET_KEY" || echo "already exists"
-
-      - name: Set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-        run: |
-          curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"key\":\"NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY\",\"value\":\"${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}\",\"type\":\"plain\",\"target\":[\"production\"]}" \
-            && echo "✓ STRIPE_PK" || echo "already exists"
-
-      - name: Set SUPABASE_SERVICE_ROLE_KEY
-        run: |
-          curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"key\":\"SUPABASE_SERVICE_ROLE_KEY\",\"value\":\"${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}\",\"type\":\"encrypted\",\"target\":[\"production\"]}" \
-            && echo "✓ SUPABASE_SERVICE_ROLE_KEY" || echo "already exists"
-
-      - name: Set RESEND_API_KEY
-        run: |
-          curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"key\":\"RESEND_API_KEY\",\"value\":\"${{ secrets.RESEND_API_KEY }}\",\"type\":\"encrypted\",\"target\":[\"production\"]}" \
-            && echo "✓ RESEND_API_KEY" || echo "already exists"
-
-      - name: Set NEXT_PUBLIC_APP_URL
-        run: |
-          curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"key\":\"NEXT_PUBLIC_APP_URL\",\"value\":\"https://flashcam.app\",\"type\":\"plain\",\"target\":[\"production\"]}" \
-            && echo "✓ NEXT_PUBLIC_APP_URL" || echo "already exists"
+          for KEY_VAL in \
+            "STRIPE_SECRET_KEY:${{ secrets.STRIPE_SECRET_KEY }}:encrypted" \
+            "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}:plain" \
+            "SUPABASE_SERVICE_ROLE_KEY:${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}:encrypted" \
+            "RESEND_API_KEY:${{ secrets.RESEND_API_KEY }}:encrypted" \
+            "NEXT_PUBLIC_APP_URL:https://flashcam.app:plain" \
+            "CRON_SECRET:${{ secrets.CRON_SECRET }}:encrypted"
+          do
+            KEY=$(echo $KEY_VAL | cut -d: -f1)
+            VAL=$(echo $KEY_VAL | cut -d: -f2)
+            TYPE=$(echo $KEY_VAL | cut -d: -f3)
+            curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
+              -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              -d "{\"key\":\"$KEY\",\"value\":\"$VAL\",\"type\":\"$TYPE\",\"target\":[\"production\"]}" \
+              && echo "✓ $KEY" || echo "exists: $KEY"
+          done
 
       - name: Done
-        run: echo "✓ All env vars set — Vercel will auto-deploy on next git push"
+        run: echo "✓ All env vars set"
