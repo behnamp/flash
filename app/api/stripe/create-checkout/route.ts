@@ -3,10 +3,6 @@ import Stripe from 'stripe'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-05-27.dahlia' as any,
-})
-
 export const TIERS = {
   mini:      { price: 399,  name: 'Flash Mini',      guests: 10,   label: '≤ 10 guests' },
   standard:  { price: 1499, name: 'Flash Standard',  guests: 50,   label: '≤ 50 guests' },
@@ -15,6 +11,9 @@ export const TIERS = {
 }
 
 export async function POST(req: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: '2026-05-27.dahlia' as any,
+  })
   try {
     const { tier, eventId, promoCode } = await req.json()
     if (!TIERS[tier as keyof typeof TIERS]) {
