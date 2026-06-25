@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Stripe from 'stripe'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 export async function POST(req: NextRequest) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2026-05-27.dahlia' as any,
-  })
+  const stripeKey = process.env.STRIPE_SECRET_KEY
+  if (!stripeKey) {
+    return NextResponse.json({ error: 'Payment not configured' }, { status: 500 })
+  }
+
   try {
+    const Stripe = (await import('stripe')).default
+    const stripe = new Stripe(stripeKey, { apiVersion: '2025-04-30.basil' as any })
+
     const { sessionId, eventId } = await req.json()
 
-    // Verify payment with Stripe directly
     const session = await stripe.checkout.sessions.retrieve(sessionId)
-
     if (session.payment_status !== 'paid') {
       return NextResponse.json({ error: 'Payment not completed' }, { status: 400 })
     }
@@ -30,26 +32,22 @@ export async function POST(req: NextRequest) {
     const targetEventId = eventId || meta?.event_id
 
     if (targetEventId) {
-      // Activate the event
       await supabase.from('events').update({
-        paid: true,
-        is_active: true,
+        paid: true, is_active: true,
         payment_tier: meta?.tier || 'standard',
         guest_cap: parseInt(meta?.guest_cap || '50'),
         stripe_session_id: session.id,
         paid_at: new Date().toISOString(),
       }).eq('id', targetEventId).eq('host_id', user.id)
 
-      // Record payment
       await supabase.from('payments').insert({
-        user_id: user.id,
-        event_id: targetEventId,
+        user_id: user.id, event_id: targetEventId,
         stripe_session_id: session.id,
         amount: session.amount_total,
         currency: session.currency,
         tier: meta?.tier || 'standard',
         status: 'completed',
-      }).throwOnError()
+      })
     }
 
     return NextResponse.json({ success: true, eventId: targetEventId })

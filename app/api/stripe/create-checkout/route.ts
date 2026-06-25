@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Stripe from 'stripe'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
@@ -11,10 +10,16 @@ export const TIERS = {
 }
 
 export async function POST(req: NextRequest) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2026-05-27.dahlia' as any,
-  })
+  const stripeKey = process.env.STRIPE_SECRET_KEY
+  if (!stripeKey) {
+    return NextResponse.json({ error: 'Payment not configured' }, { status: 500 })
+  }
+
   try {
+    // Lazy import Stripe so it doesn't crash at build time
+    const Stripe = (await import('stripe')).default
+    const stripe = new Stripe(stripeKey, { apiVersion: '2025-04-30.basil' as any })
+
     const { tier, eventId, promoCode } = await req.json()
     if (!TIERS[tier as keyof typeof TIERS]) {
       return NextResponse.json({ error: 'Invalid tier' }, { status: 400 })
@@ -43,7 +48,6 @@ export async function POST(req: NextRequest) {
         p_tier: tier,
         p_user_id: user.id,
       })
-
       if (promo?.valid) {
         promoData = promo
         if (promo.type === 'free') {
@@ -56,41 +60,27 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // If free, skip Stripe entirely and activate directly
+    // Free via promo — skip Stripe
     if (finalPrice === 0 && promoData) {
-      // Increment uses_count
       await supabase.from('promo_codes')
         .update({ uses_count: (promoData.uses_count || 0) + 1 })
         .eq('id', promoData.id)
 
-      // Activate event directly
       if (eventId) {
         await supabase.from('events').update({
-          paid: true,
-          is_active: true,
-          payment_tier: tier,
-          guest_cap: t.guests,
-          paid_at: new Date().toISOString(),
+          paid: true, is_active: true, payment_tier: tier,
+          guest_cap: t.guests, paid_at: new Date().toISOString(),
         }).eq('id', eventId).eq('host_id', user.id)
 
         await supabase.from('promo_redemptions').insert({
-          promo_code_id: promoData.id,
-          user_id: user.id,
-          event_id: eventId,
-          original_amount: t.price,
-          discount_amount: discountAmount,
-          final_amount: 0,
+          promo_code_id: promoData.id, user_id: user.id, event_id: eventId,
+          original_amount: t.price, discount_amount: discountAmount, final_amount: 0,
         })
       }
-
-      return NextResponse.json({
-        free: true,
-        eventId,
-        redirectUrl: `/host/${eventId}?payment=success`
-      })
+      return NextResponse.json({ free: true, eventId, redirectUrl: `/host/${eventId}?payment=success` })
     }
 
-    // Create Stripe checkout session
+    // Stripe checkout
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
@@ -106,9 +96,7 @@ export async function POST(req: NextRequest) {
         quantity: 1,
       }],
       metadata: {
-        user_id: user.id,
-        event_id: eventId || '',
-        tier,
+        user_id: user.id, event_id: eventId || '', tier,
         guest_cap: String(t.guests),
         promo_code_id: promoData?.id || '',
         original_amount: String(t.price),
