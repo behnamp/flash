@@ -93,6 +93,12 @@ export default function CreateEvent() {
   const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }))
 
   const toggleMode = (id: string) => {
+    if (form.modeControl === 'lock') {
+      // Lock = single select only, tap switches the mode
+      set('selectedModes', [id])
+      set('lockedMode', id)
+      return
+    }
     const cur = form.selectedModes
     if (cur.includes(id)) { if (cur.length > 1) set('selectedModes', cur.filter((m: string) => m !== id)) }
     else set('selectedModes', [...cur, id])
@@ -268,7 +274,7 @@ export default function CreateEvent() {
               {MODE_CONTROLS.map(mc => {
                 const sel = form.modeControl === mc.id
                 return (
-                  <div key={mc.id} onClick={() => set('modeControl', mc.id)} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 12, padding: '14px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <div key={mc.id} onClick={() => { set('modeControl', mc.id); if (mc.id === 'lock') { const first = form.selectedModes[0] || 'kodak'; set('selectedModes', [first]); set('lockedMode', first) } }} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 12, padding: '14px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
                     <div style={{ width: 20, height: 20, borderRadius: '50%', border: `1.5px solid ${sel ? '#e8ff47' : '#333'}`, background: sel ? '#e8ff47' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       {sel && <Check size={10} color="#000" weight="bold" />}
                     </div>
