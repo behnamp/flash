@@ -1,0 +1,26 @@
+name: Add Custom Domain to Vercel
+on:
+  workflow_dispatch:
+
+jobs:
+  add-domain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add flashcam.app to Vercel project
+        run: |
+          RESPONSE=$(curl -s -X POST "https://api.vercel.com/v10/projects/flash-roan/domains" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"name":"flashcam.app"}')
+          echo "Root domain: $RESPONSE"
+
+      - name: Add www.flashcam.app to Vercel project
+        run: |
+          RESPONSE=$(curl -s -X POST "https://api.vercel.com/v10/projects/flash-roan/domains" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"name":"www.flashcam.app"}')
+          echo "WWW domain: $RESPONSE"
+
+      - name: Done
+        run: echo "✓ Domains added — now add DNS records in Cloudflare"

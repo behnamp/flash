@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       .eq('event_id', eventId)
       .eq('revealed', true)
 
-    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://flash-roan.vercel.app'
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://flashcam.app'
     const downloadUrl = `${APP_URL}/host/${eventId}/download`
     const galleryUrl = `${APP_URL}/host/${eventId}`
     const expiryDate = new Date(event.photos_expire_at)
