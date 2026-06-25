@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ALL_MODES } from '@/constants/photoModes'
 import { applyFilterToCanvas, CANVAS_FILTERS } from '@/lib/filterCanvas'
-import { IconFlash, IconBack, IconFlip, IconGallery, IconShutter } from '@/components/icons'
+import { IconFlash, IconBack, IconFlip, IconGallery, IconShutter, IconDelete, IconClose, IconCheck } from '@/components/icons'
 
 export default function CameraPage() {
   const params = useParams()
@@ -16,11 +16,12 @@ export default function CameraPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const fbTimerRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [event, setEvent] = useState<any>(null)
   const [guest, setGuestData] = useState<any>(null)
   const [shotsUsed, setShotsUsed] = useState(0)
-  const [shotLimit, setShotLimit] = useState(12)
+  const [shotLimit, setShotLimit] = useState(10)
   const [filter, setFilter] = useState(ALL_MODES[0])
   const [flashing, setFlashing] = useState(false)
   const [feedback, setFeedback] = useState('')
@@ -29,75 +30,69 @@ export default function CameraPage() {
   const [cameraError, setCameraError] = useState('')
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment')
   const [uploading, setUploading] = useState(false)
-  const [showCaption, setShowCaption] = useState(false)
-  const [caption, setCaption] = useState('')
   const [lastShotId, setLastShotId] = useState<string | null>(null)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
-    async function loadData() {
-      const eventId = localStorage.getItem('flash_event_id')
-      const guestId = localStorage.getItem(`flash_guest_id_${eventId}`)
-      if (!eventId || !guestId) { router.push(`/join/${code}`); return }
-      const [{ data: ev }, { data: gu }] = await Promise.all([
-        supabase.from('events').select('*').eq('id', eventId).single(),
-        supabase.from('guests').select('*').eq('id', guestId).single(),
-      ])
-      if (!ev || !gu) { router.push(`/join/${code}`); return }
-      setEvent(ev); setGuestData(gu)
-      setShotsUsed(gu.shots_taken); setShotLimit(ev.shot_limit)
-      if (ev.mode_control === 'lock') {
-        const m = ALL_MODES.find(m => m.id === ev.locked_mode) ?? ALL_MODES[0]
-        setFilter(m)
-      }
+    async function load() {
+      const { data: ev } = await supabase.from('events')
+        .select('*').eq('join_code', code.toUpperCase()).single()
+      if (!ev) { router.push(`/join/${code}`); return }
+      setEvent(ev)
+      setShotLimit(ev.shot_limit || 10)
+
+      const stored = localStorage.getItem(`flash_guest_${ev.id}`)
+      if (!stored) { router.push(`/join/${code}`); return }
+      const g = JSON.parse(stored)
+      setGuestData(g)
+
+      const { count } = await supabase.from('shots')
+        .select('*', { count: 'exact', head: true })
+        .eq('event_id', ev.id).eq('guest_id', g.id)
+      setShotsUsed(count || 0)
     }
-    loadData()
+    load()
   }, [code])
 
+  const startCamera = useCallback(async (facing: 'user' | 'environment') => {
+    if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop())
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facing, width: { ideal: 1920 }, height: { ideal: 1080 } },
+        audio: false,
+      })
+      streamRef.current = stream
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        videoRef.current.onloadedmetadata = () => setCameraReady(true)
+      }
+    } catch (e) {
+      setCameraError('Camera access denied. Please allow camera access.')
+    }
+  }, [])
+
   useEffect(() => {
-    startCamera()
+    startCamera(facingMode)
     return () => { streamRef.current?.getTracks().forEach(t => t.stop()) }
   }, [facingMode])
 
-  const startCamera = async () => {
-    try {
-      streamRef.current?.getTracks().forEach(t => t.stop())
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false,
-      })
-      streamRef.current = stream
-      if (videoRef.current) { videoRef.current.srcObject = stream; setCameraReady(true) }
-    } catch (e: any) {
-      setCameraError(e.name === 'NotAllowedError' ? 'Camera access denied. Please allow camera access and refresh.' : 'Camera not available on this device.')
-    }
+  const showToast = (msg: string, duration = 2000) => {
+    setFeedback(msg); setShowFeedback(true)
+    clearTimeout(fbTimerRef.current)
+    fbTimerRef.current = setTimeout(() => setShowFeedback(false), duration)
   }
 
-  const shoot = useCallback(async () => {
-    if (shotsUsed >= shotLimit || !canvasRef.current || !videoRef.current || uploading) return
-    setFlashing(true); setTimeout(() => setFlashing(false), 160)
-
-    // 1. Draw raw video frame to canvas
-    const canvas = canvasRef.current
-    const video = videoRef.current
-    canvas.width = video.videoWidth || 1280
-    canvas.height = video.videoHeight || 720
-    const ctx = canvas.getContext('2d')!
-    ctx.drawImage(video, 0, 0)
-
+  // Upload a blob (from camera or gallery)
+  const uploadBlob = async (blob: Blob) => {
+    if (!event || !guest) return
     setUploading(true)
     try {
-      // 2. Apply film filter in-browser (free, instant, no API)
-      const filteredBlob = await applyFilterToCanvas(canvas, filter.id, 0.88)
-
-      if (!event || !guest) return
       const fileName = `${event.id}/${guest.id}/${Date.now()}.jpg`
-
-      // 3. Upload filtered photo to Supabase storage
       const { error: uploadError } = await supabase.storage
-        .from('shots')
-        .upload(fileName, filteredBlob, { contentType: 'image/jpeg', upsert: false })
+        .from('shots').upload(fileName, blob, { contentType: 'image/jpeg', upsert: false })
       if (uploadError) throw uploadError
 
-      // 4. Save shot record
       const { data: shot, error: shotError } = await supabase.from('shots').insert({
         event_id: event.id, guest_id: guest.id, media_type: 'photo',
         storage_path: fileName, mode_id: filter.id, mode_name: filter.name,
@@ -109,145 +104,209 @@ export default function CameraPage() {
       setShotsUsed(newUsed)
       setLastShotId(shot.id)
       const left = shotLimit - newUsed
-      setFeedback(left === 0 ? 'Film used up!' : left === 1 ? 'Last shot!' : `${left} left`)
-      setShowFeedback(true)
-      clearTimeout(fbTimerRef.current)
-      fbTimerRef.current = setTimeout(() => setShowFeedback(false), 1800)
-      if (event.allow_captions) setShowCaption(true)
+      showToast(left === 0 ? 'Film used up!' : left === 1 ? 'Last shot!' : `${left} left`)
     } catch (e: any) {
-      console.error('Shot failed:', e)
-      setFeedback('Upload failed')
-      setShowFeedback(true)
+      showToast('Upload failed')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  // Camera shoot
+  const shoot = useCallback(async () => {
+    if (shotsUsed >= shotLimit || !canvasRef.current || !videoRef.current || uploading) return
+    setFlashing(true); setTimeout(() => setFlashing(false), 160)
+    const canvas = canvasRef.current
+    const video = videoRef.current
+    canvas.width = video.videoWidth || 1280
+    canvas.height = video.videoHeight || 720
+    const ctx = canvas.getContext('2d')!
+    ctx.drawImage(video, 0, 0)
+    setUploading(true)
+    try {
+      const blob = await applyFilterToCanvas(canvas, filter.id, 0.88)
+      await uploadBlob(blob)
     } finally {
       setUploading(false)
     }
   }, [shotsUsed, shotLimit, uploading, event, guest, filter])
 
-  const saveCaption = async () => {
-    if (lastShotId && caption.trim()) await supabase.from('shots').update({ caption: caption.trim() }).eq('id', lastShotId)
-    setShowCaption(false); setCaption('')
+  // Gallery upload from phone
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (shotsUsed >= shotLimit) { showToast('No shots left!'); return }
+
+    setUploading(true)
+    try {
+      // Draw to canvas and apply filter
+      const img = new Image()
+      const url = URL.createObjectURL(file)
+      img.onload = async () => {
+        const canvas = canvasRef.current!
+        canvas.width = img.naturalWidth
+        canvas.height = img.naturalHeight
+        const ctx = canvas.getContext('2d')!
+        ctx.drawImage(img, 0, 0)
+        URL.revokeObjectURL(url)
+        const blob = await applyFilterToCanvas(canvas, filter.id, 0.9)
+        await uploadBlob(blob)
+      }
+      img.src = url
+    } catch (e) {
+      showToast('Upload failed')
+      setUploading(false)
+    }
+    // Reset input
+    e.target.value = ''
   }
 
-  const availModes = event?.mode_control === 'lock'
-    ? [ALL_MODES.find(m => m.id === event.locked_mode) ?? ALL_MODES[0]]
-    : event?.mode_control === 'menu' ? ALL_MODES.filter(m => event.selected_modes?.includes(m.id))
-    : ALL_MODES.slice(0, 12)
+  // Delete last shot
+  const deleteLastShot = async () => {
+    if (!lastShotId) return
+    setDeleting(true)
+    try {
+      const { data: shot } = await supabase.from('shots').select('storage_path').eq('id', lastShotId).single()
+      if (shot?.storage_path) {
+        await supabase.storage.from('shots').remove([shot.storage_path])
+      }
+      await supabase.from('shots').delete().eq('id', lastShotId)
+      setShotsUsed(s => s - 1)
+      setLastShotId(null)
+      setShowDeleteConfirm(false)
+      showToast('Photo deleted')
+    } catch (e) {
+      showToast('Delete failed')
+    } finally {
+      setDeleting(false)
+    }
+  }
 
-  if (cameraError) return (
-    <main style={{ height: '100vh', background: '#000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>
-      <div style={{ marginBottom: 16, opacity: 0.5 }}><IconShutter size={48} /></div>
-      <h2 style={{ color: 'white', fontSize: 18, fontWeight: 700, marginBottom: 8 }}>Camera unavailable</h2>
-      <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: 24, fontSize: 14 }}>{cameraError}</p>
-      <button onClick={() => router.push(`/join/${code}`)} style={{ background: 'var(--accent)', color: '#000', border: 'none', borderRadius: 12, padding: '12px 24px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Go Back</button>
-    </main>
-  )
+  const flipCamera = () => {
+    setCameraReady(false)
+    setFacingMode(f => f === 'environment' ? 'user' : 'environment')
+  }
 
-  const outOfShots = shotsUsed >= shotLimit
+  const left = shotLimit - shotsUsed
+  const filmPct = (shotsUsed / shotLimit) * 100
 
   return (
-    <main style={{ height: '100vh', background: '#000', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <main style={{ height: '100dvh', background: '#000', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative', touchAction: 'manipulation' }}>
+      {/* Camera viewfinder */}
       <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
-        <video ref={videoRef} autoPlay playsInline muted
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none', filter: CANVAS_FILTERS[filter.id]?.filter || 'none', transition: 'filter 0.3s' }} />
-        <canvas ref={canvasRef} style={{ display: 'none' }} />
-        {!cameraReady && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="flash-loading"><IconFlash size={44} /></div>
+        <video
+          ref={videoRef} autoPlay playsInline muted
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none', filter: CANVAS_FILTERS[filter.id]?.filter || 'none', transition: 'filter 0.3s', touchAction: 'manipulation' }}
+        />
+        {!cameraReady && !cameraError && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000' }}>
+            <div style={{ width: 32, height: 32, background: '#e8ff47', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <IconFlash size={18} color="#0a0a0a" />
+            </div>
           </div>
         )}
-        {/* Vignette overlay for film look */}
-        <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.55) 100%)', pointerEvents:'none', zIndex:1 }} />
-        {flashing && <div style={{ position: 'absolute', inset: 0, background: 'white', zIndex: 20 }} className="flash-anim" />}
-
-        {/* Corner guides */}
-        {[[0,0],[0,1],[1,0],[1,1]].map(([r,c],i) => (
-          <div key={i} style={{ position: 'absolute', width: 20, height: 20,
-            [r ? 'bottom' : 'top']: 18, [c ? 'right' : 'left']: 18,
-            [r ? 'borderBottom' : 'borderTop']: '2px solid rgba(255,255,255,0.35)',
-            [c ? 'borderRight' : 'borderLeft']: '2px solid rgba(255,255,255,0.35)' }} />
-        ))}
-
-        {/* HUD */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '14px 16px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', background: 'linear-gradient(to bottom,rgba(0,0,0,0.65),transparent)' }}>
-          <div>
-            <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.55)', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 5 }}>
-              {guest?.nickname || 'Guest'}
-            </div>
-            <div style={{ display: 'flex', gap: 3, flexWrap: 'wrap', maxWidth: 140 }}>
-              {Array.from({ length: Math.min(shotLimit, 18) }).map((_,i) => (
-                <div key={i} style={{ width: 5, height: 5, borderRadius: '50%', background: i < shotsUsed ? 'var(--accent)' : 'rgba(255,255,255,0.2)', transition: 'background .18s' }} />
-              ))}
-            </div>
+        {cameraError && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#000', padding: 24, textAlign: 'center' }}>
+            <div style={{ fontSize: 14, color: '#666', marginBottom: 16 }}>{cameraError}</div>
+            <button onClick={() => startCamera(facingMode)} style={{ background: '#e8ff47', color: '#000', border: 'none', borderRadius: 10, padding: '10px 20px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Retry</button>
           </div>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, fontWeight: 700, color: 'var(--accent)', marginBottom: 4 }}>{shotLimit - shotsUsed} left</div>
-            <div style={{ background: 'rgba(232,255,71,0.13)', border: '1px solid rgba(232,255,71,0.28)', borderRadius: 6, padding: '2px 8px', fontSize: 9, fontWeight: 700, color: 'var(--accent)', letterSpacing: 1.5, textTransform: 'uppercase' }}>
-              {filter.name.slice(0, 12)}
+        )}
+
+        {/* Flash effect */}
+        {flashing && <div style={{ position: 'absolute', inset: 0, background: 'white', opacity: 0.8, pointerEvents: 'none' }} />}
+
+        {/* Top bar */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)' }}>
+          <button onClick={() => router.push(`/join/${code}`)} style={{ width: 36, height: 36, background: 'rgba(0,0,0,0.4)', border: 'none', borderRadius: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(10px)' }}>
+            <IconBack size={17} color="white" />
+          </button>
+
+          {/* Shot counter */}
+          <div style={{ background: 'rgba(0,0,0,0.5)', borderRadius: 20, padding: '6px 14px', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 48, height: 3, background: 'rgba(255,255,255,0.2)', borderRadius: 2, overflow: 'hidden' }}>
+              <div style={{ height: '100%', background: left <= 2 ? '#ff4757' : '#e8ff47', width: `${filmPct}%`, transition: 'width .3s' }} />
             </div>
+            <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, fontWeight: 700, color: left <= 2 ? '#ff4757' : 'white' }}>{left}</span>
           </div>
+
+          <button onClick={flipCamera} style={{ width: 36, height: 36, background: 'rgba(0,0,0,0.4)', border: 'none', borderRadius: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(10px)' }}>
+            <IconFlip size={17} color="white" />
+          </button>
         </div>
 
-        {/* Mode strip */}
-        {availModes.length > 1 && (
-          <div style={{ position: 'absolute', bottom: 90, left: 0, right: 0, overflowX: 'auto', display: 'flex', gap: 7, padding: '0 16px', scrollbarWidth: 'none' }}>
-            {availModes.map(m => m && (
-              <div key={m.id} onClick={() => setFilter(m)} style={{
-                flexShrink: 0, background: filter.id === m.id ? 'var(--accent)' : 'rgba(255,255,255,0.08)',
-                border: `1px solid ${filter.id === m.id ? 'var(--accent)' : 'rgba(255,255,255,0.1)'}`,
-                borderRadius: 20, padding: '5px 12px', fontSize: 10, fontWeight: 700,
-                color: filter.id === m.id ? '#000' : 'rgba(255,255,255,0.6)', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all .13s'
-              }}>
-                {m.icon} {m.name}
-              </div>
-            ))}
+        {/* Feedback toast */}
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: `translate(-50%,-50%) scale(${showFeedback ? 1 : 0.8})`, background: 'rgba(0,0,0,0.75)', borderRadius: 20, padding: '10px 20px', fontSize: 14, fontWeight: 700, color: 'white', opacity: showFeedback ? 1 : 0, transition: 'all .2s', pointerEvents: 'none', backdropFilter: 'blur(10px)', whiteSpace: 'nowrap' }}>
+          {feedback}
+        </div>
+
+        {/* Delete last photo */}
+        {lastShotId && !showDeleteConfirm && (
+          <div style={{ position: 'absolute', bottom: 100, right: 16 }}>
+            <button onClick={() => setShowDeleteConfirm(true)} style={{ width: 40, height: 40, background: 'rgba(255,71,87,0.2)', border: '1px solid rgba(255,71,87,0.4)', borderRadius: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(10px)' }}>
+              <IconDelete size={17} color="#ff4757" />
+            </button>
           </div>
         )}
-
-        {/* Feedback */}
-        <div style={{ position: 'absolute', bottom: 84, left: '50%', transform: 'translateX(-50%)', background: outOfShots ? 'rgba(255,71,87,0.92)' : 'rgba(232,255,71,0.93)', color: outOfShots ? 'white' : '#000', borderRadius: 20, padding: '7px 18px', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap', pointerEvents: 'none', opacity: showFeedback ? 1 : 0, transition: 'opacity .2s' }}>{feedback}</div>
-        {uploading && <div style={{ position: 'absolute', top: 14, left: '50%', transform: 'translateX(-50%)', background: 'rgba(0,0,0,0.6)', borderRadius: 20, padding: '4px 12px', fontSize: 11, color: 'white' }}>Saving...</div>}
       </div>
 
-      {/* Controls */}
-      <div style={{ background: 'rgba(0,0,0,0.92)', padding: '18px 28px 44px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        {/* Gallery */}
-        <button onClick={() => router.push(`/join/${code}/gallery`)} style={{ width: 52, height: 52, background: 'rgba(255,255,255,0.08)', border: '1.5px solid rgba(255,255,255,0.12)', borderRadius: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <IconGallery size={22} />
-        </button>
-
-        {/* Shutter */}
-        <button onClick={shoot} disabled={outOfShots || uploading} style={{
-          width: 76, height: 76, borderRadius: '50%', cursor: outOfShots ? 'not-allowed' : 'pointer',
-          background: 'transparent', border: `3px solid ${outOfShots ? 'rgba(255,71,87,0.5)' : 'rgba(255,255,255,0.35)'}`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s'
-        }}>
-          <div style={{ width: 60, height: 60, borderRadius: '50%', background: outOfShots ? 'var(--red)' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <IconShutter size={26} color={outOfShots ? 'white' : '#0a0a0a'} />
-          </div>
-        </button>
-
-        {/* Flip */}
-        <button onClick={() => setFacingMode(f => f === 'environment' ? 'user' : 'environment')} style={{ width: 52, height: 52, background: 'rgba(255,255,255,0.08)', border: '1.5px solid rgba(255,255,255,0.12)', borderRadius: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <IconFlip size={22} />
-        </button>
-      </div>
-
-      {/* Caption modal */}
-      {showCaption && event?.allow_captions && (
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 50, display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ background: 'var(--surface)', borderRadius: '20px 20px 0 0', padding: '20px 18px 40px', width: '100%' }} className="slide-up">
-            <div style={{ width: 36, height: 4, borderRadius: 2, background: 'var(--border)', margin: '0 auto 18px' }} />
-            <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 5 }}>Add a caption</div>
-            <div style={{ fontSize: 13, color: 'var(--dim)', marginBottom: 14 }}>Auto-translated for all guests</div>
-            <textarea value={caption} onChange={e => setCaption(e.target.value)} placeholder="What's happening here?" rows={3} maxLength={120}
-              style={{ background: 'var(--surface2)', border: '1.5px solid var(--border)', borderRadius: 10, padding: '12px 14px', color: 'var(--text)', fontSize: 14, width: '100%', outline: 'none', resize: 'none', marginBottom: 14, fontFamily: 'inherit' }} />
+      {/* Delete confirm overlay */}
+      {showDeleteConfirm && (
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+          <div style={{ background: '#111', borderRadius: 18, padding: '24px 20px', width: '100%', maxWidth: 300, textAlign: 'center' }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', marginBottom: 8 }}>Delete last photo?</div>
+            <div style={{ fontSize: 13, color: '#555', marginBottom: 24 }}>This will give you back 1 shot.</div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={() => { setShowCaption(false); setCaption('') }} style={{ flex: 1, background: 'transparent', color: 'var(--text)', border: '1.5px solid var(--border)', borderRadius: 12, padding: '13px 0', fontWeight: 700, cursor: 'pointer', fontSize: 14, fontFamily: 'inherit' }}>Skip</button>
-              <button onClick={saveCaption} style={{ flex: 1, background: 'var(--accent)', color: '#000', border: 'none', borderRadius: 12, padding: '13px 0', fontWeight: 700, cursor: 'pointer', fontSize: 14, fontFamily: 'inherit' }}>Save</button>
+              <button onClick={() => setShowDeleteConfirm(false)} style={{ flex: 1, background: '#1a1a1a', border: '1px solid #222', borderRadius: 11, padding: '12px', color: '#666', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
+              <button onClick={deleteLastShot} disabled={deleting} style={{ flex: 1, background: '#ff4757', border: 'none', borderRadius: 11, padding: '12px', color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                {deleting ? '...' : 'Delete'}
+              </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Bottom controls */}
+      <div style={{ background: '#0a0a0a', paddingBottom: 'env(safe-area-inset-bottom)', touchAction: 'manipulation' }}>
+
+        {/* Mode selector — 5 modes, scrollable */}
+        <div style={{ display: 'flex', gap: 8, padding: '10px 16px', overflowX: 'auto', scrollbarWidth: 'none' }}>
+          {ALL_MODES.map(m => (
+            <button key={m.id} onClick={() => setFilter(m)}
+              style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 2px' }}>
+              <div style={{ width: 52, height: 38, borderRadius: 9, background: m.bg, border: `2px solid ${filter.id === m.id ? '#e8ff47' : 'transparent'}`, transition: 'border .15s' }} />
+              <span style={{ fontSize: 9, fontWeight: 700, color: filter.id === m.id ? '#e8ff47' : '#555', textTransform: 'uppercase', letterSpacing: 0.5, whiteSpace: 'nowrap' }}>{m.name}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Shutter row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', padding: '10px 24px 16px' }}>
+          {/* Gallery upload */}
+          <button onClick={() => fileInputRef.current?.click()} disabled={shotsUsed >= shotLimit || uploading}
+            style={{ width: 48, height: 48, background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: shotsUsed >= shotLimit ? 0.3 : 1 }}>
+            <IconGallery size={22} color="#888" />
+          </button>
+          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleGalleryUpload} style={{ display: 'none' }} />
+
+          {/* Shutter */}
+          <button onClick={shoot} disabled={shotsUsed >= shotLimit || uploading || !cameraReady}
+            style={{ width: 76, height: 76, borderRadius: '50%', background: uploading ? '#333' : shotsUsed >= shotLimit ? '#1a1a1a' : '#f0f0f0', border: `4px solid ${shotsUsed >= shotLimit ? '#222' : '#e8ff47'}`, cursor: shotsUsed >= shotLimit || uploading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s', flexShrink: 0 }}>
+            {uploading
+              ? <div style={{ width: 24, height: 24, border: '3px solid #555', borderTop: '3px solid #e8ff47', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+              : <IconShutter size={28} color={shotsUsed >= shotLimit ? '#333' : '#0a0a0a'} weight="fill" />
+            }
+          </button>
+
+          {/* View gallery */}
+          <button onClick={() => router.push(`/join/${code}/gallery`)}
+            style={{ width: 48, height: 48, background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <IconGallery size={22} color="#888" />
+          </button>
+        </div>
+      </div>
+
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
+      <style>{`@keyframes spin { to { transform: rotate(360deg) } } * { -webkit-tap-highlight-color: transparent; }`}</style>
     </main>
   )
 }

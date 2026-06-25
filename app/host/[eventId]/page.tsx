@@ -62,6 +62,16 @@ export default function EventDashboard() {
     load()
   }, [eventId])
 
+  const handleDeleteShot = async (shotId: string, storagePath: string) => {
+    if (!confirm('Delete this photo?')) return
+    try {
+      if (storagePath) await supabase.storage.from('shots').remove([storagePath])
+      await supabase.from('shots').delete().eq('id', shotId)
+      setShots(prev => prev.filter((s: any) => s.id !== shotId))
+      showToast('Photo deleted')
+    } catch (e) { showToast('Failed to delete') }
+  }
+
   const handleReveal = async () => {
     if (!confirm('Reveal all photos to guests now?')) return
     setRevealing(true)

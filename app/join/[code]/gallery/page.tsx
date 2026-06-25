@@ -9,13 +9,13 @@ export default function GuestGalleryPage() {
   const router = useRouter()
   const code = params.code as string
   const supabase = createClient()
+  const [guestId, setGuestId] = useState<string | null>(null)
 
   const [event, setEvent] = useState<any>(null)
   const [shots, setShots] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState<any>(null)
   const [secs, setSecs] = useState(0)
-  const [guestId, setGuestId] = useState<string | null>(null)
   const [reactions, setReactions] = useState<Record<string, Record<string, boolean>>>({})
 
   const loadShots = useCallback(async (eventId: string) => {
@@ -23,11 +23,20 @@ export default function GuestGalleryPage() {
     if (data) setShots(data)
   }, [supabase])
 
+  const handleDeleteMyShot = async (shotId: string, storagePath: string) => {
+    if (!confirm('Delete your photo?')) return
+    try {
+      if (storagePath) await supabase.storage.from('shots').remove([storagePath])
+      await supabase.from('shots').delete().eq('id', shotId)
+    } catch (e) { console.error(e) }
+  }
+
   useEffect(() => {
     async function load() {
       const eventId = localStorage.getItem('flash_event_id')
-      const storedGuestId = localStorage.getItem(`flash_guest_id_${eventId}`)
       if (!eventId) { router.push(`/join/${code}`); return }
+      const storedGuest = localStorage.getItem(`flash_guest_${eventId}`)
+      const storedGuestId = storedGuest ? JSON.parse(storedGuest).id : null
       setGuestId(storedGuestId)
       const { data: ev } = await supabase.from('events').select('*').eq('id', eventId).single()
       if (!ev) return
