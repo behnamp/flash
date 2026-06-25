@@ -1,5 +1,11 @@
 'use client'
-import { IconFlash, IconBack, IconQR, IconStats, IconGuests, IconGallery, IconReveal, IconCopy, IconClose, IconShutter, IconHourglass, IconEdit, IconDelete, IconArrowRight, IconCheck, IconWarning, IconLive, IconStar, IconSave } from '@/components/icons'
+import { IconFlash, IconBack, IconQR, IconStats, IconGuests, IconGallery, IconReveal, IconCopy, IconClose, IconShutter, IconHourglass, IconEdit, IconDelete, IconArrowRight, IconCheck, IconWarning, IconLive, IconStar, IconSave, IconWedding, IconBirthday, IconParty, IconTrip, IconCorporate, IconFestival, IconSports, IconNightlife, IconQuestion, IconStop } from '@/components/icons'
+
+const EVENT_TYPE_ICONS: Record<string, any> = {
+  wedding: IconWedding, birthday: IconBirthday, party: IconParty,
+  trip: IconTrip, corporate: IconCorporate, festival: IconFestival,
+  sports: IconSports, club: IconNightlife, other: IconQuestion,
+}
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -85,11 +91,14 @@ export default function EventDashboard() {
     <main style={{ height: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', background: 'rgba(10,10,10,0.96)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10 }}>
-        <button onClick={() => router.push('/host')} style={{ width: 36, height: 36, background: 'var(--surface2)', border: 'none', borderRadius: 10, color: 'var(--text)', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>←</button>
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <button onClick={() => router.push('/host')} style={{ width: 36, height: 36, background: 'var(--surface2)', border: 'none', borderRadius: 10, color: 'var(--text)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconBack size={18} /></button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1, minWidth: 0 }}>
+          {event?.event_type && (() => { const Icon = EVENT_TYPE_ICONS[event.event_type] || IconQuestion; return <div style={{ width: 30, height: 30, background: 'var(--surface3)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Icon size={16} color="#e8ff47" /></div> })()}
+          <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 14, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{event?.name}</div>
           <div style={{ fontSize: 10, color: event?.is_active ? 'var(--accent)' : 'var(--muted)', fontWeight: 600 }}>
             {event?.revealed ? 'Revealed' : event?.is_active ? 'Live' : 'Ended'} · {guests.length} guests · {shots.length} shots
+          </div>
           </div>
         </div>
         <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, color: 'var(--accent)', background: 'var(--accent-dim)', border: '1px solid rgba(232,255,71,0.3)', borderRadius: 7, padding: '4px 9px' }}>{event?.join_code}</div>
@@ -133,7 +142,7 @@ export default function EventDashboard() {
 
             {!event?.revealed && event?.is_active && (
               <button onClick={handleReveal} disabled={revealing} style={{ width: '100%', maxWidth: 300, background: 'var(--red)', color: 'white', border: 'none', borderRadius: 13, padding: '14px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
-                {revealing ? 'Revealing...' : '🎭 Reveal Gallery Now'}
+                {revealing ? 'Revealing...' : 'Reveal Gallery Now'}
               </button>
             )}
             {event?.is_active && (
@@ -171,7 +180,7 @@ export default function EventDashboard() {
             {!event?.revealed && event?.is_active && (
               <div style={{ marginTop: 20 }}>
                 <button onClick={handleReveal} disabled={revealing} style={{ width: '100%', background: 'var(--red)', color: 'white', border: 'none', borderRadius: 13, padding: '14px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-                  {revealing ? 'Revealing...' : '🎭 Reveal Gallery Now'}
+                  {revealing ? 'Revealing...' : 'Reveal Gallery Now'}
                 </button>
               </div>
             )}
