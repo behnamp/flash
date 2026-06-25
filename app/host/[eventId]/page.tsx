@@ -1,5 +1,5 @@
 'use client'
-import { IconFlash, IconBack, IconQR, IconStats, IconGuests, IconGallery, IconReveal, IconCopy, IconClose, IconShutter, IconHourglass, IconEdit, IconDelete, IconArrowRight, IconCheck, IconWarning, IconLive, IconStar, IconSave, IconWedding, IconBirthday, IconParty, IconTrip, IconCorporate, IconFestival, IconSports, IconNightlife, IconQuestion, IconStop } from '@/components/icons'
+import { IconFlash, IconBack, IconQR, IconStats, IconGuests, IconGallery, IconReveal, IconCopy, IconClose, IconShutter, IconHourglass, IconEdit, IconDelete, IconArrowRight, IconCheck, IconWarning, IconLive, IconStar, IconSave, IconWedding, IconBirthday, IconParty, IconTrip, IconCorporate, IconFestival, IconSports, IconNightlife, IconQuestion, IconStop, IconFilm } from '@/components/icons'
 
 const EVENT_TYPE_ICONS: Record<string, any> = {
   wedding: IconWedding, birthday: IconBirthday, party: IconParty,
@@ -68,7 +68,7 @@ export default function EventDashboard() {
     const { error } = await supabase.rpc('reveal_event', { event_id_param: eventId })
     if (error) { showToast('Error revealing event'); setRevealing(false); return }
     setEvent((e: any) => ({ ...e, revealed: true }))
-    showToast('🎭 Gallery revealed to all guests!')
+    showToast('Gallery revealed!')
     setRevealing(false)
   }
 
@@ -137,7 +137,7 @@ export default function EventDashboard() {
             <div onClick={() => { navigator.clipboard?.writeText(joinUrl); showToast('Link copied! ✓') }}
               style={{ background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 11, padding: '12px 15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: 300, cursor: 'pointer', marginBottom: 16 }}>
               <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 10, color: 'var(--dim)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{joinUrl}</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', marginLeft: 8, flexShrink: 0 }}>COPY</span>
+              <IconCopy size={14} color="var(--accent)" />
             </div>
 
             {!event?.revealed && event?.is_active && (
@@ -157,11 +157,14 @@ export default function EventDashboard() {
         {tab === 'dashboard' && (
           <div style={{ padding: 18 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 18 }}>
-              {[[guests.length, 'Guests', '👥'], [shots.length, 'Shots', '📷'],
-                [Math.round((shots.length / Math.max(1, guests.length * event?.shot_limit)) * 100) + '%', 'Film Used', '🎞'],
-                [shots.filter((s: any) => s.revealed).length, 'Revealed', '🔓']].map(([n, l, ic]) => (
-                <div key={l as string} style={{ background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 12, padding: 16 }}>
-                  <div style={{ fontSize: 22, marginBottom: 7 }}>{ic}</div>
+              {[
+                { n: guests.length, l: 'Guests', Icon: IconGuests },
+                { n: shots.length, l: 'Shots', Icon: IconShutter },
+                { n: Math.round((shots.length / Math.max(1, guests.length * (event?.shot_limit||1))) * 100) + '%', l: 'Film Used', Icon: IconFilm },
+                { n: shots.filter((s: any) => s.revealed).length, l: 'Revealed', Icon: IconReveal },
+              ].map(({ n, l, Icon }) => (
+                <div key={l} style={{ background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 12, padding: 16 }}>
+                  <div style={{ display: 'flex', marginBottom: 7 }}><Icon size={20} color="var(--accent)" /></div>
                   <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 26, fontWeight: 700, color: 'var(--accent)' }}>{n}</div>
                   <div style={{ fontSize: 9, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 }}>{l}</div>
                 </div>
@@ -171,7 +174,7 @@ export default function EventDashboard() {
             <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--dim)', marginBottom: 10 }}>Top Shooters</div>
             {[...guests].sort((a, b) => b.shots_taken - a.shots_taken).slice(0, 5).map((g, i) => (
               <div key={g.id} style={{ background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 11, marginBottom: 7 }}>
-                <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, color: i === 0 ? '#f4c542' : 'var(--muted)', width: 22 }}>{i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}</div>
+                <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, color: i === 0 ? '#f4c542' : i === 1 ? '#aaa' : i === 2 ? '#c87941' : 'var(--muted)', width: 22 }}>{`#${i + 1}`}</div>
                 <div style={{ flex: 1, fontSize: 13, fontWeight: 600 }}>{g.nickname}</div>
                 <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, color: 'var(--accent)', fontWeight: 700 }}>{g.shots_taken}/{event?.shot_limit}</div>
               </div>
@@ -218,7 +221,7 @@ export default function EventDashboard() {
             {shots.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--muted)', fontSize: 14 }}>
                 <div style={{ fontSize: 36, marginBottom: 10 }}></div>
-                No shots yet — share the QR code!
+                No shots yet
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 2, padding: 2 }}>

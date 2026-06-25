@@ -9,7 +9,7 @@ import {
   IconWedding, IconBirthday, IconParty, IconTrip, IconCorporate,
   IconFestival, IconSports, IconNightlife, IconQuestion,
   IconLive, IconReveal, IconClose, IconCheck, IconTarget,
-  IconEdit, IconDelete, IconDuplicate, IconLink, IconStop, IconArrowRight, IconQR, IconSave
+  IconEdit, IconDelete, IconDuplicate, IconLink, IconStop, IconArrowRight, IconQR, IconSave, IconMenu
 } from '@/components/icons'
 
 const EVENT_TYPE_ICONS: Record<string, any> = {
@@ -88,7 +88,7 @@ function HostDashboardInner() {
     await supabase.rpc('reveal_event', { event_id_param: id })
     setEvents(e => e.map(ev => ev.id === id ? { ...ev, revealed: true } : ev))
     setMenuOpen(null)
-    showToast('🎭 Gallery revealed!')
+    showToast('Gallery revealed ✓')
   }
 
   const handleDuplicate = async (ev: any) => {
@@ -251,8 +251,8 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
           {/* Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
             {/* Quick go to dashboard */}
-            <button onClick={() => router.push(`/host/${ev.id}`)} style={{ width: 32, height: 32, background: '#1a1a1a', border: 'none', borderRadius: 9, color: '#555', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              →
+            <button onClick={() => router.push(`/host/${ev.id}`)} style={{ width: 32, height: 32, background: '#1a1a1a', border: 'none', borderRadius: 9, color: '#555', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <IconArrowRight size={15} color="#555" />
             </button>
             {/* 3-dot menu */}
             <button onClick={e => { e.stopPropagation(); setMenuOpen(isMenuOpen ? null : ev.id) }} style={{ width: 32, height: 32, background: isMenuOpen ? '#222' : '#1a1a1a', border: `1px solid ${isMenuOpen ? '#333' : 'transparent'}`, borderRadius: 9, color: '#555', cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>
