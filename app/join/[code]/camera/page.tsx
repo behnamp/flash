@@ -283,7 +283,7 @@ export default function CameraPage() {
             )}
           </div>
 
-          {/* QR / gallery icon — top right */}
+          {/* Folder / gallery icon — top right */}
           <button onClick={() => router.push(`/join/${code}/gallery`)}
             style={{ width: 38, height: 38, background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(12px)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' } as any}>
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -291,6 +291,15 @@ export default function CameraPage() {
             </svg>
           </button>
         </div>
+
+        {/* FLIP — floating bottom-left of viewfinder */}
+        <button onClick={() => setFacingMode(f => f === 'environment' ? 'user' : 'environment')}
+          style={{ position: 'absolute', bottom: 20, left: 20, width: 44, height: 44, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10 }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
+            <path d="M1 4v6h6"/><path d="M23 20v-6h-6"/>
+            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+          </svg>
+        </button>
 
         {/* Toast */}
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: `translate(-50%,-50%) scale(${showToast ? 1 : 0.85})`, background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(16px)', borderRadius: 20, padding: '10px 20px', fontSize: 14, fontWeight: 700, color: 'white', opacity: showToast ? 1 : 0, transition: 'all .2s', pointerEvents: 'none', whiteSpace: 'nowrap', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -318,34 +327,22 @@ export default function CameraPage() {
         {/* SHUTTER ROW */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 40px 0' }}>
 
-          {/* LEFT: Flash torch + Upload stacked */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-            {/* Torch toggle */}
-            <button onClick={toggleTorch}
-              style={{ width: 50, height: 50, background: torchOn ? 'rgba(232,255,71,0.15)' : 'transparent', border: torchOn ? '1px solid rgba(232,255,71,0.4)' : 'none', borderRadius: 14, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, opacity: torchSupported ? 1 : 0.3, transition: 'all .2s' }}>
-              {torchOn ? (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="#e8ff47">
-                  <path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/>
-                </svg>
-              ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
-                  <path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/>
-                </svg>
-              )}
-              <span style={{ fontSize: 9, color: torchOn ? '#e8ff47' : 'rgba(255,255,255,0.4)', fontFamily: 'Space Mono, monospace', fontWeight: 700, letterSpacing: 0.5 }}>
-                {torchOn ? 'ON' : 'FLASH'}
-              </span>
-            </button>
-            {/* Upload from gallery */}
-            <button onClick={() => fileInputRef.current?.click()} disabled={outOfShots || uploading}
-              style={{ width: 36, height: 36, background: 'transparent', border: 'none', cursor: outOfShots ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: outOfShots ? 0.2 : 0.6 }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
-                <rect x="3" y="3" width="18" height="18" rx="3"/>
-                <circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none"/>
-                <polyline points="21,15 16,10 5,21"/>
+          {/* LEFT: Flash torch — aligned with shutter */}
+          <button onClick={toggleTorch}
+            style={{ width: 50, height: 50, background: 'transparent', border: 'none', borderRadius: 14, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, opacity: torchSupported ? 1 : 0.3, transition: 'all .2s' }}>
+            {torchOn ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#e8ff47">
+                <path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/>
               </svg>
-            </button>
-          </div>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
+                <path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/>
+              </svg>
+            )}
+            <span style={{ fontSize: 9, color: torchOn ? '#e8ff47' : 'rgba(255,255,255,0.4)', fontFamily: 'Space Mono, monospace', fontWeight: 700, letterSpacing: 0.5 }}>
+              {torchOn ? 'ON' : 'FLASH'}
+            </span>
+          </button>
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleGalleryUpload} style={{ display: 'none' }} />
 
           {/* CENTER: Shot number scroll + Shutter */}
@@ -371,14 +368,15 @@ export default function CameraPage() {
             </button>
           </div>
 
-          {/* RIGHT: Flip camera (like Once) */}
-          <button onClick={() => setFacingMode(f => f === 'environment' ? 'user' : 'environment')}
-            style={{ width: 50, height: 50, background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.7" strokeLinecap="round">
-              <path d="M1 4v6h6"/><path d="M23 20v-6h-6"/>
-              <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+          {/* RIGHT: Upload from gallery — aligned with shutter */}
+          <button onClick={() => fileInputRef.current?.click()} disabled={outOfShots || uploading}
+            style={{ width: 50, height: 50, background: 'transparent', border: 'none', cursor: outOfShots ? 'not-allowed' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, opacity: outOfShots ? 0.2 : 0.75 }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.7" strokeLinecap="round">
+              <rect x="3" y="3" width="18" height="18" rx="3"/>
+              <circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none"/>
+              <polyline points="21,15 16,10 5,21"/>
             </svg>
-            <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontFamily: 'Space Mono, monospace', fontWeight: 700, letterSpacing: 0.5 }}>FLIP</span>
+            <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontFamily: 'Space Mono, monospace', fontWeight: 700, letterSpacing: 0.5 }}>UPLOAD</span>
           </button>
         </div>
       </div>
