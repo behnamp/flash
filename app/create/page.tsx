@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { REVEAL_MODES } from '@/constants/revealModes'
@@ -77,6 +77,7 @@ export default function CreateEvent() {
   const supabase = createClient()
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
+  const coverInputRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     eventType: 'wedding', eventName: '', date: '', venue: '',
@@ -86,7 +87,7 @@ export default function CreateEvent() {
     guestBook: false, liveSlideshow: false, aiReel: true,
     printEnabled: false, allowCaptions: true, allowVoice: false,
     whiteLabel: false, brandName: '', brandLogoPreview: '', brandLogoFile: null as File | null, statsCard: true,
-    coverColor: '#0a0a0a', coverEmoji: '⚡',
+    coverColor: '#0a0a0a', coverEmoji: '⚡', coverImageUrl: '', coverImageFile: null as File | null,
   })
 
   const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }))
@@ -102,11 +103,25 @@ export default function CreateEvent() {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
+
+      // Upload cover image if selected
+      let coverImageUrl: string | null = null
+      if (form.coverImageFile) {
+        const ext = (form.coverImageFile.name.split('.').pop() || 'jpg')
+        const path = `covers/${user.id}/${Date.now()}.${ext}`
+        const { error: upErr } = await supabase.storage
+          .from('shots').upload(path, form.coverImageFile, { contentType: form.coverImageFile.type, upsert: false })
+        if (!upErr) {
+          const { data: pub } = supabase.storage.from('shots').getPublicUrl(path)
+          coverImageUrl = pub.publicUrl
+        }
+      }
+
       const { data: event, error: err } = await supabase.from('events').insert({
         host_id: user.id, name: form.eventName || 'My Event',
         event_type: form.eventType, venue: form.venue || null,
         event_date: form.date || null, shot_limit: form.shotLimit,
-        guest_cap: form.guestCap === '∞' ? 9999 : parseInt(form.guestCap),
+        guest_cap: form.guestCap === '\u221e' ? 9999 : parseInt(form.guestCap),
         primary_language: form.language, reveal_mode: form.revealMode as any,
         mode_control: form.modeControl as any, selected_modes: form.selectedModes,
         locked_mode: form.lockedMode, scavenger_hunt: form.scavengerHunt,
@@ -115,11 +130,11 @@ export default function CreateEvent() {
         ai_reel: form.aiReel, print_enabled: form.printEnabled,
         allow_captions: form.allowCaptions, allow_voice: form.allowVoice,
         white_label: form.whiteLabel, brand_name: form.whiteLabel ? form.brandName : null,
-        brand_logo_url: null, // TODO: upload brandLogoFile to storage
-        stats_card_enabled: form.statsCard, is_active: true,
+        brand_logo_url: null, stats_card_enabled: form.statsCard, is_active: true,
+        cover_color: form.coverColor, cover_emoji: form.coverEmoji,
+        cover_image_url: coverImageUrl,
       }).select().single()
       if (err) throw err
-      // Redirect to pricing — event is created as draft, payment activates it
       router.push(`/pricing?eventId=${event.id}`)
     } catch (e: any) {
       setError(e.message || 'Failed to create event')
@@ -328,18 +343,39 @@ export default function CreateEvent() {
         {step === 6 && (
           <div>
             {/* Cover preview */}
-            <div style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 24, aspectRatio: '9/16', maxHeight: 320, background: form.coverColor, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', padding: '0 24px 32px', position: 'relative' }}>
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.7) 100%)' }} />
+            {/* Cover preview */}
+            <div style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16, aspectRatio: '9/16', maxHeight: 300, background: form.coverColor, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', padding: '0 20px 28px', position: 'relative', cursor: 'pointer' }}
+              onClick={() => coverInputRef.current?.click()}>
+              {form.coverImageUrl && (
+                <img src={form.coverImageUrl} alt="cover" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+              )}
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 35%, rgba(0,0,0,0.75) 100%)' }} />
               <div style={{ position: 'relative', textAlign: 'center', width: '100%' }}>
-                <div style={{ fontSize: 32, marginBottom: 10 }}>{form.coverEmoji}</div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: 'white', marginBottom: 6, lineHeight: 1.2 }}>{form.eventName || 'Your Event'}</div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 20 }}>Tap to take your camera →</div>
-                <div style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 12, padding: '12px 16px', border: '1px solid rgba(255,255,255,0.15)' }}>
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>Enter your name</div>
-                  <div style={{ height: 1, background: 'rgba(255,255,255,0.1)' }} />
+                {!form.coverImageUrl && <div style={{ fontSize: 28, marginBottom: 8 }}>{form.coverEmoji}</div>}
+                <div style={{ fontSize: 17, fontWeight: 700, color: 'white', marginBottom: 6, lineHeight: 1.2 }}>{form.eventName || 'Your Event'}</div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginBottom: 18 }}>Tap to take your camera →</div>
+                <div style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '10px 14px', border: '1px solid rgba(255,255,255,0.12)' }}>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>Enter your name</div>
                 </div>
               </div>
+              {/* Edit overlay hint */}
+              <div style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '5px 10px', fontSize: 10, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>
+                {form.coverImageUrl ? 'Change Photo' : 'Add Photo'}
+              </div>
             </div>
+            <input ref={coverInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+              const file = e.target.files?.[0]; if (!file) return
+              const url = URL.createObjectURL(file)
+              set('coverImageUrl', url); set('coverImageFile', file)
+              e.target.value = ''
+            }} />
+            {/* Remove photo */}
+            {form.coverImageUrl && (
+              <button onClick={() => { set('coverImageUrl', ''); set('coverImageFile', null) }}
+                style={{ width: '100%', background: 'transparent', border: 'none', color: '#555', fontSize: 12, cursor: 'pointer', marginBottom: 12, fontFamily: 'inherit' }}>
+                Remove photo
+              </button>
+            )}
 
             {/* Background color */}
             <Label>Cover Color</Label>

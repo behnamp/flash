@@ -230,9 +230,20 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
 
         {/* Main row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px' }}>
-          {/* Icon */}
-          <div style={{ width: 44, height: 44, background: ev.is_active && !ev.revealed ? 'rgba(232,255,71,0.07)' : '#161616', border: `1px solid ${ev.is_active && !ev.revealed ? 'rgba(232,255,71,0.15)' : '#1e1e1e'}`, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }} onClick={() => router.push(`/host/${ev.id}`)}>
-            <Icon size={22} color={ev.is_active && !ev.revealed ? '#e8ff47' : '#333'} />
+          {/* Cover thumbnail */}
+          <div style={{ width: 52, height: 52, borderRadius: 12, overflow: 'hidden', flexShrink: 0, cursor: 'pointer', position: 'relative', background: ev.cover_color || '#161616', border: `1px solid ${ev.is_active && !ev.revealed ? 'rgba(232,255,71,0.2)' : '#1e1e1e'}` }} onClick={() => router.push(`/host/${ev.id}`)}>
+            {ev.cover_image_url
+              ? <img src={ev.cover_image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              : (
+                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1a1a1a, #222)' }}>
+                  <Icon size={22} color={ev.is_active && !ev.revealed ? '#e8ff47' : '#333'} />
+                </div>
+              )
+            }
+            {/* Status dot overlay */}
+            {ev.is_active && !ev.revealed && (
+              <div style={{ position: 'absolute', bottom: 4, right: 4, width: 8, height: 8, borderRadius: '50%', background: '#2ed573', border: '2px solid #111', animation: 'pulse-fade 2s infinite' }} />
+            )}
           </div>
 
           {/* Info */}

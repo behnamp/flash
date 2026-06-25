@@ -27,6 +27,8 @@ export default function CameraPage() {
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment')
   const [uploading, setUploading] = useState(false)
   const [zoom, setZoom] = useState(1)
+  const [torchOn, setTorchOn] = useState(false)
+  const [torchSupported, setTorchSupported] = useState(false)
   const [toast, setToast] = useState('')
   const [showToast, setShowToast] = useState(false)
 
@@ -77,6 +79,11 @@ export default function CameraPage() {
           })
           videoRef.current.play().catch(() => {})
           setCameraReady(true)
+          // Check torch support
+          const track = stream.getVideoTracks()[0]
+          const caps = track.getCapabilities?.() as any
+          setTorchSupported(!!(caps?.torch))
+          setTorchOn(false) // reset on camera switch
         }
         return // success
       } catch (e) {
@@ -199,6 +206,18 @@ export default function CameraPage() {
   }
 
   const outOfShots = shotsUsed >= shotLimit
+  const toggleTorch = async () => {
+    const track = streamRef.current?.getVideoTracks()[0]
+    if (!track) return
+    const next = !torchOn
+    try {
+      await track.applyConstraints({ advanced: [{ torch: next } as any] })
+      setTorchOn(next)
+    } catch {
+      showMsg('Torch not available')
+    }
+  }
+
   const left = Math.max(0, shotLimit - shotsUsed)
   const cssFilter = CANVAS_FILTERS[filter.id]?.filter || 'none'
 
@@ -299,16 +318,34 @@ export default function CameraPage() {
         {/* SHUTTER ROW */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 40px 0' }}>
 
-          {/* LEFT: Flash toggle (like Once) */}
-          <button onClick={() => fileInputRef.current?.click()} disabled={outOfShots || uploading}
-            style={{ width: 50, height: 50, background: 'transparent', border: 'none', cursor: outOfShots ? 'not-allowed' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, opacity: outOfShots ? 0.25 : 1 }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.7" strokeLinecap="round">
-              <rect x="3" y="3" width="18" height="18" rx="3"/>
-              <circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none"/>
-              <polyline points="21,15 16,10 5,21"/>
-            </svg>
-            <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontFamily: 'Space Mono, monospace', fontWeight: 700, letterSpacing: 0.5 }}>UPLOAD</span>
-          </button>
+          {/* LEFT: Flash torch + Upload stacked */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+            {/* Torch toggle */}
+            <button onClick={toggleTorch}
+              style={{ width: 50, height: 50, background: torchOn ? 'rgba(232,255,71,0.15)' : 'transparent', border: torchOn ? '1px solid rgba(232,255,71,0.4)' : 'none', borderRadius: 14, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, opacity: torchSupported ? 1 : 0.3, transition: 'all .2s' }}>
+              {torchOn ? (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#e8ff47">
+                  <path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/>
+                </svg>
+              ) : (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
+                  <path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/>
+                </svg>
+              )}
+              <span style={{ fontSize: 9, color: torchOn ? '#e8ff47' : 'rgba(255,255,255,0.4)', fontFamily: 'Space Mono, monospace', fontWeight: 700, letterSpacing: 0.5 }}>
+                {torchOn ? 'ON' : 'FLASH'}
+              </span>
+            </button>
+            {/* Upload from gallery */}
+            <button onClick={() => fileInputRef.current?.click()} disabled={outOfShots || uploading}
+              style={{ width: 36, height: 36, background: 'transparent', border: 'none', cursor: outOfShots ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: outOfShots ? 0.2 : 0.6 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
+                <rect x="3" y="3" width="18" height="18" rx="3"/>
+                <circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none"/>
+                <polyline points="21,15 16,10 5,21"/>
+              </svg>
+            </button>
+          </div>
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleGalleryUpload} style={{ display: 'none' }} />
 
           {/* CENTER: Shot number scroll + Shutter */}
