@@ -280,7 +280,7 @@ export default function AdminPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 {(['percent', 'free'] as const).map(t => (
                   <div key={t} onClick={() => set('type', t)} style={{ background: form.type === t ? 'rgba(232,255,71,0.07)' : '#111', border: `1px solid ${form.type === t ? '#e8ff47' : '#222'}`, borderRadius: 10, padding: '12px 14px', cursor: 'pointer', textAlign: 'center', transition: 'all .15s' }}>
-                    <div style={{ fontSize: 18, marginBottom: 4 }}>{t === 'free' ? '🎁' : '%'}</div>
+                    <div style={{ fontSize: 22, fontWeight: 900, marginBottom: 4, color: t === 'free' ? '#2ed573' : '#e8ff47', fontFamily: 'Space Mono, monospace' }}>{t === 'free' ? 'FREE' : '%'}</div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: form.type === t ? '#e8ff47' : '#888' }}>
                       {t === 'free' ? '100% Free' : 'Percentage Off'}
                     </div>
