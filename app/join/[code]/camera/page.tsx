@@ -49,24 +49,51 @@ export default function CameraPage() {
   }, [code])
 
   const startCamera = async (facing: 'user' | 'environment') => {
-    if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop())
+    // Stop any existing stream first
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => { try { t.stop() } catch {} })
+      streamRef.current = null
+    }
+    if (videoRef.current) videoRef.current.srcObject = null
     setCameraReady(false)
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facing, width: { ideal: 4096, min: 1280 }, height: { ideal: 2160, min: 720 }, frameRate: { ideal: 30 } },
-        audio: false,
-      })
-      streamRef.current = stream
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        videoRef.current.onloadedmetadata = () => setCameraReady(true)
+    setCameraError('')
+
+    // Try progressively simpler constraints — Safari is strict about what it accepts
+    const attempts = [
+      { facingMode: { exact: facing }, width: { ideal: 3840 }, height: { ideal: 2160 } },
+      { facingMode: facing, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      { facingMode: facing },
+      {},
+    ]
+
+    for (const videoConstraints of attempts) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: false })
+        streamRef.current = stream
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream
+          await new Promise<void>(resolve => {
+            videoRef.current!.onloadedmetadata = () => resolve()
+          })
+          videoRef.current.play().catch(() => {})
+          setCameraReady(true)
+        }
+        return // success
+      } catch (e) {
+        // try next constraint set
       }
-    } catch { setCameraError('Camera access denied. Please allow camera access and reload.') }
+    }
+    setCameraError('Camera unavailable. Please allow camera access and reload.')
   }
 
   useEffect(() => {
     startCamera(facingMode)
-    return () => streamRef.current?.getTracks().forEach(t => t.stop())
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(t => { try { t.stop() } catch {} })
+        streamRef.current = null
+      }
+    }
   }, [facingMode])
 
   const showMsg = (msg: string) => {
