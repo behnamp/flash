@@ -385,10 +385,17 @@ export default function CreateEvent() {
       </div>
 
       <div style={{ padding: '14px 20px 34px', borderTop: '1px solid #161616', background: 'rgba(10,10,10,0.98)' }}>
-        <button onClick={step < TOTAL ? () => setStep(s => s + 1) : handleCreate} disabled={saving}
-          style={{ width: '100%', background: saving ? '#1a1a1a' : '#e8ff47', color: saving ? '#333' : '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'inherit', letterSpacing: -0.3 }}>
+        <button
+          onClick={step < TOTAL ? () => { if (canContinue()) setStep(s => s + 1) } : handleCreate}
+          disabled={saving || !canContinue()}
+          style={{ width: '100%', background: saving || !canContinue() ? '#161616' : '#e8ff47', color: saving || !canContinue() ? '#333' : '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: saving || !canContinue() ? 'not-allowed' : 'pointer', fontFamily: 'inherit', letterSpacing: -0.3, transition: 'all .2s' }}>
           {saving ? 'Creating...' : step < TOTAL ? 'Continue →' : 'Continue to Payment →'}
         </button>
+        {step === 2 && (!form.eventName.trim() || !form.date) && (
+          <div style={{ textAlign: 'center', fontSize: 12, color: '#444', marginTop: 10 }}>
+            {!form.eventName.trim() && !form.date ? 'Event name and date required' : !form.eventName.trim() ? 'Event name required' : 'Event date required'}
+          </div>
+        )}
       </div>
     </main>
   )
