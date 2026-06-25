@@ -7,24 +7,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set all env vars on Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          for KEY_VAL in \
-            "STRIPE_SECRET_KEY:${{ secrets.STRIPE_SECRET_KEY }}:encrypted" \
-            "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}:plain" \
-            "SUPABASE_SERVICE_ROLE_KEY:${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}:encrypted" \
-            "RESEND_API_KEY:${{ secrets.RESEND_API_KEY }}:encrypted" \
-            "NEXT_PUBLIC_APP_URL:https://flashcam.app:plain" \
-            "CRON_SECRET:${{ secrets.CRON_SECRET }}:encrypted"
-          do
-            KEY=$(echo $KEY_VAL | cut -d: -f1)
-            VAL=$(echo $KEY_VAL | cut -d: -f2)
-            TYPE=$(echo $KEY_VAL | cut -d: -f3)
+          set_env() {
             curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
-              -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+              -H "Authorization: Bearer $VERCEL_TOKEN" \
               -H "Content-Type: application/json" \
-              -d "{\"key\":\"$KEY\",\"value\":\"$VAL\",\"type\":\"$TYPE\",\"target\":[\"production\"]}" \
-              && echo "✓ $KEY" || echo "exists: $KEY"
-          done
+              -d "{\"key\":\"$1\",\"value\":\"$2\",\"type\":\"$3\",\"target\":[\"production\"]}" \
+              && echo "✓ $1" || echo "exists: $1"
+          }
+
+          set_env "NEXT_PUBLIC_SUPABASE_URL"       "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"       "plain"
+          set_env "NEXT_PUBLIC_SUPABASE_ANON_KEY"  "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}"  "plain"
+          set_env "STRIPE_SECRET_KEY"              "${{ secrets.STRIPE_SECRET_KEY }}"              "encrypted"
+          set_env "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" "${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}" "plain"
+          set_env "SUPABASE_SERVICE_ROLE_KEY"      "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"      "encrypted"
+          set_env "RESEND_API_KEY"                 "${{ secrets.RESEND_API_KEY }}"                 "encrypted"
+          set_env "NEXT_PUBLIC_APP_URL"            "https://flashcam.app"                          "plain"
+          set_env "CRON_SECRET"                    "${{ secrets.CRON_SECRET }}"                    "encrypted"
 
       - name: Done
         run: echo "✓ All env vars set"
