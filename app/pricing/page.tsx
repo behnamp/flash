@@ -246,6 +246,11 @@ function PricingPageInner() {
           Secure payment via Stripe · CAD pricing<br />
           No subscription · Cancel anytime
         </div>
+
+        <div style={{ display:'flex', gap:24, justifyContent:'center', marginTop: 20 }}>
+          <a href="/legal/privacy" style={{ fontSize:11, color:'#2a2a2a', textDecoration:'none' }}>Privacy Policy</a>
+          <a href="/legal/terms" style={{ fontSize:11, color:'#2a2a2a', textDecoration:'none' }}>Terms of Service</a>
+        </div>
       </div>
     </main>
   )

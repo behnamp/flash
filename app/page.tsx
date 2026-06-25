@@ -38,6 +38,11 @@ export default function Home() {
         </Link>
       </div>
 
+      <div style={{ marginTop: 32, display:'flex', gap:20, justifyContent:'center' }}>
+        <Link href="/legal/privacy" style={{ fontSize:11, color:'#2a2a2a', textDecoration:'none' }}>Privacy Policy</Link>
+        <Link href="/legal/terms" style={{ fontSize:11, color:'#2a2a2a', textDecoration:'none' }}>Terms of Service</Link>
+      </div>
+
       <div style={{ display:'flex', gap:0, marginTop:52, paddingTop:26, borderTop:'1px solid #161616', width:'100%', maxWidth:310 }}>
         {[
           { Icon: IconGlobe, n:'20+', l:'Languages' },
@@ -50,6 +55,10 @@ export default function Home() {
             <div style={{ fontSize:10, color:'#333', textTransform:'uppercase', letterSpacing:1, marginTop:2 }}>{l}</div>
           </div>
         ))}
+      </div>
+      <div style={{ marginTop: 28, display:'flex', gap:24, justifyContent:'center' }}>
+        <Link href="/legal/privacy" style={{ fontSize:11, color:'#2a2a2a', textDecoration:'none' }}>Privacy Policy</Link>
+        <Link href="/legal/terms" style={{ fontSize:11, color:'#2a2a2a', textDecoration:'none' }}>Terms of Service</Link>
       </div>
     </main>
   )
