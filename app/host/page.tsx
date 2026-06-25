@@ -131,10 +131,7 @@ function HostDashboardInner() {
           <IconFlash size={20} color="#0a0a0a" />
         </div>
         <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 16, fontWeight: 700, flex: 1, letterSpacing: -0.5 }}>Flash</span>
-        <button onClick={() => router.push('/admin')} style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 10, color: '#555', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <IconTarget size={16} />
-        </button>
-        <button onClick={handleLogout} style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 10, color: '#555', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+<button onClick={handleLogout} style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 10, color: '#555', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconLogout size={18} />
         </button>
       </div>
