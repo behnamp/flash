@@ -1,0 +1,54 @@
+<svg width="390" height="844" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg">
+  <rect width="390" height="844" fill="#0a0a0a"/>
+  <!-- Header -->
+  <rect x="16" y="40" width="38" height="38" rx="11" fill="#161616"/>
+  <polyline points="27,59 22,54 27,49" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+  <text x="195" y="62" font-family="sans-serif" font-size="15" font-weight="700" fill="white" text-anchor="middle">Share with Guests</text>
+
+  <!-- Event name -->
+  <text x="195" y="120" font-family="sans-serif" font-size="22" font-weight="700" fill="#f0f0f0" text-anchor="middle">Sarah &amp; Tom's Wedding</text>
+  <text x="195" y="144" font-family="sans-serif" font-size="13" fill="#444" text-anchor="middle">Share this QR code with your guests</text>
+
+  <!-- QR code container -->
+  <rect x="55" y="168" width="280" height="280" rx="20" fill="#f0f0f0"/>
+  <!-- QR pattern simplified -->
+  <!-- Finder patterns corners -->
+  <rect x="75" y="188" width="56" height="56" rx="4" fill="#0a0a0a"/>
+  <rect x="80" y="193" width="46" height="46" rx="2" fill="#f0f0f0"/>
+  <rect x="85" y="198" width="36" height="36" rx="1" fill="#0a0a0a"/>
+  <rect x="259" y="188" width="56" height="56" rx="4" fill="#0a0a0a"/>
+  <rect x="264" y="193" width="46" height="46" rx="2" fill="#f0f0f0"/>
+  <rect x="269" y="198" width="36" height="36" rx="1" fill="#0a0a0a"/>
+  <rect x="75" y="372" width="56" height="56" rx="4" fill="#0a0a0a"/>
+  <rect x="80" y="377" width="46" height="46" rx="2" fill="#f0f0f0"/>
+  <rect x="85" y="382" width="36" height="36" rx="1" fill="#0a0a0a"/>
+  <!-- Center logo -->
+  <rect x="172" y="292" width="46" height="46" rx="10" fill="#e8ff47"/>
+  <text x="195" y="322" font-family="monospace" font-size="20" font-weight="900" fill="#0a0a0a" text-anchor="middle">⚡</text>
+  <!-- QR dots pattern (simplified grid) -->
+  <g fill="#0a0a0a" opacity="0.7">
+    <rect x="143" y="188" width="8" height="8"/><rect x="155" y="188" width="8" height="8"/><rect x="167" y="188" width="8" height="8"/>
+    <rect x="149" y="200" width="8" height="8"/><rect x="161" y="200" width="8" height="8"/>
+    <rect x="143" y="212" width="8" height="8"/><rect x="155" y="212" width="8" height="8"/><rect x="167" y="212" width="8" height="8"/>
+    <rect x="143" y="340" width="8" height="8"/><rect x="155" y="340" width="8" height="8"/>
+    <rect x="149" y="352" width="8" height="8"/><rect x="161" y="352" width="8" height="8"/>
+    <rect x="143" y="364" width="8" height="8"/><rect x="167" y="364" width="8" height="8"/>
+    <rect x="259" y="272" width="8" height="8"/><rect x="271" y="272" width="8" height="8"/>
+    <rect x="265" y="284" width="8" height="8"/>
+    <rect x="259" y="296" width="8" height="8"/><rect x="271" y="296" width="8" height="8"/>
+    <rect x="259" y="308" width="8" height="8"/><rect x="271" y="308" width="8" height="8"/>
+  </g>
+
+  <!-- Join code -->
+  <rect x="95" y="468" width="200" height="48" rx="12" fill="#111" stroke="#222" stroke-width="1"/>
+  <text x="195" y="484" font-family="sans-serif" font-size="9" font-weight="700" fill="#444" text-anchor="middle" letter-spacing="2">JOIN CODE</text>
+  <text x="195" y="504" font-family="monospace" font-size="18" font-weight="700" fill="#e8ff47" text-anchor="middle">FLASH2026</text>
+
+  <!-- Share link -->
+  <rect x="16" y="536" width="358" height="48" rx="12" fill="#111" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="28" y="566" font-family="monospace" font-size="12" fill="#555">flashcam.app/join/FLASH2026</text>
+
+  <!-- Copy button -->
+  <rect x="16" y="600" width="358" height="52" rx="13" fill="#e8ff47"/>
+  <text x="195" y="632" font-family="sans-serif" font-size="15" font-weight="700" fill="#0a0a0a" text-anchor="middle">Copy Link</text>
+</svg>

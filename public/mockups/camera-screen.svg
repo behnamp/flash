@@ -1,0 +1,110 @@
+<svg width="390" height="844" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg">
+  <!-- Phone background / camera viewfinder -->
+  <rect width="390" height="844" fill="#0a0a0a"/>
+  <!-- Camera viewfinder - warm party scene toned -->
+  <rect x="0" y="0" width="390" height="640" fill="#1a1208"/>
+  <!-- Simulated scene gradient -->
+  <radialGradient id="scene" cx="50%" cy="40%" r="60%">
+    <stop offset="0%" stop-color="#3d2a0a" stop-opacity="1"/>
+    <stop offset="100%" stop-color="#0a0808" stop-opacity="1"/>
+  </radialGradient>
+  <rect x="0" y="0" width="390" height="640" fill="url(#scene)"/>
+  <!-- Bokeh lights in background -->
+  <circle cx="80" cy="120" r="18" fill="#e8b840" opacity="0.15"/>
+  <circle cx="310" cy="90" r="12" fill="#e88030" opacity="0.12"/>
+  <circle cx="200" cy="200" r="22" fill="#c87020" opacity="0.1"/>
+  <circle cx="350" cy="300" r="14" fill="#e8b840" opacity="0.08"/>
+  <circle cx="40" cy="380" r="16" fill="#e88030" opacity="0.1"/>
+  <!-- Subtle silhouettes -->
+  <ellipse cx="130" cy="520" rx="50" ry="80" fill="#000" opacity="0.4"/>
+  <ellipse cx="260" cy="500" rx="45" ry="90" fill="#000" opacity="0.35"/>
+
+  <!-- TOP BAR gradient fade -->
+  <linearGradient id="topfade" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#000" stop-opacity="0.6"/>
+    <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+  </linearGradient>
+  <rect x="0" y="0" width="390" height="100" fill="url(#topfade)"/>
+
+  <!-- Back button -->
+  <rect x="16" y="54" width="38" height="38" rx="12" fill="#000" opacity="0.4"/>
+  <polyline points="27,73 22,68 27,63" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+
+  <!-- Shot counter pill - centered -->
+  <rect x="131" y="56" width="128" height="34" rx="17" fill="#000" opacity="0.5"/>
+  <!-- Dots -->
+  <circle cx="152" cy="73" r="4" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="164" cy="73" r="4" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="176" cy="73" r="4" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="188" cy="73" r="4" fill="#e8ff47"/>
+  <circle cx="200" cy="73" r="4" fill="rgba(255,255,255,0.55)"/>
+  <circle cx="212" cy="73" r="4" fill="rgba(255,255,255,0.55)"/>
+  <circle cx="224" cy="73" r="4" fill="rgba(255,255,255,0.55)"/>
+  <!-- Count -->
+  <text x="244" y="78" font-family="monospace" font-size="13" font-weight="700" fill="white">7</text>
+
+  <!-- Flip camera button -->
+  <rect x="336" y="54" width="38" height="38" rx="12" fill="#000" opacity="0.4"/>
+  <path d="M350 68 Q355 63 362 68 L362 72 L366 68 L362 64" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  <path d="M366 68 Q361 73 354 68 L354 72 L350 68 L354 64" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+  <!-- BOTTOM SECTION -->
+  <rect x="0" y="640" width="390" height="204" fill="#0a0a0a"/>
+
+  <!-- Film strip mode selector -->
+  <!-- KODAK selected -->
+  <linearGradient id="kodak" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c8742a"/><stop offset="100%" stop-color="#e8a84e"/></linearGradient>
+  <rect x="26" y="656" width="56" height="40" rx="6" fill="url(#kodak)"/>
+  <rect x="26" y="656" width="56" height="40" rx="6" fill="none" stroke="#e8ff47" stroke-width="2"/>
+  <!-- sprocket holes -->
+  <rect x="26" y="660" width="7" height="32" rx="0" fill="#00000060"/>
+  <rect x="28" y="664" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="28" y="673" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="28" y="682" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="75" y="660" width="7" height="32" rx="0" fill="#00000060"/>
+  <rect x="76" y="664" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="76" y="673" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="76" y="682" width="4" height="4" rx="1" fill="#00000080"/>
+  <text x="54" y="709" font-family="monospace" font-size="8" font-weight="800" fill="#e8ff47" text-anchor="middle">KODAK</text>
+
+  <!-- B&W mode -->
+  <linearGradient id="bw" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2a2a2a"/><stop offset="100%" stop-color="#777"/></linearGradient>
+  <rect x="98" y="656" width="56" height="40" rx="6" fill="url(#bw)"/>
+  <rect x="98" y="660" width="7" height="32" fill="#00000060"/>
+  <rect x="99" y="664" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="99" y="673" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="99" y="682" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="147" y="660" width="7" height="32" fill="#00000060"/>
+  <rect x="148" y="664" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="148" y="673" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="148" y="682" width="4" height="4" rx="1" fill="#00000080"/>
+  <text x="126" y="709" font-family="monospace" font-size="8" font-weight="800" fill="#444" text-anchor="middle">B&amp;W</text>
+
+  <!-- PORTRA mode -->
+  <linearGradient id="portra" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#b8966a"/><stop offset="100%" stop-color="#d4c4a0"/></linearGradient>
+  <rect x="170" y="656" width="56" height="40" rx="6" fill="url(#portra)"/>
+  <rect x="170" y="660" width="7" height="32" fill="#00000060"/>
+  <rect x="171" y="664" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="171" y="673" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="171" y="682" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="219" y="660" width="7" height="32" fill="#00000060"/>
+  <rect x="220" y="664" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="220" y="673" width="4" height="4" rx="1" fill="#00000080"/>
+  <rect x="220" y="682" width="4" height="4" rx="1" fill="#00000080"/>
+  <text x="198" y="709" font-family="monospace" font-size="8" font-weight="800" fill="#444" text-anchor="middle">PORTRA</text>
+
+  <!-- SHUTTER ROW -->
+  <!-- Upload icon left -->
+  <rect x="64" y="732" width="50" height="50" rx="14" fill="#161616" stroke="#222" stroke-width="1"/>
+  <rect x="76" y="742" width="26" height="20" rx="3" stroke="#555" stroke-width="1.7" fill="none"/>
+  <circle cx="81" cy="748" r="2.5" fill="#555"/>
+  <polyline points="101,762 96,757 78,762" stroke="#555" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+
+  <!-- Shutter button - hero - white circle with yellow ring -->
+  <circle cx="195" cy="757" r="41" fill="none" stroke="#e8ff47" stroke-width="3"/>
+  <circle cx="195" cy="757" r="32" fill="white"/>
+
+  <!-- Gallery folder right -->
+  <rect x="276" y="732" width="50" height="50" rx="14" fill="#161616" stroke="#222" stroke-width="1"/>
+  <path d="M288 752 L288 768 Q288 770 290 770 L312 770 Q314 770 314 768 L314 748 Q314 746 312 746 L302 746 L299 742 L290 742 Q288 742 288 744 Z" stroke="#555" stroke-width="1.7" fill="none" stroke-linejoin="round"/>
+</svg>

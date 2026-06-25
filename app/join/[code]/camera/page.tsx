@@ -6,15 +6,6 @@ import { ALL_MODES } from '@/constants/photoModes'
 import { applyFilterToCanvas, CANVAS_FILTERS } from '@/lib/filterCanvas'
 import { IconFlip } from '@/components/icons'
 
-// Mode preview colors — warm film aesthetic
-const MODE_COLORS: Record<string, { from: string; to: string; label: string }> = {
-  kodak:    { from: '#d4783c', to: '#e8a84e', label: 'KODAK' },
-  ilford:   { from: '#2a2a2a', to: '#777',    label: 'B&W'   },
-  portra:   { from: '#b8966a', to: '#d4c4a0', label: 'PORTRA'},
-  polaroid: { from: '#d4c8b4', to: '#ede8e0', label: 'POLAR' },
-  golden:   { from: '#c87828', to: '#e8b840', label: 'GOLD'  },
-}
-
 export default function CameraPage() {
   const params = useParams()
   const router = useRouter()
@@ -31,19 +22,19 @@ export default function CameraPage() {
   const [guest, setGuestData] = useState<any>(null)
   const [shotsUsed, setShotsUsed] = useState(0)
   const [shotLimit, setShotLimit] = useState(10)
-  const [modeIndex, setModeIndex] = useState(0)
   const [flashing, setFlashing] = useState(false)
   const [cameraReady, setCameraReady] = useState(false)
   const [cameraError, setCameraError] = useState('')
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment')
   const [uploading, setUploading] = useState(false)
+  const [zoom, setZoom] = useState(1)
   const [lastShotId, setLastShotId] = useState<string | null>(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [toast, setToast] = useState('')
   const [showToastVal, setShowToastVal] = useState(false)
 
-  const filter = ALL_MODES[modeIndex]
+  const filter = ALL_MODES[0] // Always Kodak Gold filter applied
 
   useEffect(() => {
     async function load() {
@@ -71,6 +62,12 @@ export default function CameraPage() {
       if (videoRef.current) {
         videoRef.current.srcObject = stream
         videoRef.current.onloadedmetadata = () => setCameraReady(true)
+      }
+      // Apply current zoom if camera supports it
+      const track = stream.getVideoTracks()[0]
+      const caps = track.getCapabilities?.() as any
+      if (caps?.zoom) {
+        track.applyConstraints({ advanced: [{ zoom: caps.zoom.min }] } as any).catch(() => {})
       }
     } catch { setCameraError('Camera access denied — please allow camera access and reload.') }
   }, [])
@@ -135,6 +132,25 @@ export default function CameraPage() {
       setShotsUsed(s => s - 1); setLastShotId(null); setShowDeleteConfirm(false)
       showToast('Shot deleted')
     } catch { showToast('Delete failed') } finally { setDeleting(false) }
+  }
+
+  const applyZoom = async (level: number) => {
+    setZoom(level)
+    const track = streamRef.current?.getVideoTracks()[0]
+    if (!track) return
+    const caps = track.getCapabilities?.() as any
+    if (caps?.zoom) {
+      // Native zoom via camera API
+      const maxZoom = Math.min(caps.zoom.max, 5)
+      const targetZoom = Math.max(caps.zoom.min, Math.min(level, maxZoom))
+      track.applyConstraints({ advanced: [{ zoom: targetZoom }] } as any).catch(() => {})
+    } else {
+      // CSS transform fallback on the video element
+      if (videoRef.current) {
+        videoRef.current.style.transform = `scale(${level})`
+        videoRef.current.style.transformOrigin = 'center center'
+      }
+    }
   }
 
   const left = Math.max(0, shotLimit - shotsUsed)
@@ -226,31 +242,19 @@ export default function CameraPage() {
       {/* ── BOTTOM CONTROLS ── */}
       <div style={{ background: '#0a0a0a', paddingBottom: 'max(16px, env(safe-area-inset-bottom))', touchAction: 'none', flexShrink: 0 }}>
 
-        {/* Film strip — horizontal scroll */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 0, paddingTop: 12, paddingBottom: 10, overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', touchAction: 'pan-x', paddingLeft: 16, paddingRight: 16 }}>
-          {ALL_MODES.map((m, i) => {
-            const mc = MODE_COLORS[m.id]
-            const selected = i === modeIndex
-            return (
-              <button key={m.id} onClick={() => setModeIndex(i)}
-                style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer', padding: '0 10px' }}>
-                {/* Film frame */}
-                <div style={{ width: 56, height: 40, borderRadius: 6, background: mc ? `linear-gradient(135deg, ${mc.from}, ${mc.to})` : '#222', border: selected ? '2px solid #e8ff47' : '2px solid transparent', transition: 'border .15s', position: 'relative', overflow: 'hidden' }}>
-                  {/* Film sprocket holes */}
-                  <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 7, background: 'rgba(0,0,0,0.35)', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', padding: '3px 1.5px' }}>
-                    {[0,1,2].map(j => <div key={j} style={{ width: 4, height: 4, background: 'rgba(0,0,0,0.6)', borderRadius: 1 }} />)}
-                  </div>
-                  <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 7, background: 'rgba(0,0,0,0.35)', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', padding: '3px 1.5px' }}>
-                    {[0,1,2].map(j => <div key={j} style={{ width: 4, height: 4, background: 'rgba(0,0,0,0.6)', borderRadius: 1 }} />)}
-                  </div>
-                </div>
-                {/* Mode label */}
-                <span style={{ fontSize: 8, fontWeight: 800, color: selected ? '#e8ff47' : '#444', textTransform: 'uppercase', letterSpacing: 1, fontFamily: 'Space Mono, monospace', whiteSpace: 'nowrap' }}>
-                  {mc?.label || m.name}
-                </span>
-              </button>
-            )
-          })}
+        {/* Zoom controls — pill above shutter, like Once */}
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 14, paddingBottom: 6 }}>
+          <div style={{ display: 'flex', background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(16px)', borderRadius: 24, padding: '4px', gap: 2, border: '1px solid rgba(255,255,255,0.08)' }}>
+            {[{ label: '.5x', value: 0.5 }, { label: '1x', value: 1 }, { label: '2x', value: 2 }, { label: '3x', value: 3 }].map(z => {
+              const active = zoom === z.value
+              return (
+                <button key={z.value} onClick={() => applyZoom(z.value)}
+                  style={{ width: 44, height: 32, borderRadius: 20, border: 'none', background: active ? '#e8ff47' : 'transparent', cursor: 'pointer', fontFamily: 'Space Mono, monospace', fontSize: 12, fontWeight: 700, color: active ? '#0a0a0a' : 'rgba(255,255,255,0.6)', transition: 'all .15s', letterSpacing: -0.3 }}>
+                  {z.label}
+                </button>
+              )
+            })}
+          </div>
         </div>
 
         {/* Shutter row */}
