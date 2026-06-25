@@ -2,8 +2,16 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { IconBack, IconCheck } from '@/components/icons'
+import { IconBack, IconCheck, IconInstant, IconReveal, IconRolling, IconMorning, IconMilestone } from '@/components/icons'
 import { REVEAL_MODES } from '@/constants/revealModes'
+
+const REVEAL_ICONS: Record<string, any> = {
+  lightning: IconInstant,
+  reveal: IconReveal,
+  rolling: IconRolling,
+  morning: IconMorning,
+  milestone: IconMilestone,
+}
 
 export default function EditEvent() {
   const { eventId } = useParams()
@@ -129,7 +137,9 @@ export default function EditEvent() {
               const sel = form.reveal_mode === r.id
               return (
                 <div key={r.id} onClick={() => set('reveal_mode', r.id)} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 12, padding: '13px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, transition: 'all .15s' }}>
-                  <span style={{ fontSize: 18 }}>{r.icon}</span>
+                  <div style={{ width: 32, height: 32, background: sel ? 'rgba(232,255,71,0.1)' : '#1a1a1a', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {(() => { const Icon = REVEAL_ICONS[r.icon] || IconReveal; return <Icon size={16} color={sel ? '#e8ff47' : '#555'} /> })()}
+                  </div>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: sel ? '#e8ff47' : '#ccc' }}>{r.name}</div>
                     <div style={{ fontSize: 11, color: '#444', marginTop: 1 }}>{r.desc}</div>

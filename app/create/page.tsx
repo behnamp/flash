@@ -118,7 +118,8 @@ export default function CreateEvent() {
         stats_card_enabled: form.statsCard, is_active: true,
       }).select().single()
       if (err) throw err
-      router.push(`/host/${event.id}`)
+      // Redirect to pricing — event is created as draft, payment activates it
+      router.push(`/pricing?eventId=${event.id}`)
     } catch (e: any) {
       setError(e.message || 'Failed to create event')
       setSaving(false)

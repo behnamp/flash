@@ -165,7 +165,7 @@ export default function EventDashboard() {
               ].map(({ n, l, Icon }) => (
                 <div key={l} style={{ background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 12, padding: 16 }}>
                   <div style={{ display: 'flex', marginBottom: 7 }}><Icon size={20} color="var(--accent)" /></div>
-                  <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 26, fontWeight: 700, color: 'var(--accent)' }}>{n}</div>
+                  <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 26, fontWeight: 700, color: '#f0f0f0' }}>{n}</div>
                   <div style={{ fontSize: 9, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 }}>{l}</div>
                 </div>
               ))}
