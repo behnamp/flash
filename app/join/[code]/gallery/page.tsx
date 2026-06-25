@@ -1,194 +1,193 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { IconFlash, IconShutter, IconGallery, IconBack, IconSave, IconHourglass, IconHeart, IconFire, IconLaugh, IconStar, IconWarningCircle } from '@/components/icons'
 
 export default function GuestGalleryPage() {
   const params = useParams()
   const router = useRouter()
   const code = params.code as string
   const supabase = createClient()
-  const [guestId, setGuestId] = useState<string | null>(null)
 
-  const [event, setEvent] = useState<any>(null)
   const [shots, setShots] = useState<any[]>([])
+  const [guestId, setGuestId] = useState<string | null>(null)
+  const [eventId, setEventId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState<any>(null)
-  const [secs, setSecs] = useState(0)
-  const [reactions, setReactions] = useState<Record<string, Record<string, boolean>>>({})
+  const [deleting, setDeleting] = useState(false)
+  const [toast, setToast] = useState('')
+  const [showToast, setShowToast] = useState(false)
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
-  const loadShots = useCallback(async (eventId: string) => {
-    const { data } = await supabase.from('shots').select('*, guests(nickname, avatar_emoji)').eq('event_id', eventId).order('taken_at', { ascending: false })
+  const showMsg = (msg: string) => {
+    setToast(msg); setShowToast(true)
+    clearTimeout(toastTimer.current)
+    toastTimer.current = setTimeout(() => setShowToast(false), 2000)
+  }
+
+  const loadShots = useCallback(async (evId: string) => {
+    const { data } = await supabase
+      .from('shots')
+      .select('id, storage_url, storage_path, mode_name, taken_at, guest_id, revealed')
+      .eq('event_id', evId)
+      .order('taken_at', { ascending: false })
     if (data) setShots(data)
   }, [supabase])
 
-  const handleDeleteMyShot = async (shotId: string, storagePath: string) => {
-    if (!confirm('Delete your photo?')) return
-    try {
-      if (storagePath) await supabase.storage.from('shots').remove([storagePath])
-      await supabase.from('shots').delete().eq('id', shotId)
-    } catch (e) { console.error(e) }
-  }
-
   useEffect(() => {
     async function load() {
-      // Resolve event from code in URL (reliable — avoids stale localStorage key)
-      const { data: ev } = await supabase.from('events').select('*').eq('join_code', code.toUpperCase()).single()
+      const { data: ev } = await supabase.from('events').select('id, name').eq('join_code', code.toUpperCase()).single()
       if (!ev) { router.push(`/join/${code}`); return }
-      const eventId = ev.id
-      const storedGuest = localStorage.getItem(`flash_guest_${eventId}`)
-      if (!storedGuest) { router.push(`/join/${code}`); return }
-      const storedGuestId = JSON.parse(storedGuest).id
-      setGuestId(storedGuestId)
-      setEvent(ev)
-      if (ev.reveal_at) setSecs(Math.max(0, Math.floor((new Date(ev.reveal_at).getTime() - Date.now()) / 1000)))
-      await loadShots(eventId)
+      setEventId(ev.id)
+      const stored = localStorage.getItem(`flash_guest_${ev.id}`)
+      if (!stored) { router.push(`/join/${code}`); return }
+      setGuestId(JSON.parse(stored).id)
+      await loadShots(ev.id)
       setLoading(false)
-      const channel = supabase.channel(`gallery-${eventId}`)
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'shots', filter: `event_id=eq.${eventId}` }, () => loadShots(eventId))
+
+      // Realtime updates
+      const channel = supabase.channel(`gallery-${ev.id}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'shots', filter: `event_id=eq.${ev.id}` }, () => loadShots(ev.id))
         .subscribe()
       return () => { supabase.removeChannel(channel) }
     }
     load()
   }, [code])
 
-  useEffect(() => { const t = setInterval(() => setSecs(s => Math.max(0, s - 1)), 1000); return () => clearInterval(t) }, [])
+  const deleteShot = async (shot: any) => {
+    if (!confirm('Delete this photo?')) return
+    setDeleting(true)
+    try {
+      if (shot.storage_path) await supabase.storage.from('shots').remove([shot.storage_path])
+      await supabase.from('shots').delete().eq('id', shot.id)
+      setShots(s => s.filter(x => x.id !== shot.id))
+      setSelected(null)
+      showMsg('Photo deleted')
+    } catch { showMsg('Delete failed') }
+    finally { setDeleting(false) }
+  }
 
-  const fmt = (s: number) => `${Math.floor(s/3600).toString().padStart(2,'0')}:${Math.floor((s%3600)/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`
-  const isVisible = (s: any) => s.revealed || s.guest_id === guestId
-  const visibleShots = shots.filter(isVisible)
   const myShots = shots.filter(s => s.guest_id === guestId)
-  const developingShots = myShots.filter(s => !s.revealed)
-
-  const REACTIONS = [
-    { key: 'heart', Icon: IconHeart, label: '12' },
-    { key: 'fire', Icon: IconFire, label: '7' },
-    { key: 'laugh', Icon: IconLaugh, label: '3' },
-    { key: 'wow', Icon: IconStar, label: '2' },
-  ]
+  const otherShots = shots.filter(s => s.guest_id !== guestId && s.revealed)
+  const allVisible = [...myShots, ...otherShots]
 
   if (loading) return (
-    <main style={{ height:'100vh', background:'#0a0a0a', display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <div className="flash-loading"><IconFlash size={40} /></div>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: 2, height: 32, background: '#e8ff47', animation: 'blink 1s ease-in-out infinite' }} />
+      <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}`}</style>
     </main>
   )
 
-  if (selected) {
-    const isMyShot = selected.guest_id === guestId
-    const isDev = isMyShot && !selected.revealed
-    return (
-      <main style={{ height:'100vh', background:'#000', display:'flex', flexDirection:'column' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:12, padding:'13px 16px', background:'rgba(0,0,0,0.9)', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
-          <button onClick={() => setSelected(null)} style={{ width:36, height:36, background:'rgba(255,255,255,0.08)', border:'none', borderRadius:10, color:'white', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <IconBack size={18} />
-          </button>
-          <span style={{ color:'white', fontWeight:600, fontSize:14, flex:1 }}>by {selected.guests?.nickname || 'Guest'}</span>
-          {isDev && <div style={{ background:'rgba(232,255,71,0.1)', border:'1px solid rgba(232,255,71,0.2)', borderRadius:8, padding:'4px 10px', fontSize:10, color:'#e8ff47', fontWeight:600, letterSpacing:0.5 }}>DEVELOPING</div>}
-          <button onClick={() => alert('Saved!')} style={{ width:36, height:36, background:'rgba(255,255,255,0.08)', border:'none', borderRadius:10, color:'white', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <IconSave size={16} />
-          </button>
-        </div>
-        <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', position:'relative' }}>
-          {selected.storage_url
-            ? <img src={selected.storage_url} alt="" style={{ maxWidth:'100%', maxHeight:'100%', objectFit:'contain' }} />
-            : <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:12, opacity:0.3 }}><IconShutter size={64} /><span style={{ fontSize:13, color:'white' }}>Processing...</span></div>
-          }
-          <div style={{ position:'absolute', bottom:0, left:0, right:0, padding:18, background:'linear-gradient(to top,rgba(0,0,0,0.88),transparent)' }}>
-            <div style={{ fontSize:13, fontWeight:600, color:'white', marginBottom:2 }}>by {selected.guests?.nickname}</div>
-            <div style={{ fontSize:11, color:'rgba(255,255,255,0.4)', marginBottom:12 }}>{selected.mode_name || 'Kodak Gold'} · {new Date(selected.taken_at).toLocaleTimeString()}</div>
-            {selected.caption && <div style={{ background:'rgba(255,255,255,0.07)', borderRadius:9, padding:'9px 12px', fontSize:13, color:'rgba(255,255,255,0.8)', marginBottom:12, fontStyle:'italic' }}>"{selected.caption}"</div>}
-            <div style={{ display:'flex', gap:8 }}>
-              {REACTIONS.map(({ key, Icon, label }) => (
-                <button key={key} onClick={() => {}} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:20, padding:'7px 13px', cursor:'pointer', color:'rgba(255,255,255,0.7)', fontFamily:'inherit', fontSize:12, display:'flex', alignItems:'center', gap:6, fontWeight:600 }}>
-                  <Icon size={14} color="rgba(255,255,255,0.6)" />{label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </main>
-    )
-  }
-
   return (
-    <main style={{ height:'100vh', background:'#0a0a0a', display:'flex', flexDirection:'column' }}>
-      <div style={{ padding:'16px 18px 0', borderBottom:'1px solid #161616' }}>
-        <div style={{ fontSize:18, fontWeight:700, letterSpacing:-0.4, marginBottom:3 }}>{event?.name}</div>
-        <div style={{ fontSize:12, color:'#444', marginBottom:11 }}>{myShots.length} your shots · {shots.filter(s=>s.revealed).length} revealed</div>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'fixed', inset: 0 }}>
 
-        {!event?.revealed && event?.reveal_mode !== 'instant' && (
-          <div style={{ background:'#111', border:'1px solid #1a1a1a', borderRadius:10, padding:'11px 14px', display:'flex', alignItems:'center', gap:11, marginBottom:11 }}>
-            <IconHourglass size={18} color="#444" />
-            <div>
-              <div style={{ fontSize:11, color:'#555' }}>{event?.reveal_mode === 'morning' ? 'Reveals tomorrow at 9am' : event?.reveal_mode === 'milestone' ? "Reveals when everyone's done" : 'Reveals at end of event'}</div>
-              {secs > 0 && <div style={{ fontFamily:'Space Mono,monospace', fontSize:15, fontWeight:700, color:'#e8ff47', marginTop:2 }}>{fmt(secs)}</div>}
-            </div>
-          </div>
-        )}
-
-        {developingShots.length > 0 && (
-          <div style={{ background:'rgba(232,255,71,0.04)', border:'1px solid rgba(232,255,71,0.12)', borderRadius:10, padding:'10px 14px', marginBottom:11, fontSize:12, color:'#e8ff47', display:'flex', alignItems:'center', gap:8 }}>
-            <IconWarningCircle size={14} color="#e8ff47" />
-            {developingShots.length} of your shots are developing — visible only to you until reveal
-          </div>
-        )}
-
-        <div style={{ display:'flex' }}>
-          <button onClick={() => router.push(`/join/${code}/camera`)} style={{ flex:1, padding:'10px 0', background:'none', border:'none', borderBottom:'2px solid transparent', cursor:'pointer', fontFamily:'inherit', fontSize:11, fontWeight:700, color:'#333', textTransform:'uppercase', letterSpacing:0.8, display:'flex', alignItems:'center', justifyContent:'center', gap:5 }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="#333" stroke="none"/></svg>
-            Camera
-          </button>
-          <button style={{ flex:1, padding:'10px 0', background:'none', border:'none', borderBottom:'2px solid #e8ff47', cursor:'default', fontFamily:'inherit', fontSize:11, fontWeight:700, color:'#e8ff47', textTransform:'uppercase', letterSpacing:0.8, display:'flex', alignItems:'center', justifyContent:'center', gap:5 }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#e8ff47" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5" fill="#e8ff47" stroke="none"/><polyline points="21,15 16,10 5,21" stroke="#e8ff47"/></svg>
-            Gallery
-          </button>
+      {/* HEADER */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #111', flexShrink: 0, background: '#0a0a0a' }}>
+        <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, fontWeight: 700, color: '#f0f0f0' }}>
+          {myShots.length} {myShots.length === 1 ? 'photo' : 'photos'}
         </div>
+        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#333' }}>Gallery</div>
+        <div style={{ width: 40 }} />
       </div>
 
-      <div style={{ flex:1, overflowY:'auto' }}>
-        {visibleShots.length === 0
-          ? <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:240, gap:12 }}>
-              <IconShutter size={40} color="#222" />
-              <div style={{ fontSize:14, color:'#333', fontWeight:500 }}>No shots yet — go take some!</div>
-            </div>
-          : <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:2, padding:2 }}>
-              {visibleShots.map(s => {
-                const isDev = s.guest_id === guestId && !s.revealed
-                return (
-                  <div key={s.id} onClick={() => setSelected(s)} style={{ aspectRatio:'1', overflow:'hidden', position:'relative', background:'#111', cursor:'pointer' }}>
-                    {s.storage_url
-                      ? <img src={s.storage_url} alt="" style={{ width:'100%', height:'100%', objectFit:'cover', filter: isDev ? 'brightness(0.6)' : 'none' }} />
-                      : <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center' }}><IconShutter size={24} color="#222" /></div>
-                    }
-                    {isDev && <div style={{ position:'absolute', top:5, left:5, background:'rgba(232,255,71,0.9)', borderRadius:5, padding:'2px 7px', fontSize:8, fontWeight:800, color:'#000', letterSpacing:0.5 }}>YOURS</div>}
-                    {!s.revealed && !isDev && (
-                      <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', background:'#111', gap:4 }}>
-                        <IconHourglass size={18} color="#2a2a2a" className="pulse" />
-                        <span style={{ fontSize:8, color:'#2a2a2a', textTransform:'uppercase', letterSpacing:1 }}>Developing</span>
+      {/* PHOTO GRID */}
+      <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        {allVisible.length === 0 ? (
+          <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#222" strokeWidth="1.2" strokeLinecap="round">
+              <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="#222" stroke="none"/>
+            </svg>
+            <div style={{ fontSize: 14, color: '#333', fontWeight: 600 }}>No photos yet</div>
+            <div style={{ fontSize: 12, color: '#222' }}>Go take some shots!</div>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2, padding: 2 }}>
+            {allVisible.map(s => {
+              const isMe = s.guest_id === guestId
+              const isDev = isMe && !s.revealed
+              return (
+                <div key={s.id} onClick={() => setSelected(s)}
+                  style={{ aspectRatio: '1', background: '#111', position: 'relative', cursor: 'pointer', overflow: 'hidden' }}>
+                  {s.storage_url
+                    ? <img src={s.storage_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: isDev ? 'brightness(0.5)' : 'none' }} />
+                    : <div style={{ width: '100%', height: '100%', background: '#1a1a1a' }} />
+                  }
+                  {isDev && (
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ width: 20, height: 20, borderRadius: 10, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M18 8h-1V6A5 5 0 0 0 6 6v2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zm-6 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm3.1-9H8.9V6a3.1 3.1 0 0 1 6.2 0v2z"/></svg>
                       </div>
-                    )}
-                    <div style={{ position:'absolute', bottom:0, left:0, right:0, padding:'4px 5px', background:'linear-gradient(to top,rgba(0,0,0,0.7),transparent)', fontSize:8, color:'rgba(255,255,255,0.7)', fontWeight:600, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-                      {s.guests?.nickname}
                     </div>
-                  </div>
-                )
-              })}
-            </div>
-        }
+                  )}
+                  {isMe && !isDev && (
+                    <div style={{ position: 'absolute', top: 4, right: 4, width: 18, height: 18, borderRadius: 5, background: '#e8ff47', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
 
-      <div style={{ display:'flex', borderTop:'1px solid #161616', background:'rgba(10,10,10,0.97)' }}>
-        {[
-          { Icon: IconShutter, label:'Camera', fn: () => router.push(`/join/${code}/camera`), active: false },
-          { Icon: IconGallery, label:'Gallery', fn: () => {}, active: true },
-        ].map(({ Icon, label, fn, active }) => (
-          <button key={label} onClick={fn} style={{ flex:1, padding:'12px 0', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit', fontSize:10, fontWeight:700, color: active ? '#e8ff47' : '#333', textTransform:'uppercase', letterSpacing:0.8, display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
-            <Icon size={20} color={active ? '#e8ff47' : '#333'} />
-            {label}
-          </button>
-        ))}
+      {/* BACK TO CAMERA BUTTON */}
+      <div style={{ padding: '12px 16px', paddingBottom: 'max(12px, env(safe-area-inset-bottom))', background: '#0a0a0a', borderTop: '1px solid #111', flexShrink: 0 }}>
+        <button onClick={() => router.push(`/join/${code}/camera`)}
+          style={{ width: '100%', background: '#e8ff47', color: '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.2" strokeLinecap="round">
+            <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="#0a0a0a" stroke="none"/>
+          </svg>
+          Back to Camera
+        </button>
       </div>
+
+      {/* LIGHTBOX */}
+      {selected && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.96)', zIndex: 100, display: 'flex', flexDirection: 'column' }}>
+          {/* Lightbox header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', paddingTop: 'max(14px, env(safe-area-inset-top))', flexShrink: 0 }}>
+            <button onClick={() => setSelected(null)}
+              style={{ background: '#161616', border: 'none', borderRadius: 10, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+            <div style={{ fontSize: 12, color: '#555' }}>{selected.mode_name}</div>
+            {/* Delete — only own photos */}
+            {selected.guest_id === guestId ? (
+              <button onClick={() => deleteShot(selected)} disabled={deleting}
+                style={{ background: '#1a0a0a', border: '1px solid rgba(255,71,87,0.3)', borderRadius: 10, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff4757" strokeWidth="2" strokeLinecap="round">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+                </svg>
+              </button>
+            ) : <div style={{ width: 36 }} />}
+          </div>
+
+          {/* Photo */}
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 8px' }}>
+            {selected.storage_url
+              ? <img src={selected.storage_url} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 12 }} />
+              : <div style={{ width: '80%', aspectRatio: '3/4', background: '#111', borderRadius: 12 }} />
+            }
+          </div>
+
+          {/* Photo info */}
+          <div style={{ padding: '16px', paddingBottom: 'max(16px, env(safe-area-inset-bottom))', textAlign: 'center', flexShrink: 0 }}>
+            <div style={{ fontSize: 12, color: '#444' }}>
+              {selected.guest_id === guestId ? 'Your photo' : 'Guest photo'} · {new Date(selected.taken_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast */}
+      <div style={{ position: 'fixed', bottom: 100, left: '50%', transform: `translateX(-50%) translateY(${showToast ? 0 : 8}px)`, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(16px)', borderRadius: 20, padding: '9px 18px', fontSize: 13, fontWeight: 600, color: '#fff', opacity: showToast ? 1 : 0, transition: 'all .2s', pointerEvents: 'none', whiteSpace: 'nowrap', zIndex: 200 }}>
+        {toast}
+      </div>
+
+      <style>{`* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }`}</style>
     </main>
   )
 }

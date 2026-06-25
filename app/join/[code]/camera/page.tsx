@@ -48,7 +48,7 @@ export default function CameraPage() {
     load()
   }, [code])
 
-  const startCamera = useCallback(async (facing: 'user' | 'environment') => {
+  const startCamera = async (facing: 'user' | 'environment') => {
     if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop())
     setCameraReady(false)
     try {
@@ -62,7 +62,7 @@ export default function CameraPage() {
         videoRef.current.onloadedmetadata = () => setCameraReady(true)
       }
     } catch { setCameraError('Camera access denied. Please allow camera access and reload.') }
-  }, [])
+  }
 
   useEffect(() => {
     startCamera(facingMode)
@@ -136,10 +136,7 @@ export default function CameraPage() {
   const left = Math.max(0, shotLimit - shotsUsed)
   const cssFilter = CANVAS_FILTERS[filter.id]?.filter || 'none'
 
-  // Shot number scroll display (like Once: shows prev, current, next)
-  const prevShot = shotsUsed > 0 ? shotsUsed : null
-  const currShot = shotsUsed + 1
-  const nextShot = shotsUsed + 2
+  // Shots remaining display
 
   const ZOOM_LEVELS = [
     { label: '0.5×', value: 0.5 },
@@ -204,10 +201,8 @@ export default function CameraPage() {
           {/* QR / gallery icon — top right */}
           <button onClick={() => router.push(`/join/${code}/gallery`)}
             style={{ width: 38, height: 38, background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(12px)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' } as any}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
-              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
-              <rect x="14" y="14" width="3" height="3" rx="0.5" fill="white" stroke="none"/><rect x="18" y="14" width="3" height="3" rx="0.5" fill="white" stroke="none"/>
-              <rect x="14" y="18" width="3" height="3" rx="0.5" fill="white" stroke="none"/><rect x="18" y="18" width="3" height="3" rx="0.5" fill="white" stroke="none"/>
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
             </svg>
           </button>
         </div>
@@ -252,11 +247,11 @@ export default function CameraPage() {
 
           {/* CENTER: Shot number scroll + Shutter */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-            {/* Shot number scroll — like Once */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, height: 28, overflow: 'hidden' }}>
-              {prevShot && <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 18, fontWeight: 700, color: 'rgba(255,255,255,0.25)', lineHeight: 1 }}>{prevShot}</span>}
-              <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 26, fontWeight: 700, color: 'white', lineHeight: 1 }}>{outOfShots ? '—' : currShot}</span>
-              {!outOfShots && <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 18, fontWeight: 700, color: 'rgba(255,255,255,0.25)', lineHeight: 1 }}>{nextShot}</span>}
+            {/* Shots remaining — clean single number */}
+            <div style={{ height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, fontWeight: 700, color: outOfShots ? '#ff4757' : left <= 2 ? '#ffa502' : 'rgba(255,255,255,0.5)', letterSpacing: 1, textTransform: 'uppercase' }}>
+                {outOfShots ? 'FULL' : `${left} LEFT`}
+              </span>
             </div>
 
             {/* Shutter */}
