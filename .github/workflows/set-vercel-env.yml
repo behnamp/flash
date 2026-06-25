@@ -38,5 +38,13 @@ jobs:
             -d "{\"key\":\"RESEND_API_KEY\",\"value\":\"${{ secrets.RESEND_API_KEY }}\",\"type\":\"encrypted\",\"target\":[\"production\"]}" \
             && echo "✓ RESEND_API_KEY" || echo "already exists"
 
+      - name: Set NEXT_PUBLIC_APP_URL
+        run: |
+          curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"key\":\"NEXT_PUBLIC_APP_URL\",\"value\":\"https://flashcam.app\",\"type\":\"plain\",\"target\":[\"production\"]}" \
+            && echo "✓ NEXT_PUBLIC_APP_URL" || echo "already exists"
+
       - name: Done
         run: echo "✓ All env vars set — Vercel will auto-deploy on next git push"
