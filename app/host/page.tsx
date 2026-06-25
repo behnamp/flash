@@ -9,7 +9,7 @@ import {
   IconWedding, IconBirthday, IconParty, IconTrip, IconCorporate,
   IconFestival, IconSports, IconNightlife, IconQuestion,
   IconLive, IconReveal, IconClose, IconCheck, IconTarget,
-  IconEdit, IconDelete, IconDuplicate, IconLink, IconStop, IconArrowRight, IconQR
+  IconEdit, IconDelete, IconDuplicate, IconLink, IconStop, IconArrowRight, IconQR, IconSave
 } from '@/components/icons'
 
 const EVENT_TYPE_ICONS: Record<string, any> = {
@@ -261,6 +261,15 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
           </div>
         </div>
 
+        {/* Download banner for revealed events */}
+        {ev.revealed && (
+          <div style={{ borderTop: '1px solid #161616', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(46,213,115,0.04)' }}>
+            <div style={{ fontSize: 12, color: '#555' }}>Gallery revealed — download before photos expire</div>
+            <button onClick={() => router.push(`/host/${ev.id}/download`)} style={{ background: 'rgba(46,213,115,0.1)', border: '1px solid rgba(46,213,115,0.2)', borderRadius: 8, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: '#2ed573', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap' }}>
+              <IconSave size={13} color="#2ed573" /> Download
+            </button>
+          </div>
+        )}
         {/* Stats bar */}
         <div style={{ display: 'flex', borderTop: '1px solid #161616', padding: '10px 16px', gap: 20 }}>
           {[
