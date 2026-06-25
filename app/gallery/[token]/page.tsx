@@ -77,13 +77,15 @@ export default function PublicGalleryPage() {
           <div style={{ marginTop: 14, textAlign: 'center' }}>
             <div style={{ fontSize: 13, color: '#888' }}>{(selected.guests as any)?.nickname || 'Guest'} · {selected.mode_name}</div>
           </div>
-          <div style={{ position: 'absolute', top: 16, right: 16, fontSize: 22, color: '#555', cursor: 'pointer' }} onClick={() => setSelected(null)}>✕</div>
+          <div onClick={() => setSelected(null)} style={{ position: 'absolute', top: 16, right: 16, width: 32, height: 32, background: 'rgba(0,0,0,0.5)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
         </div>
       )}
 
       {/* Powered by */}
       <div style={{ textAlign: 'center', padding: '24px 0 40px', fontSize: 12, color: '#2a2a2a' }}>
-        Captured with <a href="https://flashcam.app" target="_blank" rel="noopener" style={{ color: '#444', textDecoration: 'none', fontWeight: 600 }}>Flash ⚡</a>
+        Captured with <a href="https://flashcam.app" target="_blank" rel="noopener" style={{ color: '#444', textDecoration: 'none', fontWeight: 600 }}>Flash</a>
       </div>
     </main>
   )

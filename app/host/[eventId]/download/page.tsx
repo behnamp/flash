@@ -163,7 +163,7 @@ function DownloadPageInner() {
         ) : daysLeft !== null && daysLeft > 0 ? (
           <div style={{ background: `rgba(${daysLeft <= 2 ? '255,71,87' : daysLeft <= 5 ? '255,165,2' : '232,255,71'},0.06)`, border: `1px solid ${urgencyColor}33`, borderRadius: 14, padding: '16px 18px', marginBottom: 18 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: urgencyColor, marginBottom: 4 }}>
-              {daysLeft === 1 ? '⚠ Last day to download!' : `${daysLeft} days until photos are deleted`}
+              {daysLeft === 1 ? 'Last day to download!' : `${daysLeft} days until photos are deleted`}
             </div>
             <div style={{ fontSize: 12, color: '#555', lineHeight: 1.6, marginBottom: 14 }}>
               Photos delete permanently on {new Date(event.photos_expire_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}

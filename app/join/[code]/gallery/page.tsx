@@ -33,13 +33,14 @@ export default function GuestGalleryPage() {
 
   useEffect(() => {
     async function load() {
-      const eventId = localStorage.getItem('flash_event_id')
-      if (!eventId) { router.push(`/join/${code}`); return }
+      // Resolve event from code in URL (reliable — avoids stale localStorage key)
+      const { data: ev } = await supabase.from('events').select('*').eq('join_code', code.toUpperCase()).single()
+      if (!ev) { router.push(`/join/${code}`); return }
+      const eventId = ev.id
       const storedGuest = localStorage.getItem(`flash_guest_${eventId}`)
-      const storedGuestId = storedGuest ? JSON.parse(storedGuest).id : null
+      if (!storedGuest) { router.push(`/join/${code}`); return }
+      const storedGuestId = JSON.parse(storedGuest).id
       setGuestId(storedGuestId)
-      const { data: ev } = await supabase.from('events').select('*').eq('id', eventId).single()
-      if (!ev) return
       setEvent(ev)
       if (ev.reveal_at) setSecs(Math.max(0, Math.floor((new Date(ev.reveal_at).getTime() - Date.now()) / 1000)))
       await loadShots(eventId)
@@ -134,9 +135,14 @@ export default function GuestGalleryPage() {
         )}
 
         <div style={{ display:'flex' }}>
-          {[['📷','Camera',()=>router.push(`/join/${code}/camera`)],['🖼','Gallery',()=>{}]].map(([icon,label,fn]:any)=>(
-            <button key={label} onClick={fn} style={{ flex:1, padding:'10px 0', background:'none', border:'none', borderBottom:`2px solid ${label==='Gallery'?'#e8ff47':'transparent'}`, cursor:'pointer', fontFamily:'inherit', fontSize:11, fontWeight:700, color:label==='Gallery'?'#e8ff47':'#333', textTransform:'uppercase', letterSpacing:0.8 }}>{label}</button>
-          ))}
+          <button onClick={() => router.push(`/join/${code}/camera`)} style={{ flex:1, padding:'10px 0', background:'none', border:'none', borderBottom:'2px solid transparent', cursor:'pointer', fontFamily:'inherit', fontSize:11, fontWeight:700, color:'#333', textTransform:'uppercase', letterSpacing:0.8, display:'flex', alignItems:'center', justifyContent:'center', gap:5 }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="#333" stroke="none"/></svg>
+            Camera
+          </button>
+          <button style={{ flex:1, padding:'10px 0', background:'none', border:'none', borderBottom:'2px solid #e8ff47', cursor:'default', fontFamily:'inherit', fontSize:11, fontWeight:700, color:'#e8ff47', textTransform:'uppercase', letterSpacing:0.8, display:'flex', alignItems:'center', justifyContent:'center', gap:5 }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#e8ff47" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5" fill="#e8ff47" stroke="none"/><polyline points="21,15 16,10 5,21" stroke="#e8ff47"/></svg>
+            Gallery
+          </button>
         </div>
       </div>
 

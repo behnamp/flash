@@ -29,7 +29,7 @@ export default function EmbedGalleryPage() {
     <div style={{ background: '#0a0a0a', minHeight: '100%', fontFamily: '-apple-system, sans-serif' }}>
       <div style={{ padding: '12px 14px 8px', borderBottom: '1px solid #161616', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: '#f0f0f0' }}>{eventName}</div>
-        <a href="https://flashcam.app" target="_blank" rel="noopener" style={{ fontSize: 11, color: '#444', textDecoration: 'none' }}>⚡ Flash</a>
+        <a href="https://flashcam.app" target="_blank" rel="noopener" style={{ fontSize: 11, color: '#444', textDecoration: 'none' }}>Flash</a>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 2, padding: 2 }}>
         {photos.map(p => (
@@ -41,7 +41,9 @@ export default function EmbedGalleryPage() {
       {selected && (
         <div onClick={() => setSelected(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <img src={selected.storage_url} alt="" style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', borderRadius: 6 }} />
-          <div style={{ position: 'absolute', top: 12, right: 12, fontSize: 20, color: '#666', cursor: 'pointer' }}>✕</div>
+          <div onClick={() => setSelected(null)} style={{ position: 'absolute', top: 12, right: 12, width: 28, height: 28, background: 'rgba(0,0,0,0.5)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
         </div>
       )}
     </div>
