@@ -8,26 +8,34 @@ jobs:
   set-env-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Set STRIPE_SECRET_KEY on Vercel
+      - name: Set STRIPE_SECRET_KEY
         run: |
-          RESPONSE=$(curl -s -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
+          curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
             -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d "{\"key\":\"STRIPE_SECRET_KEY\",\"value\":\"${{ secrets.STRIPE_SECRET_KEY }}\",\"type\":\"encrypted\",\"target\":[\"production\"]}")
-          echo "$RESPONSE" | grep -q '"id"' && echo "✓ STRIPE_SECRET_KEY set" || echo "Response: $RESPONSE"
+            -d "{\"key\":\"STRIPE_SECRET_KEY\",\"value\":\"${{ secrets.STRIPE_SECRET_KEY }}\",\"type\":\"encrypted\",\"target\":[\"production\"]}" \
+            && echo "✓ STRIPE_SECRET_KEY" || echo "exists"
 
-      - name: Set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY on Vercel
+      - name: Set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
         run: |
-          RESPONSE=$(curl -s -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
+          curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
             -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d "{\"key\":\"NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY\",\"value\":\"${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}\",\"type\":\"plain\",\"target\":[\"production\"]}")
-          echo "$RESPONSE" | grep -q '"id"' && echo "✓ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY set" || echo "Response: $RESPONSE"
+            -d "{\"key\":\"NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY\",\"value\":\"${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}\",\"type\":\"plain\",\"target\":[\"production\"]}" \
+            && echo "✓ STRIPE_PK" || echo "exists"
 
-      - name: Trigger Vercel redeploy
+      - name: Set SUPABASE_SERVICE_ROLE_KEY
         run: |
-          RESPONSE=$(curl -s -X POST "https://api.vercel.com/v13/deployments" \
+          curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
             -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d '{"name":"flash-roan","gitSource":{"type":"github","org":"behnamp","repo":"flash","ref":"main"}}')
-          echo "$RESPONSE" | grep -q '"id"' && echo "✓ Redeploy triggered" || echo "Response: $RESPONSE"
+            -d "{\"key\":\"SUPABASE_SERVICE_ROLE_KEY\",\"value\":\"${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}\",\"type\":\"encrypted\",\"target\":[\"production\"]}" \
+            && echo "✓ SUPABASE_SERVICE_ROLE_KEY" || echo "exists"
+
+      - name: Redeploy
+        run: |
+          curl -sf -X POST "https://api.vercel.com/v13/deployments" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"name":"flash-roan","gitSource":{"type":"github","org":"behnamp","repo":"flash","ref":"main"}}' \
+            && echo "✓ Redeploy triggered"
