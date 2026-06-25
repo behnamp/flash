@@ -1,7 +1,5 @@
 name: Set Vercel Env & Redeploy
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -14,7 +12,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d "{\"key\":\"STRIPE_SECRET_KEY\",\"value\":\"${{ secrets.STRIPE_SECRET_KEY }}\",\"type\":\"encrypted\",\"target\":[\"production\"]}" \
-            && echo "✓ STRIPE_SECRET_KEY" || echo "exists"
+            && echo "✓ STRIPE_SECRET_KEY" || echo "already exists"
 
       - name: Set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
         run: |
@@ -22,7 +20,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d "{\"key\":\"NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY\",\"value\":\"${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}\",\"type\":\"plain\",\"target\":[\"production\"]}" \
-            && echo "✓ STRIPE_PK" || echo "exists"
+            && echo "✓ STRIPE_PK" || echo "already exists"
 
       - name: Set SUPABASE_SERVICE_ROLE_KEY
         run: |
@@ -30,12 +28,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d "{\"key\":\"SUPABASE_SERVICE_ROLE_KEY\",\"value\":\"${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}\",\"type\":\"encrypted\",\"target\":[\"production\"]}" \
-            && echo "✓ SUPABASE_SERVICE_ROLE_KEY" || echo "exists"
+            && echo "✓ SUPABASE_SERVICE_ROLE_KEY" || echo "already exists"
 
-      - name: Redeploy
-        run: |
-          curl -sf -X POST "https://api.vercel.com/v13/deployments" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d '{"name":"flash-roan","gitSource":{"type":"github","org":"behnamp","repo":"flash","ref":"main"}}' \
-            && echo "✓ Redeploy triggered"
+      - name: Done
+        run: echo "✓ All env vars set — Vercel will auto-deploy on next git push"
