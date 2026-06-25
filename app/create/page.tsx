@@ -265,25 +265,21 @@ export default function CreateEvent() {
                     return (
                       <div key={m.id} onClick={() => toggleMode(m.id)} style={{ background: '#0e0e0e', border: `1px solid ${sel ? '#e8ff47' : '#1a1a1a'}`, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', position: 'relative', transition: 'border .15s' }}>
                         {sel && <div style={{ position: 'absolute', top: 7, right: 7, width: 17, height: 17, background: '#e8ff47', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}><Check size={9} color="#000" weight="bold" /></div>}
-                        {/* Real photo preview with CSS filter */}
-                        <div style={{ height: 90, position: 'relative', overflow: 'hidden', background: m.bg || '#111' }}>
-                          {MODE_PREVIEWS[m.id] && (
-                            <img
-                              src={MODE_PREVIEWS[m.id].photo}
-                              alt={m.name}
-                              loading="lazy"
-                              decoding="async"
-                              onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-                              style={{
-                                width: '100%', height: '100%', objectFit: 'cover',
-                                filter: MODE_PREVIEWS[m.id].filter,
-                                display: 'block',
-                              }}
-                            />
+                        {/* CSS gradient preview — no external images, always loads */}
+                        <div style={{ height: 90, position: 'relative', overflow: 'hidden' }}>
+                          {/* Base gradient */}
+                          <div style={{
+                            position: 'absolute', inset: 0,
+                            background: MODE_PREVIEWS[m.id]?.bg || '#111',
+                            filter: MODE_PREVIEWS[m.id]?.filter || 'none',
+                          }} />
+                          {/* Overlay (neon glow, grain, light leak effects) */}
+                          {MODE_PREVIEWS[m.id]?.overlay && (
+                            <div style={{ position: 'absolute', inset: 0, background: MODE_PREVIEWS[m.id].overlay }} />
                           )}
                           {/* Vignette */}
-                          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.55) 100%)', pointerEvents: 'none' }} />
-                          {/* Mode name on hover */}
+                          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%)', pointerEvents: 'none' }} />
+                          {/* Selected border */}
                           {sel && <div style={{ position: 'absolute', inset: 0, border: '2px solid #e8ff47', borderRadius: 14, pointerEvents: 'none' }} />}
                         </div>
                         <div style={{ padding: '7px 6px 9px', textAlign: 'center' }}>
