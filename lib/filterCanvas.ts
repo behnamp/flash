@@ -128,8 +128,13 @@ export async function applyFilterToCanvas(
     // Still apply kodak since it's our default
   }
 
-  const w = sourceCanvas.width
-  const h = sourceCanvas.height
+  // Cap at 2048px on longest side to keep file sizes reasonable
+  const MAX = 2048
+  const srcW = sourceCanvas.width
+  const srcH = sourceCanvas.height
+  const scale = (srcW > MAX || srcH > MAX) ? Math.min(MAX / srcW, MAX / srcH) : 1
+  const w = Math.round(srcW * scale)
+  const h = Math.round(srcH * scale)
 
   // Create output canvas
   const out = document.createElement('canvas')

@@ -139,24 +139,63 @@ export default function CameraPage() {
     if (shotsUsed >= shotLimit || !canvasRef.current || !videoRef.current || uploading || !cameraReady) return
     setFlashing(true); setTimeout(() => setFlashing(false), 100)
     const canvas = canvasRef.current; const video = videoRef.current
-    canvas.width = video.videoWidth || 1920; canvas.height = video.videoHeight || 1080
-    canvas.getContext('2d')!.drawImage(video, 0, 0)
-    const blob = await applyFilterToCanvas(canvas, filter.id, 0.9)
+    // Cap at 2048px to keep file sizes reasonable while keeping detail
+    const MAX = 2048
+    const vw = video.videoWidth || 1920; const vh = video.videoHeight || 1080
+    const scale = (vw > MAX || vh > MAX) ? Math.min(MAX / vw, MAX / vh) : 1
+    canvas.width = Math.round(vw * scale); canvas.height = Math.round(vh * scale)
+    const ctx = canvas.getContext('2d')!
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+    const blob = await applyFilterToCanvas(canvas, filter.id, 0.88)
     await uploadBlob(blob)
   }, [shotsUsed, shotLimit, uploading, cameraReady, filter, event, guest])
 
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return
     if (shotsUsed >= shotLimit) { showMsg('No shots left!'); return }
-    const img = new Image(); const url = URL.createObjectURL(file)
-    img.onload = async () => {
-      const canvas = canvasRef.current!
-      canvas.width = img.naturalWidth; canvas.height = img.naturalHeight
-      canvas.getContext('2d')!.drawImage(img, 0, 0); URL.revokeObjectURL(url)
-      const blob = await applyFilterToCanvas(canvas, filter.id, 0.9)
-      await uploadBlob(blob)
+    if (!file.type.startsWith('image/')) { showMsg('Please select an image'); return }
+
+    setUploading(true)
+    try {
+      // Max dimension — keeps quality high while staying under upload limits
+      const MAX_DIM = 2048
+
+      await new Promise<void>((resolve, reject) => {
+        const img = new Image()
+        const url = URL.createObjectURL(file)
+        img.onload = async () => {
+          try {
+            URL.revokeObjectURL(url)
+            const canvas = canvasRef.current!
+
+            // Scale down if larger than MAX_DIM
+            let w = img.naturalWidth, h = img.naturalHeight
+            if (w > MAX_DIM || h > MAX_DIM) {
+              const ratio = Math.min(MAX_DIM / w, MAX_DIM / h)
+              w = Math.round(w * ratio)
+              h = Math.round(h * ratio)
+            }
+            canvas.width = w; canvas.height = h
+            const ctx = canvas.getContext('2d')!
+            ctx.drawImage(img, 0, 0, w, h)
+            const blob = await applyFilterToCanvas(canvas, filter.id, 0.88)
+            await uploadBlob(blob)
+            resolve()
+          } catch (err) { reject(err) }
+        }
+        img.onerror = () => {
+          URL.revokeObjectURL(url)
+          reject(new Error('Could not read image'))
+        }
+        // Set crossOrigin before src for HEIC compatibility
+        img.crossOrigin = 'anonymous'
+        img.src = url
+      })
+    } catch (err: any) {
+      showMsg(err?.message || 'Upload failed')
+      setUploading(false)
     }
-    img.src = url; e.target.value = ''
+    e.target.value = ''
   }
 
   const outOfShots = shotsUsed >= shotLimit
