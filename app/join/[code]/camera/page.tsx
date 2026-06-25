@@ -279,29 +279,39 @@ export default function CameraPage() {
           ))}
         </div>
 
-        {/* Shutter row */}
+        {/* Shutter row — upload left, shutter center, gallery right */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', padding: '10px 24px 16px' }}>
-          {/* Gallery upload */}
+
+          {/* LEFT: Upload from phone gallery */}
           <button onClick={() => fileInputRef.current?.click()} disabled={shotsUsed >= shotLimit || uploading}
-            style={{ width: 48, height: 48, background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: shotsUsed >= shotLimit ? 0.3 : 1 }}>
-            <IconGallery size={22} color="#888" />
+            style={{ width: 52, height: 52, background: '#161616', border: '1px solid #2a2a2a', borderRadius: 16, cursor: shotsUsed >= shotLimit ? 'not-allowed' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, opacity: shotsUsed >= shotLimit ? 0.25 : 1, transition: 'opacity .15s' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="3"/>
+              <circle cx="8.5" cy="8.5" r="1.5" fill="#888" stroke="none"/>
+              <polyline points="21,15 16,10 5,21"/>
+            </svg>
+            <span style={{ fontSize: 8, color: '#555', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>Upload</span>
           </button>
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleGalleryUpload} style={{ display: 'none' }} />
 
-          {/* Shutter */}
+          {/* CENTER: Shutter button */}
           <button onClick={shoot} disabled={shotsUsed >= shotLimit || uploading || !cameraReady}
-            style={{ width: 76, height: 76, borderRadius: '50%', background: uploading ? '#333' : shotsUsed >= shotLimit ? '#1a1a1a' : '#f0f0f0', border: `4px solid ${shotsUsed >= shotLimit ? '#222' : '#e8ff47'}`, cursor: shotsUsed >= shotLimit || uploading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s', flexShrink: 0 }}>
+            style={{ width: 80, height: 80, borderRadius: '50%', background: uploading ? '#222' : shotsUsed >= shotLimit ? '#1a1a1a' : '#f0f0f0', border: `4px solid ${shotsUsed >= shotLimit ? '#222' : '#e8ff47'}`, cursor: shotsUsed >= shotLimit || uploading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s', flexShrink: 0, boxShadow: shotsUsed >= shotLimit ? 'none' : '0 0 20px rgba(232,255,71,0.15)' }}>
             {uploading
-              ? <div style={{ width: 24, height: 24, border: '3px solid #555', borderTop: '3px solid #e8ff47', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-              : <IconShutter size={28} color={shotsUsed >= shotLimit ? '#333' : '#0a0a0a'} weight="fill" />
+              ? <div style={{ width: 28, height: 28, border: '3px solid #555', borderTop: '3px solid #e8ff47', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+              : <IconShutter size={32} color={shotsUsed >= shotLimit ? '#333' : '#0a0a0a'} weight="fill" />
             }
           </button>
 
-          {/* View gallery */}
+          {/* RIGHT: Review photos (folder icon) */}
           <button onClick={() => router.push(`/join/${code}/gallery`)}
-            style={{ width: 48, height: 48, background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <IconGallery size={22} color="#888" />
+            style={{ width: 52, height: 52, background: '#161616', border: '1px solid #2a2a2a', borderRadius: 16, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, transition: 'opacity .15s' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span style={{ fontSize: 8, color: '#555', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>Gallery</span>
           </button>
+
         </div>
       </div>
 
