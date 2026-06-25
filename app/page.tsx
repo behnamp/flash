@@ -2,6 +2,17 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
+
+const IMAGES = {
+  hero:    'https://d8j0ntlcm91z4.cloudfront.net/user_2y6wAIlmwDKTK54POxKgzxeDouA/hf_20260625_151843_1d70550d-dee8-4aac-b906-8a9d7b971f33.png',
+  step01:  'https://d8j0ntlcm91z4.cloudfront.net/user_2y6wAIlmwDKTK54POxKgzxeDouA/hf_20260625_151848_63990bf8-33ba-4ed6-982a-6d862d6fd979.png',
+  step02:  'https://d8j0ntlcm91z4.cloudfront.net/user_2y6wAIlmwDKTK54POxKgzxeDouA/hf_20260625_151855_2d252e04-d611-4746-9877-433b8c279875.png',
+  step03:  'https://d8j0ntlcm91z4.cloudfront.net/user_2y6wAIlmwDKTK54POxKgzxeDouA/hf_20260625_151901_9de72663-526a-4abe-90b6-5bbfbf3aa131.png',
+  wedding: 'https://d8j0ntlcm91z4.cloudfront.net/user_2y6wAIlmwDKTK54POxKgzxeDouA/hf_20260625_151913_580f4ccf-2c8d-4468-be84-fd47373234e8.png',
+  party:   'https://d8j0ntlcm91z4.cloudfront.net/user_2y6wAIlmwDKTK54POxKgzxeDouA/hf_20260625_151917_573ede0f-5606-481a-90e2-84fee61db9f6.png',
+  cta:     'https://d8j0ntlcm91z4.cloudfront.net/user_2y6wAIlmwDKTK54POxKgzxeDouA/hf_20260625_151923_814f5d57-75b2-4dd2-ab6d-30244103d604.png',
+}
+
 const NAV_LINKS = [
   { label: 'HOW IT WORKS', href: '#how' },
   { label: 'PRICING', href: '/pricing' },
@@ -179,6 +190,17 @@ export default function LandingPage() {
           </a>
         </div>
 
+        {/* Hero phone mockup */}
+        <div style={{ position: 'relative', marginBottom: 56, width: 220, height: 'auto' }}>
+          <div style={{ borderRadius: 28, overflow: 'hidden', border: '1px solid #1e1e1e', boxShadow: '0 40px 80px rgba(0,0,0,0.6)' }}>
+            <img src={IMAGES.hero} alt="Flash camera UI" style={{ width: 220, height: 'auto', display: 'block' }} />
+          </div>
+          <div style={{ position: 'absolute', bottom: -16, right: -16, background: '#e8ff47', borderRadius: 14, padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ width: 8, height: 8, background: '#0a0a0a', borderRadius: '50%' }} />
+            <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, fontWeight: 700, color: '#0a0a0a' }}>Live</span>
+          </div>
+        </div>
+
         {/* Stats */}
         <div style={{ display: 'flex', gap: 0, border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden', background: '#111' }}>
           {STATS.map((s, i) => (
@@ -224,19 +246,21 @@ export default function LandingPage() {
 
           {/* Use case content */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, maxWidth: 780, margin: '0 auto' }}>
-            {/* Mock phone left */}
-            <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 20, aspectRatio: '9/16', maxHeight: 480, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', overflow: 'hidden', position: 'relative' }}>
-              <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, #0d0d0d 0%, ${USE_CASES[activeUseCase].color}22 100%)` }} />
-              <div style={{ position: 'relative', padding: '0 0 32px', textAlign: 'center' }}>
-                <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, color: '#e8ff47', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>flashcam.app</div>
-                <div style={{ fontSize: 13, color: '#555' }}>{USE_CASES[activeUseCase].label}</div>
-              </div>
+            {/* Left: scene image */}
+            <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', maxHeight: 480, boxShadow: '0 24px 48px rgba(0,0,0,0.5)' }}>
+              <img
+                src={activeUseCase === 0 ? IMAGES.wedding : IMAGES.party}
+                alt={USE_CASES[activeUseCase].label}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'opacity .3s' }}
+              />
             </div>
-            {/* Mock phone right — gallery */}
-            <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 20, aspectRatio: '9/16', maxHeight: 480, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 2, padding: 2, overflow: 'hidden', alignContent: 'start' }}>
-              {Array.from({ length: 12 }, (_, i) => (
-                <div key={i} style={{ aspectRatio: '1', borderRadius: 4, background: `hsl(${(i * 37 + activeUseCase * 60) % 360}, 15%, ${12 + (i % 3) * 4}%)` }} />
-              ))}
+            {/* Right: camera UI */}
+            <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', maxHeight: 480, boxShadow: '0 24px 48px rgba(0,0,0,0.5)' }}>
+              <img
+                src={IMAGES.hero}
+                alt="Flash camera"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
             </div>
           </div>
         </div>
@@ -257,10 +281,17 @@ export default function LandingPage() {
               {/* Step number */}
               <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, fontWeight: 700, color: '#e8ff47', letterSpacing: 2, paddingTop: 2 }}>{step.num}</div>
               {/* Content */}
-              <div>
-                <h3 style={{ fontSize: 22, fontWeight: 700, color: '#f0f0f0', marginBottom: 12, letterSpacing: -0.5 }}>{step.title}</h3>
-                <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7, marginBottom: 12 }}>{step.body}</p>
-                <div style={{ fontSize: 12, color: '#333', fontStyle: 'italic' }}>{step.accent}</div>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 32, flexWrap: 'wrap' }}>
+                <div style={{ flex: 1, minWidth: 240 }}>
+                  <h3 style={{ fontSize: 22, fontWeight: 700, color: '#f0f0f0', marginBottom: 12, letterSpacing: -0.5 }}>{step.title}</h3>
+                  <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7, marginBottom: 12 }}>{step.body}</p>
+                  <div style={{ fontSize: 12, color: '#333', fontStyle: 'italic' }}>{step.accent}</div>
+                </div>
+                {[IMAGES.step01, IMAGES.step02, IMAGES.step03, null][i] && (
+                  <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', flexShrink: 0, width: 140, boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+                    <img src={[IMAGES.step01, IMAGES.step02, IMAGES.step03, null][i] as string} alt={step.title} style={{ width: '100%', display: 'block' }} />
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -318,6 +349,9 @@ export default function LandingPage() {
       {/* ── FINAL CTA ── */}
       <section style={{ padding: '100px 24px 60px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 700, height: 400, background: 'radial-gradient(ellipse, rgba(232,255,71,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ marginBottom: 48, borderRadius: 20, overflow: 'hidden', border: '1px solid #1a1a1a', maxWidth: 680, margin: '0 auto 48px', boxShadow: '0 32px 64px rgba(0,0,0,0.6)' }}>
+          <img src={IMAGES.cta} alt="Flash gallery reveal" style={{ width: '100%', display: 'block' }} />
+        </div>
         <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#333', marginBottom: 24 }}>A single day becomes timeless</p>
         <h2 style={{ fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 700, letterSpacing: -2, marginBottom: 48, lineHeight: 1.0, color: '#f0f0f0' }}>
           when remembered<br />together.
