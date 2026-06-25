@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     const resend = new Resend(process.env.RESEND_API_KEY)
 
     const { data, error } = await resend.emails.send({
-      from: 'Flash <onboarding@resend.dev>',
+      from: 'Flash <noreply@flashcam.app>',
       to: [user.email!],
       subject: `⚡ ${event.name} — gallery revealed! Download within 14 days`,
       html: `<!DOCTYPE html>
