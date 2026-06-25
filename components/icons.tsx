@@ -114,16 +114,22 @@ export const IconFlash = ({ size = 24, color = '#e8ff47', style }: { size?: numb
 
 // Wedding ring with diamond
 export const IconWedding = ({ size = 24, color = 'white', weight }: { size?: number; color?: string; weight?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    {/* Ring band - full circle viewed front-on */}
-    <circle cx="12" cy="15" r="5.5" />
-    <circle cx="12" cy="15" r="3" />
-    {/* Diamond on top of ring */}
-    <path d="M9.5 8.5L12 5l2.5 3.5L12 11z" />
-    <path d="M9.5 8.5h5" />
-    {/* Stem connecting diamond to ring */}
-    <path d="M10.5 10.5C10 11.5 9.5 12.5 9.5 15" />
-    <path d="M13.5 10.5C14 11.5 14.5 12.5 14.5 15" />
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeLinecap="round" strokeLinejoin="round">
+    {/* Ring band — thick circle, open at top where diamond sits */}
+    <path d="M8.5 10.5A6 6 0 1 0 15.5 10.5" strokeWidth="1.6" fill="none"/>
+    {/* Diamond gem — faceted like reference image */}
+    {/* Outer diamond silhouette */}
+    <path d="M8.5 8.5L12 4L15.5 8.5L12 13Z" strokeWidth="1.2" fill="none"/>
+    {/* Top facet row */}
+    <path d="M8.5 8.5L10 5.8L12 4" strokeWidth="0.9" />
+    <path d="M15.5 8.5L14 5.8L12 4" strokeWidth="0.9" />
+    {/* Horizontal girdle line */}
+    <line x1="8.5" y1="8.5" x2="15.5" y2="8.5" strokeWidth="0.9" />
+    {/* Center facet lines going to bottom point */}
+    <path d="M10 5.8L12 13" strokeWidth="0.7" />
+    <path d="M14 5.8L12 13" strokeWidth="0.7" />
+    <path d="M9.5 8.5L12 13" strokeWidth="0.7" />
+    <path d="M14.5 8.5L12 13" strokeWidth="0.7" />
   </svg>
 )
 
