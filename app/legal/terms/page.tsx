@@ -51,9 +51,11 @@ export default function TermsOfService() {
         <Section title="3. Payments & Refunds">
           <SubSection title="Pricing">
             <P>Flash charges a one-time fee per event based on the number of guests:</P>
-            <Li>Mini (≤10 guests): $3.99 CAD</Li>
-            <Li>Standard (≤50 guests): $14.99 CAD</Li>
-            <Li>Large (≤150 guests): $39.99 CAD</Li>
+            <Li>Starter (≤10 guests): $1.99 CAD</Li>
+            <Li>Small (≤25 guests): $4.99 CAD</Li>
+            <Li>Medium (≤50 guests): $9.99 CAD</Li>
+            <Li>Large (≤100 guests): $14.99 CAD</Li>
+            <Li>XL (≤200 guests): $29.99 CAD</Li>
             <Li>Unlimited: $99.99 CAD</Li>
           </SubSection>
           <SubSection title="Refund Policy">

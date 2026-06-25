@@ -3,9 +3,11 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 export const TIERS = {
-  mini:      { price: 399,  name: 'Flash Mini',      guests: 10,   label: '≤ 10 guests' },
-  standard:  { price: 1499, name: 'Flash Standard',  guests: 50,   label: '≤ 50 guests' },
-  large:     { price: 3999, name: 'Flash Large',     guests: 150,  label: '≤ 150 guests' },
+  mini:      { price: 199,  name: 'Flash Starter',   guests: 10,   label: '≤ 10 guests' },
+  standard:  { price: 499,  name: 'Flash Small',     guests: 25,   label: '≤ 25 guests' },
+  medium:    { price: 999,  name: 'Flash Medium',    guests: 50,   label: '≤ 50 guests' },
+  large:     { price: 1499, name: 'Flash Large',     guests: 100,  label: '≤ 100 guests' },
+  xl:        { price: 2999, name: 'Flash XL',        guests: 200,  label: '≤ 200 guests' },
   unlimited: { price: 9999, name: 'Flash Unlimited', guests: 9999, label: 'Unlimited guests' },
 }
 

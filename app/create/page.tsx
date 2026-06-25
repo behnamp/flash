@@ -125,6 +125,11 @@ export default function CreateEvent() {
     }
   }
 
+  const canContinue = () => {
+    if (step === 2) return form.eventName.trim().length > 0 && form.date.length > 0
+    return true
+  }
+
   const TITLES = ["What's the occasion?", "Name your event", "Set the rules", "Photo modes", "Language & branding", "Reveal mode"]
 
   return (
@@ -186,8 +191,10 @@ export default function CreateEvent() {
 
         {step === 2 && (
           <div>
-            <Inp label="Event Name" placeholder="e.g. Sarah & Marco's Wedding" value={form.eventName} onChange={(e: any) => set('eventName', e.target.value)} />
-            <Inp label="Date" type="date" value={form.date} onChange={(e: any) => set('date', e.target.value)} />
+            <Inp label="Event Name *" placeholder="e.g. Sarah & Marco's Wedding" value={form.eventName} onChange={(e: any) => set('eventName', e.target.value)} />
+            {step === 2 && !form.eventName.trim() && <div style={{ fontSize: 11, color: '#ff4757', marginTop: -8, marginBottom: 8 }}>Required</div>}
+            <Inp label="Event Date *" type="date" value={form.date} onChange={(e: any) => set('date', e.target.value)} />
+            {step === 2 && !form.date && <div style={{ fontSize: 11, color: '#ff4757', marginTop: -8, marginBottom: 8 }}>Required</div>}
             <Inp label="Venue (optional)" placeholder="e.g. Grand Ballroom, Toronto" value={form.venue} onChange={(e: any) => set('venue', e.target.value)} />
           </div>
         )}
