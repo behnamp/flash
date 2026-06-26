@@ -364,6 +364,15 @@ export default function CreateEvent() {
               {/* Gradient — stronger at top and bottom */}
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.72) 100%)' }} />
 
+              {/* ── CENTER: Selected emoji ── */}
+              {form.coverEmoji && (
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+                  <div style={{ fontSize: 72, lineHeight: 1, filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.6))' }}>
+                    {form.coverEmoji}
+                  </div>
+                </div>
+              )}
+
               {/* ── TOP: Event name + Upload button ── */}
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '18px 16px 0' }}>
                 {/* Event name */}
