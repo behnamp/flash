@@ -364,15 +364,15 @@ export default function CreateEvent() {
               {/* Gradient — stronger at top and bottom */}
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.72) 100%)' }} />
 
-              {/* ── EMOJI: top-left corner ── */}
+              {/* ── EMOJI: top-left, above the name section ── */}
               {form.coverEmoji && (
-                <div style={{ position: 'absolute', top: 18, left: 16, fontSize: 36, lineHeight: 1, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.6))', pointerEvents: 'none', zIndex: 5 }}>
+                <div style={{ position: 'absolute', top: 12, left: 16, fontSize: 32, lineHeight: 1, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.6))', pointerEvents: 'none', zIndex: 2 }}>
                   {form.coverEmoji}
                 </div>
               )}
 
-              {/* ── TOP: Event name + Upload button ── */}
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '18px 16px 0' }}>
+              {/* ── TOP: Event name + Upload button (below emoji) ── */}
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '56px 16px 0' }}>
                 {/* Event name */}
                 <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.45)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Event</div>
                 <div style={{ fontSize: 18, fontWeight: 700, color: 'white', lineHeight: 1.2, marginBottom: 14 }}>

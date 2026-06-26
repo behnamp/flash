@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
 
 export const TIERS = {
   mini:      { price: 199,  name: 'Flash Starter',   guests: 10,   label: '≤ 10 guests' },
@@ -13,105 +11,75 @@ export const TIERS = {
 
 export async function POST(req: NextRequest) {
   const stripeKey = process.env.STRIPE_SECRET_KEY
-  if (!stripeKey) {
-    return NextResponse.json({ error: 'Payment not configured' }, { status: 500 })
-  }
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+  if (!stripeKey) return NextResponse.json({ error: 'Payment not configured' }, { status: 500 })
 
   try {
-    // Lazy import Stripe so it doesn't crash at build time
-    const Stripe = (await import('stripe')).default
-    const stripe = new Stripe(stripeKey, { apiVersion: '2025-04-30.basil' as any })
-
     const { tier, eventId, promoCode } = await req.json()
-    if (!TIERS[tier as keyof typeof TIERS]) {
-      return NextResponse.json({ error: 'Invalid tier' }, { status: 400 })
-    }
+    if (!TIERS[tier as keyof typeof TIERS]) return NextResponse.json({ error: 'Invalid tier' }, { status: 400 })
 
-    const cookieStore = await cookies()
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
-    )
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+    // Get user from Bearer token sent by client
+    const authHeader = req.headers.get('authorization') || ''
+    const token = authHeader.replace('Bearer ', '').trim()
+    if (!token) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+
+    const userRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
+      headers: { 'apikey': anonKey, 'Authorization': `Bearer ${token}` }
+    })
+    if (!userRes.ok) return NextResponse.json({ error: 'Invalid session — please log in again' }, { status: 401 })
+    const user = await userRes.json()
+    const userId = user.id
+    const userEmail = user.email
 
     const t = TIERS[tier as keyof typeof TIERS]
-    const origin = req.headers.get('origin') || 'https://flash-roan.vercel.app'
-
+    const origin = req.headers.get('origin') || 'https://flashcam.app'
     let finalPrice = t.price
     let promoData: any = null
     let discountAmount = 0
+    const svcHeaders = { 'Content-Type': 'application/json', 'apikey': serviceKey, 'Authorization': `Bearer ${serviceKey}`, 'Prefer': 'return=minimal' }
 
-    // Validate promo code if provided
+    // Promo code
     if (promoCode) {
-      const { data: promo } = await supabase.rpc('validate_promo_code', {
-        p_code: promoCode.toUpperCase(),
-        p_tier: tier,
-        p_user_id: user.id,
+      const r = await fetch(`${supabaseUrl}/rest/v1/rpc/validate_promo_code`, {
+        method: 'POST', headers: { 'apikey': serviceKey, 'Authorization': `Bearer ${serviceKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_code: promoCode.toUpperCase(), p_tier: tier, p_user_id: userId })
       })
-      if (promo?.valid) {
-        promoData = promo
-        if (promo.type === 'free') {
-          discountAmount = t.price
-          finalPrice = 0
-        } else {
-          discountAmount = Math.floor(t.price * (promo.discount_percent / 100))
-          finalPrice = t.price - discountAmount
+      if (r.ok) {
+        const promo = await r.json()
+        if (promo?.valid) {
+          promoData = promo
+          if (promo.type === 'free') { discountAmount = t.price; finalPrice = 0 }
+          else { discountAmount = Math.floor(t.price * (promo.discount_percent / 100)); finalPrice = t.price - discountAmount }
         }
       }
     }
 
-    // Free via promo — skip Stripe
-    if (finalPrice === 0 && promoData) {
-      await supabase.from('promo_codes')
-        .update({ uses_count: (promoData.uses_count || 0) + 1 })
-        .eq('id', promoData.id)
-
-      if (eventId) {
-        await supabase.from('events').update({
-          paid: true, is_active: true, payment_tier: tier,
-          guest_cap: t.guests, paid_at: new Date().toISOString(),
-        }).eq('id', eventId).eq('host_id', user.id)
-
-        await supabase.from('promo_redemptions').insert({
-          promo_code_id: promoData.id, user_id: user.id, event_id: eventId,
-          original_amount: t.price, discount_amount: discountAmount, final_amount: 0,
-        })
-      }
+    // Free via promo
+    if (finalPrice === 0 && promoData && eventId) {
+      await fetch(`${supabaseUrl}/rest/v1/promo_codes?id=eq.${promoData.id}`, { method: 'PATCH', headers: svcHeaders, body: JSON.stringify({ uses_count: (promoData.uses_count || 0) + 1 }) })
+      await fetch(`${supabaseUrl}/rest/v1/events?id=eq.${eventId}`, { method: 'PATCH', headers: svcHeaders, body: JSON.stringify({ paid: true, is_active: true, payment_tier: tier, guest_cap: t.guests, paid_at: new Date().toISOString() }) })
       return NextResponse.json({ free: true, eventId, redirectUrl: `/host/${eventId}?payment=success` })
     }
 
-    // Stripe checkout
+    // Stripe
+    const Stripe = (await import('stripe')).default
+    const stripe = new Stripe(stripeKey, { apiVersion: '2025-04-30.basil' as any })
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      line_items: [{
-        price_data: {
-          currency: 'cad',
-          product_data: {
-            name: t.name + (promoData ? ` (${promoData.discount_percent}% off)` : ''),
-            description: `Flash disposable camera — ${t.label}`,
-          },
-          unit_amount: finalPrice,
-        },
-        quantity: 1,
-      }],
-      metadata: {
-        user_id: user.id, event_id: eventId || '', tier,
-        guest_cap: String(t.guests),
-        promo_code_id: promoData?.id || '',
-        original_amount: String(t.price),
-        discount_amount: String(discountAmount),
-      },
-      customer_email: user.email!,
+      line_items: [{ price_data: { currency: 'cad', product_data: { name: t.name, description: `Flash — ${t.label}` }, unit_amount: finalPrice }, quantity: 1 }],
+      metadata: { user_id: userId, event_id: eventId || '', tier, guest_cap: String(t.guests), original_amount: String(t.price), discount_amount: String(discountAmount) },
+      customer_email: userEmail,
       success_url: `${origin}/payment/success?session_id={CHECKOUT_SESSION_ID}&event_id=${eventId}`,
-      cancel_url: `${origin}/pricing${eventId ? `?eventId=${eventId}` : ''}?cancelled=true`,
+      cancel_url: `${origin}/pricing${eventId ? `?eventId=${eventId}` : ''}`,
     })
 
     return NextResponse.json({ url: session.url })
   } catch (err: any) {
-    console.error('Stripe error:', err)
+    console.error('Checkout error:', err)
     return NextResponse.json({ error: err.message }, { status: 500 })
   }
 }

@@ -101,9 +101,18 @@ function PricingPageInner() {
     setLoading(tierId)
     setError('')
     try {
+      // Get session token to send with request (cookie auth unreliable across redirects)
+      const { createClient: _cc } = await import('@/lib/supabase/client')
+      const _sb = _cc()
+      const { data: { session } } = await _sb.auth.getSession()
+      if (!session) { setError('Please log in to continue'); setLoading(null); return }
+
       const res = await fetch('/api/stripe/create-checkout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
         body: JSON.stringify({ tier: tierId, eventId: eventId || '', promoCode: promoCode.trim().toUpperCase() || undefined }),
       })
       const data = await res.json()
