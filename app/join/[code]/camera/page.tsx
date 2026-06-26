@@ -208,7 +208,8 @@ export default function CameraPage() {
             canvas.width = w; canvas.height = h
             const ctx = canvas.getContext('2d')!
             ctx.drawImage(img, 0, 0, w, h)
-            const blob = await applyFilterToCanvas(canvas, filter.id, 0.88)
+            const isFree = event?.payment_tier === 'free'
+            const blob = await applyFilterToCanvas(canvas, filter.id, 0.88, isFree)
             await uploadBlob(blob)
             resolve()
           } catch (err) { reject(err) }

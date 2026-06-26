@@ -119,7 +119,8 @@ function glitchFx() {
 export async function applyFilterToCanvas(
   sourceCanvas: HTMLCanvasElement,
   modeId: string,
-  quality = 0.88
+  quality = 0.88,
+  watermark = false
 ): Promise<Blob> {
   const preset = CANVAS_FILTERS[modeId]
 
@@ -156,6 +157,54 @@ export async function applyFilterToCanvas(
   // Apply post-processing effects (grain, vignette, light leaks, glitch)
   if (preset?.fx) {
     preset.fx(ctx, w, h)
+  }
+
+  // Watermark for free tier — baked into image before upload
+  if (watermark) {
+    const pad = Math.round(w * 0.03)
+    const logoSize = Math.round(w * 0.055)
+    const fontSize = Math.round(w * 0.032)
+    const barH = logoSize + pad * 2
+
+    // Frosted bar at bottom
+    ctx.fillStyle = 'rgba(0,0,0,0.52)'
+    ctx.fillRect(0, h - barH, w, barH)
+
+    // Flash bolt SVG path drawn on canvas
+    const bx = pad
+    const by = h - barH + pad
+    const bs = logoSize
+
+    // Yellow circle background
+    ctx.fillStyle = '#e8ff47'
+    ctx.beginPath()
+    ctx.roundRect(bx, by, bs, bs, bs * 0.22)
+    ctx.fill()
+
+    // Bolt path (scaled to logoSize)
+    const sx = bx / bs
+    const sy = by / bs
+    ctx.fillStyle = '#0a0a0a'
+    ctx.save()
+    ctx.translate(bx, by)
+    ctx.scale(bs / 24, bs / 24)
+    ctx.beginPath()
+    ctx.moveTo(13, 2)
+    ctx.lineTo(4.5, 13.5)
+    ctx.lineTo(11, 13.5)
+    ctx.lineTo(10, 22)
+    ctx.lineTo(20, 10)
+    ctx.lineTo(13.5, 10)
+    ctx.lineTo(13, 2)
+    ctx.closePath()
+    ctx.fill()
+    ctx.restore()
+
+    // "flashcam.app" text
+    ctx.fillStyle = 'rgba(255,255,255,0.85)'
+    ctx.font = `700 ${fontSize}px "Space Mono", monospace`
+    ctx.textBaseline = 'middle'
+    ctx.fillText('flashcam.app', bx + bs + pad, h - barH / 2)
   }
 
   // Return as JPEG blob
