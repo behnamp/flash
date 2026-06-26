@@ -99,7 +99,7 @@ function PricingPageInner() {
 
   const handlePurchase = async (tierId: string) => {
     setLoading(tierId)
-    setError('')
+    setError('Starting payment...')
     try {
       // Step 1: get session
       const { createClient: _cc } = await import('@/lib/supabase/client')
@@ -197,16 +197,17 @@ function PricingPageInner() {
                   <div style={{ fontSize: 12, color: '#444' }}>{t.desc}</div>
                 </div>
                 <button
-                  onClick={() => handlePurchase(t.id)}
-                  disabled={!!loading}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); if (!loading) handlePurchase(t.id) }}
+                  onTouchEnd={(e) => { e.preventDefault(); if (!loading) handlePurchase(t.id) }}
                   style={{
                     background: loading === t.id ? '#1a1a1a' : t.popular ? '#e8ff47' : '#1e1e1e',
                     color: loading === t.id ? '#333' : t.popular ? '#0a0a0a' : '#ccc',
                     border: `1px solid ${t.popular ? 'transparent' : '#2a2a2a'}`,
-                    borderRadius: 11, padding: '10px 18px',
-                    fontSize: 13, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
+                    borderRadius: 11, padding: '12px 22px',
+                    fontSize: 14, fontWeight: 700, cursor: 'pointer',
                     fontFamily: 'inherit', whiteSpace: 'nowrap', flexShrink: 0, marginLeft: 14,
-                    transition: 'all .15s',
+                    WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation',
+                    minWidth: 70, minHeight: 44,
                   }}
                 >
                   {loading === t.id ? '...' : 'Buy'}
