@@ -3,6 +3,7 @@ import { useState, useRef, useCallback, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ALL_MODES } from '@/constants/photoModes'
+import InstallPrompt from '@/components/InstallPrompt'
 import { applyFilterToCanvas, CANVAS_FILTERS } from '@/lib/filterCanvas'
 
 export default function CameraPage() {
