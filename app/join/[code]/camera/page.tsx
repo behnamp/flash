@@ -315,35 +315,7 @@ export default function CameraPage() {
         </button>
 
         {/* ── TOP BAR — matches Once exactly ── */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '14px 16px', paddingTop: 'max(14px, env(safe-area-inset-top))',
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.5), transparent)',
-        }}>
-          {/* Flash bolt icon — top left */}
-          <div style={{ width: 38, height: 38, background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(12px)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#e8ff47"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
-          </div>
-
-          {/* Event name + timer — center */}
-          <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', pointerEvents: 'none' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'white', lineHeight: 1.2 }}>{event?.name || 'Flash'}</div>
-            {event?.photos_expire_at && (
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
-                {Math.ceil((new Date(event.photos_expire_at).getTime() - Date.now()) / 3600000)}h left
-              </div>
-            )}
-          </div>
-
-          {/* Folder / gallery icon — top right */}
-          <button onClick={() => router.push(`/join/${code}/gallery`)}
-            style={{ width: 38, height: 38, background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(12px)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' } as any}>
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-            </svg>
-          </button>
-        </div>
+        
 
 
 
