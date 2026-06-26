@@ -364,12 +364,10 @@ export default function CreateEvent() {
               {/* Gradient — stronger at top and bottom */}
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.72) 100%)' }} />
 
-              {/* ── CENTER: Selected emoji ── */}
+              {/* ── EMOJI: top-left corner ── */}
               {form.coverEmoji && (
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
-                  <div style={{ fontSize: 72, lineHeight: 1, filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.6))' }}>
-                    {form.coverEmoji}
-                  </div>
+                <div style={{ position: 'absolute', top: 18, left: 16, fontSize: 36, lineHeight: 1, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.6))', pointerEvents: 'none', zIndex: 5 }}>
+                  {form.coverEmoji}
                 </div>
               )}
 
