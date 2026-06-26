@@ -6,61 +6,42 @@ jobs:
   set-env:
     runs-on: ubuntu-latest
     steps:
-      - name: Install jq
-        run: sudo apt-get install -y jq -q
-
-      - name: Push env vars to Vercel (all targets)
+      - name: Push env vars to Vercel
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          STRIPE_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-          RESEND_KEY: ${{ secrets.RESEND_API_KEY }}
+          T: ${{ secrets.VERCEL_TOKEN }}
+          STRIPE: ${{ secrets.STRIPE_SECRET_KEY }}
+          SVC: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANON: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          PK: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+          RESEND: ${{ secrets.RESEND_API_KEY }}
+          CRON: ${{ secrets.CRON_SECRET }}
         run: |
-          BASE="https://api.vercel.com/v10/projects/flash-roan/env"
+          URL="https://api.vercel.com/v10/projects/flash-roan/env"
 
-          push_env() {
-            KEY=$1; VAL=$2; TYPE=$3
-
-            # Delete ALL existing entries for this key
-            IDS=$(curl -sf "$BASE?limit=100" \
-              -H "Authorization: Bearer $VERCEL_TOKEN" | \
-              jq -r ".envs[] | select(.key==\"$KEY\") | .id" 2>/dev/null || echo "")
-
-            for ID in $IDS; do
-              curl -sf -X DELETE "$BASE/$ID" \
-                -H "Authorization: Bearer $VERCEL_TOKEN" > /dev/null
-              echo "  deleted $KEY ($ID)"
-            done
-
-            # Create for production, preview, AND development
-            RESULT=$(curl -sf -X POST "$BASE" \
-              -H "Authorization: Bearer $VERCEL_TOKEN" \
+          post() {
+            curl -s -o /dev/null -w "%{http_code}" -X POST "$URL" \
+              -H "Authorization: Bearer $T" \
               -H "Content-Type: application/json" \
-              -d "{\"key\":\"$KEY\",\"value\":\"$VAL\",\"type\":\"$TYPE\",\"target\":[\"production\",\"preview\",\"development\"]}")
-
-            if echo "$RESULT" | jq -e '.id' > /dev/null 2>&1; then
-              echo "✓ $KEY"
-            else
-              echo "✗ $KEY failed: $(echo $RESULT | jq -r '.error.message // .' 2>/dev/null | head -c 100)"
-            fi
+              -d "{\"key\":\"$1\",\"value\":\"$2\",\"type\":\"$3\",\"target\":[\"production\",\"preview\",\"development\"]}"
           }
 
-          echo "--- Setting env vars ---"
-          push_env "NEXT_PUBLIC_SUPABASE_URL" "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" "plain"
-          push_env "NEXT_PUBLIC_SUPABASE_ANON_KEY" "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" "plain"
-          push_env "SUPABASE_SERVICE_ROLE_KEY" "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" "encrypted"
-          push_env "STRIPE_SECRET_KEY"                 "$STRIPE_KEY"                                                                                                                                                                                                                                                                    "encrypted"
-          push_env "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" "${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}" "plain"
-          push_env "RESEND_API_KEY"                    "$RESEND_KEY"                                                                                                                                                                                                                                                                    "encrypted"
-          push_env "NEXT_PUBLIC_APP_URL" "https://flashcam.app" "plain"
-          push_env "CRON_SECRET" "${{ secrets.CRON_SECRET }}" "encrypted"
-          echo "--- Done ---"
+          echo "SUPABASE_URL: $(post NEXT_PUBLIC_SUPABASE_URL https://onvdddlkrlwaxwufgodq.supabase.co plain)"
+          echo "SUPABASE_ANON: $(post NEXT_PUBLIC_SUPABASE_ANON_KEY "$ANON" plain)"
+          echo "SUPABASE_SVC: $(post SUPABASE_SERVICE_ROLE_KEY "$SVC" encrypted)"
+          echo "STRIPE_SK: $(post STRIPE_SECRET_KEY "$STRIPE" encrypted)"
+          echo "STRIPE_PK: $(post NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY "$PK" plain)"
+          echo "RESEND: $(post RESEND_API_KEY "$RESEND" encrypted)"
+          echo "APP_URL: $(post NEXT_PUBLIC_APP_URL https://flashcam.app plain)"
+          echo "CRON: $(post CRON_SECRET "$CRON" encrypted)"
 
-      - name: Trigger Vercel redeploy
+      - name: Redeploy
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          T: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          curl -sf -X POST "https://api.vercel.com/v13/deployments" \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
+          curl -s -X POST "https://api.vercel.com/v13/deployments" \
+            -H "Authorization: Bearer $T" \
             -H "Content-Type: application/json" \
             -d '{"name":"flash-roan","gitSource":{"type":"github","repoId":"behnamp/flash","ref":"main"}}' \
-            | jq '.id // "failed"'
+            | head -c 200
+          echo ""
+          echo "Done"
