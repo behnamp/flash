@@ -158,6 +158,15 @@ export default function EventDashboard() {
               <IconCopy size={14} color="var(--accent)" />
             </div>
 
+            {/* Slideshow button */}
+            <button onClick={() => window.open(`/slideshow/${event?.join_code}`, '_blank')}
+              style={{ width: '100%', maxWidth: 300, background: 'rgba(232,255,71,0.08)', color: 'var(--accent)', border: '1px solid rgba(232,255,71,0.25)', borderRadius: 13, padding: '13px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              Cast to TV / Slideshow
+            </button>
+
             {!event?.revealed && event?.is_active && (
               <button onClick={handleReveal} disabled={revealing} style={{ width: '100%', maxWidth: 300, background: 'var(--red)', color: 'white', border: 'none', borderRadius: 13, padding: '14px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
                 {revealing ? 'Revealing...' : 'Reveal Gallery Now'}
