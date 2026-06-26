@@ -6,26 +6,55 @@ jobs:
   set-env-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Set all env vars on Vercel
+      - name: Upsert all env vars on Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          set_env() {
-            curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
-              -H "Authorization: Bearer $VERCEL_TOKEN" \
-              -H "Content-Type: application/json" \
-              -d "{\"key\":\"$1\",\"value\":\"$2\",\"type\":\"$3\",\"target\":[\"production\"]}" \
-              && echo "✓ $1" || echo "exists: $1"
+          upsert_env() {
+            KEY="$1"
+            VALUE="$2"
+            TYPE="$3"
+
+            # Try to get existing env var ID
+            EXISTING=$(curl -sf "https://api.vercel.com/v10/projects/flash-roan/env" \
+              -H "Authorization: Bearer $VERCEL_TOKEN" | \
+              python3 -c "import sys,json; envs=json.load(sys.stdin).get('envs',[]); match=[e for e in envs if e['key']=='$KEY']; print(match[0]['id'] if match else '')" 2>/dev/null || echo "")
+
+            if [ -n "$EXISTING" ]; then
+              # Update existing
+              curl -sf -X PATCH "https://api.vercel.com/v10/projects/flash-roan/env/$EXISTING" \
+                -H "Authorization: Bearer $VERCEL_TOKEN" \
+                -H "Content-Type: application/json" \
+                -d "{\"value\":\"$VALUE\",\"type\":\"$TYPE\",\"target\":[\"production\"]}" \
+                && echo "✓ updated $KEY" || echo "✗ failed $KEY"
+            else
+              # Create new
+              curl -sf -X POST "https://api.vercel.com/v10/projects/flash-roan/env" \
+                -H "Authorization: Bearer $VERCEL_TOKEN" \
+                -H "Content-Type: application/json" \
+                -d "{\"key\":\"$KEY\",\"value\":\"$VALUE\",\"type\":\"$TYPE\",\"target\":[\"production\"]}" \
+                && echo "✓ created $KEY" || echo "✗ failed $KEY"
+            fi
           }
 
-          set_env "NEXT_PUBLIC_SUPABASE_URL"       "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"       "plain"
-          set_env "NEXT_PUBLIC_SUPABASE_ANON_KEY"  "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}"  "plain"
-          set_env "STRIPE_SECRET_KEY"              "${{ secrets.STRIPE_SECRET_KEY }}"              "encrypted"
-          set_env "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" "${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}" "plain"
-          set_env "SUPABASE_SERVICE_ROLE_KEY"      "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"      "encrypted"
-          set_env "RESEND_API_KEY"                 "${{ secrets.RESEND_API_KEY }}"                 "encrypted"
-          set_env "NEXT_PUBLIC_APP_URL"            "https://flashcam.app"                          "plain"
-          set_env "CRON_SECRET"                    "${{ secrets.CRON_SECRET }}"                    "encrypted"
+          upsert_env "NEXT_PUBLIC_SUPABASE_URL"          "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"          "plain"
+          upsert_env "NEXT_PUBLIC_SUPABASE_ANON_KEY"     "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}"     "plain"
+          upsert_env "SUPABASE_SERVICE_ROLE_KEY"         "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"         "encrypted"
+          upsert_env "STRIPE_SECRET_KEY"                 "${{ secrets.STRIPE_SECRET_KEY }}"                 "encrypted"
+          upsert_env "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" "${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}" "plain"
+          upsert_env "RESEND_API_KEY"                    "${{ secrets.RESEND_API_KEY }}"                    "encrypted"
+          upsert_env "NEXT_PUBLIC_APP_URL"               "https://flashcam.app"                             "plain"
+          upsert_env "CRON_SECRET"                       "${{ secrets.CRON_SECRET }}"                       "encrypted"
+
+      - name: Trigger redeploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          curl -sf -X POST "https://api.vercel.com/v13/deployments" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"name":"flash-roan","gitSource":{"type":"github","repoId":"behnamp/flash","ref":"main"}}' \
+            && echo "✓ Redeploy triggered" || echo "Redeploy via git push"
 
       - name: Done
-        run: echo "✓ All env vars set"
+        run: echo "✓ All env vars upserted"
