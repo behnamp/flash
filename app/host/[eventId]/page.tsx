@@ -23,6 +23,9 @@ export default function EventDashboard() {
   const [shots, setShots] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [revealing, setRevealing] = useState(false)
+  const [reelGenerating, setReelGenerating] = useState(false)
+  const [reelUrl, setReelUrl] = useState<string | null>(null)
+  const [reelStatus, setReelStatus] = useState('none')
   const [tab, setTab] = useState<'qr' | 'dashboard' | 'guests' | 'gallery'>('qr')
   const [selectedShot, setSelectedShot] = useState<any>(null)
   const [toast, setToast] = useState('')
@@ -78,6 +81,22 @@ export default function EventDashboard() {
       setSelectedShot(null)
       showToast('Photo deleted')
     } catch (e) { showToast('Failed to delete') }
+  }
+
+  const generateReel = async () => {
+    if (!eventId || reelGenerating) return
+    setReelGenerating(true); setReelStatus('generating')
+    try {
+      const res = await fetch('/api/reel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ eventId }) })
+      const data = await res.json()
+      if (data.error) { showToast(data.error); setReelGenerating(false); setReelStatus('none'); return }
+      const poll = setInterval(async () => {
+        const r = await fetch(`/api/reel?jobId=${data.jobId}&eventId=${eventId}`)
+        const s = await r.json()
+        if (s.status === 'done' && s.url) { setReelUrl(s.url); setReelStatus('done'); setReelGenerating(false); clearInterval(poll); showToast('AI Reel ready!') }
+        else if (s.status === 'failed') { setReelStatus('failed'); setReelGenerating(false); clearInterval(poll); showToast('Reel failed') }
+      }, 10000)
+    } catch { showToast('Failed to start reel'); setReelGenerating(false); setReelStatus('none') }
   }
 
   const handleReveal = async () => {
@@ -212,6 +231,46 @@ export default function EventDashboard() {
                 <button onClick={handleReveal} disabled={revealing} style={{ width: '100%', background: 'var(--red)', color: 'white', border: 'none', borderRadius: 13, padding: '14px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
                   {revealing ? 'Revealing...' : 'Reveal Gallery Now'}
                 </button>
+              </div>
+            )}
+
+            {/* AI Highlight Reel — shows after reveal */}
+            {event?.revealed && (
+              <div style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 14, padding: '16px', marginTop: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                  <span style={{ fontSize: 14, fontWeight: 700 }}>AI Highlight Reel</span>
+                  <span style={{ fontSize: 9, background: 'rgba(232,255,71,0.1)', color: 'var(--accent)', border: '1px solid rgba(232,255,71,0.2)', borderRadius: 5, padding: '2px 6px', fontWeight: 700, letterSpacing: 1 }}>BETA</span>
+                </div>
+                <div style={{ fontSize: 12, color: '#555', marginBottom: 12 }}>Cinematic 15-sec video from your best shots using Seedance 2.0.</div>
+
+                {reelStatus === 'done' && reelUrl ? (
+                  <div>
+                    <video src={reelUrl} controls playsInline style={{ width: '100%', borderRadius: 10, marginBottom: 10, background: '#000' }} />
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <a href={reelUrl} download target="_blank"
+                        style={{ flex: 1, background: 'var(--accent)', color: '#0a0a0a', borderRadius: 10, padding: '12px', fontSize: 13, fontWeight: 700, textAlign: 'center', textDecoration: 'none', display: 'block' }}>
+                        Download
+                      </a>
+                      <button onClick={generateReel} style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 10, padding: '12px 14px', fontSize: 12, color: '#555', cursor: 'pointer', fontFamily: 'inherit' }}>
+                        Regenerate
+                      </button>
+                    </div>
+                  </div>
+                ) : reelStatus === 'generating' ? (
+                  <div style={{ textAlign: 'center', padding: '16px 0' }}>
+                    <div style={{ display: 'flex', gap: 5, justifyContent: 'center', marginBottom: 8 }}>
+                      {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', animation: `bounce 1s ease ${i*0.15}s infinite` }} />)}
+                    </div>
+                    <div style={{ fontSize: 12, color: '#555' }}>Generating reel... (~3 min)</div>
+                  </div>
+                ) : (
+                  <button onClick={generateReel}
+                    style={{ width: '100%', background: 'rgba(232,255,71,0.07)', color: 'var(--accent)', border: '1px solid rgba(232,255,71,0.2)', borderRadius: 10, padding: '12px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Generate AI Reel
+                  </button>
+                )}
               </div>
             )}
           </div>

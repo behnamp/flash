@@ -33,6 +33,7 @@ jobs:
           echo "RESEND: $(post RESEND_API_KEY "$RESEND" encrypted)"
           echo "APP_URL: $(post NEXT_PUBLIC_APP_URL https://flashcam.app plain)"
           echo "CRON: $(post CRON_SECRET "$CRON" encrypted)"
+          echo "HIGGSFIELD: $(post HIGGSFIELD_API_KEY "$HIGGSFIELD" encrypted)"
 
       - name: Redeploy
         env:
