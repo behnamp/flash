@@ -262,9 +262,9 @@ export default function CameraPage() {
     }}>
 
       {/* ── VIEWFINDER ── full frame, rounded corners, top bar overlaid inside */}
-      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 10px', borderRadius: 28 }}>
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 8px', borderRadius: 24 }}>
         <video ref={videoRef} autoPlay playsInline muted
-          style={{ width: '100%', height: '100%', objectFit: 'contain', display: cameraReady ? 'block' : 'none', filter: cssFilter, transition: 'filter .25s' }} />
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none', filter: cssFilter, transition: 'filter .25s' }} />
 
         {/* Loading */}
         {!cameraReady && !cameraError && (
