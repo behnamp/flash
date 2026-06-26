@@ -101,12 +101,15 @@ function PricingPageInner() {
     setLoading(tierId)
     setError('')
     try {
-      // Get session token to send with request (cookie auth unreliable across redirects)
+      // Step 1: get session
       const { createClient: _cc } = await import('@/lib/supabase/client')
       const _sb = _cc()
-      const { data: { session } } = await _sb.auth.getSession()
-      if (!session) { setError('Please log in to continue'); setLoading(null); return }
+      const { data: { session }, error: sessErr } = await _sb.auth.getSession()
+      if (sessErr) { setError('Session error: ' + sessErr.message); setLoading(null); return }
+      if (!session?.access_token) { setError('Not logged in — please refresh and try again'); setLoading(null); return }
 
+      // Step 2: call checkout API
+      setError('Connecting to payment...')
       const res = await fetch('/api/stripe/create-checkout', {
         method: 'POST',
         headers: {
@@ -115,16 +118,19 @@ function PricingPageInner() {
         },
         body: JSON.stringify({ tier: tierId, eventId: eventId || '', promoCode: promoCode.trim().toUpperCase() || undefined }),
       })
-      const data = await res.json()
-      if (data.error) throw new Error(data.error)
-      // Free promo — no Stripe needed
-      if (data.free) {
-        window.location.href = data.redirectUrl
-        return
-      }
+
+      // Step 3: parse response
+      const text = await res.text()
+      let data: any
+      try { data = JSON.parse(text) } catch { throw new Error(`Server error (${res.status}): ${text.slice(0, 200)}`) }
+      if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`)
+
+      setError('')
+      if (data.free) { window.location.href = data.redirectUrl; return }
+      if (!data.url) throw new Error('No payment URL returned — check Stripe config')
       window.location.href = data.url
     } catch (e: any) {
-      setError(e.message || 'Payment failed. Try again.')
+      setError('Error: ' + (e.message || 'Unknown error'))
       setLoading(null)
     }
   }
