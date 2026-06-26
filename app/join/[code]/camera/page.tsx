@@ -29,10 +29,12 @@ export default function CameraPage() {
   const [zoom, setZoom] = useState(1)
   const [torchOn, setTorchOn] = useState(false)
   const [torchSupported, setTorchSupported] = useState(false)
+  const [modeIndex, setModeIndex] = useState(0)
+  const [availableModes, setAvailableModes] = useState(ALL_MODES)
   const [toast, setToast] = useState('')
   const [showToast, setShowToast] = useState(false)
 
-  const filter = ALL_MODES[0] // Kodak Gold always
+  const filter = availableModes[modeIndex] || ALL_MODES[0]
 
   useEffect(() => {
     async function load() {
@@ -46,6 +48,27 @@ export default function CameraPage() {
         .select('*', { count: 'exact', head: true })
         .eq('event_id', ev.id).eq('guest_id', g.id)
       setShotsUsed(count || 0)
+
+      // Set available modes based on host settings
+      const ctrl = ev.mode_control || 'lock'
+      const selected = ev.selected_modes || ['kodak']
+      const locked = ev.locked_mode || 'kodak'
+
+      let modes = ALL_MODES
+      if (ctrl === 'lock') {
+        // Single mode — no choice
+        const m = ALL_MODES.find(m => m.id === locked) || ALL_MODES[0]
+        modes = [m]
+      } else if (ctrl === 'menu' || ctrl === 'select') {
+        // Host-curated selection
+        modes = ALL_MODES.filter(m => selected.includes(m.id))
+        if (modes.length === 0) modes = ALL_MODES
+      } else {
+        // free / random / blind — all modes
+        modes = ALL_MODES
+      }
+      setAvailableModes(modes)
+      setModeIndex(0)
     }
     load()
   }, [code])
@@ -309,6 +332,38 @@ export default function CameraPage() {
 
       {/* ── BOTTOM CONTROLS — matches Once layout exactly ── */}
       <div style={{ background: '#0a0a0a', paddingBottom: 'max(20px, env(safe-area-inset-bottom))', flexShrink: 0, touchAction: 'none' }}>
+
+        {/* FILM STRIP — only show if more than 1 mode available */}
+        {availableModes.length > 1 && (
+          <div style={{ display: 'flex', gap: 0, overflowX: 'auto', scrollbarWidth: 'none', paddingTop: 10, paddingBottom: 4, paddingLeft: 16, paddingRight: 16, touchAction: 'pan-x' }}>
+            {availableModes.map((m, i) => {
+              const selected = i === modeIndex
+              const gradients: Record<string, string> = {
+                kodak:    'linear-gradient(135deg,#c8742a,#e8a84e)',
+                ilford:   'linear-gradient(135deg,#1a1a1a,#888)',
+                portra:   'linear-gradient(135deg,#c4a882,#e8d4b8)',
+                polaroid: 'linear-gradient(135deg,#e8dcc8,#f4f0e8)',
+                golden:   'linear-gradient(135deg,#c87828,#f8c84e)',
+              }
+              return (
+                <button key={m.id} onClick={() => setModeIndex(i)}
+                  style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', padding: '0 10px' }}>
+                  <div style={{ width: 52, height: 36, borderRadius: 6, background: gradients[m.id] || '#222', border: selected ? '2px solid #e8ff47' : '2px solid transparent', transition: 'border .15s', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
+                    <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 6, background: 'rgba(0,0,0,0.4)', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', padding: '2px 1px' }}>
+                      {[0,1,2].map(j => <div key={j} style={{ width: 4, height: 3, background: 'rgba(0,0,0,0.6)', borderRadius: 1 }} />)}
+                    </div>
+                    <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 6, background: 'rgba(0,0,0,0.4)', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', padding: '2px 1px' }}>
+                      {[0,1,2].map(j => <div key={j} style={{ width: 4, height: 3, background: 'rgba(0,0,0,0.6)', borderRadius: 1 }} />)}
+                    </div>
+                  </div>
+                  <span style={{ fontSize: 8, fontWeight: 800, color: selected ? '#e8ff47' : '#444', textTransform: 'uppercase', letterSpacing: 1, fontFamily: 'Space Mono, monospace', whiteSpace: 'nowrap' }}>
+                    {m.id === 'kodak' ? 'KODAK' : m.id === 'ilford' ? 'B&W' : m.id === 'portra' ? 'PORTRA' : m.id === 'polaroid' ? 'POLAR' : 'GOLD'}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        )}
 
         {/* ZOOM PILL — centered, above shutter row */}
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 14, paddingBottom: 4 }}>
