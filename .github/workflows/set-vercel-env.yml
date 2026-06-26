@@ -1,49 +1,51 @@
 name: Set Vercel Env & Redeploy
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
 
 jobs:
   set-env:
     runs-on: ubuntu-latest
     steps:
       - name: Push all env vars to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: |
+          # Install jq
+          sudo apt-get install -y jq -q
+
           BASE="https://api.vercel.com/v10/projects/flash-roan/env"
-          TOK="${{ secrets.VERCEL_TOKEN }}"
 
+          # Delete and recreate each env var
           push_env() {
-            KEY=$1
-            VAL=$2
-            TYPE=$3
-
-            # Delete existing first
-            ID=$(curl -sf "$BASE?limit=50" -H "Authorization: Bearer $TOK" | \
-              python3 -c "import sys,json; e=[x for x in json.load(sys.stdin).get('envs',[]) if x['key']=='$KEY']; print(e[0]['id'] if e else '')" 2>/dev/null || echo "")
-
-            if [ -n "$ID" ]; then
-              curl -sf -X DELETE "$BASE/$ID" -H "Authorization: Bearer $TOK" > /dev/null
-            fi
-
-            # Create fresh
-            RESULT=$(curl -sf -X POST "$BASE" \
-              -H "Authorization: Bearer $TOK" \
+            KEY=$1; VAL=$2; TYPE=$3
+            # Get existing ID
+            ID=$(curl -sf "$BASE?limit=100" -H "Authorization: Bearer $VERCEL_TOKEN" | jq -r ".envs[] | select(.key==\"$KEY\") | .id" | head -1)
+            [ -n "$ID" ] && curl -sf -X DELETE "$BASE/$ID" -H "Authorization: Bearer $VERCEL_TOKEN" > /dev/null
+            # Create
+            curl -sf -X POST "$BASE" \
+              -H "Authorization: Bearer $VERCEL_TOKEN" \
               -H "Content-Type: application/json" \
-              -d "{\"key\":\"$KEY\",\"value\":\"$VAL\",\"type\":\"$TYPE\",\"target\":[\"production\",\"preview\"]}")
-
-            if echo "$RESULT" | grep -q '"id"'; then
-              echo "✓ $KEY"
-            else
-              echo "✗ $KEY: $RESULT"
-            fi
+              -d "{\"key\":\"$KEY\",\"value\":\"$VAL\",\"type\":\"$TYPE\",\"target\":[\"production\"]}" \
+              | jq -r '"✓ '"$KEY"'"' && echo "" || echo "✗ $KEY"
           }
 
           push_env "NEXT_PUBLIC_SUPABASE_URL" "https://onvdddlkrlwaxwufgodq.supabase.co" "plain"
           push_env "NEXT_PUBLIC_SUPABASE_ANON_KEY" "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9udmRkZGxrcmx3YXh3dWZnb2RxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTg0NDcsImV4cCI6MjA5NzczNDQ0N30.VZEZZPw4RaIJPtDenxavL8DyrgGaVDwT2x6Og_FPbaE" "plain"
           push_env "SUPABASE_SERVICE_ROLE_KEY" "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9udmRkZGxrcmx3YXh3dWZnb2RxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MjE1ODQ0NywiZXhwIjoyMDk3NzM0NDQ3fQ.66kMVxzDQduk0-Ri399emoJNEaHi2X3ZX5TJByICnac" "encrypted"
-          push_env "STRIPE_SECRET_KEY" "${{ secrets.STRIPE_SECRET_KEY }}" "encrypted"
+          push_env "STRIPE_SECRET_KEY" "$STRIPE_SECRET_KEY" "encrypted"
           push_env "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" "pk_live_51RPqZdBxmzRKlW0NyELP9ucHMN2PEc6tfkhJFsRraLiozRjsQWOIkHjzyxMpzHaPTrQH0uinXEiPTQfQcyIxYnk500yci9udCv" "plain"
-          push_env "RESEND_API_KEY" "${{ secrets.RESEND_API_KEY }}" "encrypted"
+          push_env "RESEND_API_KEY" "$RESEND_API_KEY" "encrypted"
           push_env "NEXT_PUBLIC_APP_URL" "https://flashcam.app" "plain"
           push_env "CRON_SECRET" "BRkuukC3uDrensDMOomOsCtM-4eKT6g1WSSClYcuGzU" "encrypted"
+
+      - name: Trigger Vercel redeploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          curl -sf -X POST "https://api.vercel.com/v13/deployments" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"name":"flash-roan","gitSource":{"type":"github","repoId":"behnamp/flash","ref":"main"}}' \
+            && echo "✓ Redeploy triggered" || echo "Redeploy skipped"
