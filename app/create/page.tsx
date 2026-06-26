@@ -81,7 +81,7 @@ export default function CreateEvent() {
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     eventType: 'wedding', eventName: '', date: '', venue: '',
-    shotLimit: 12, guestCap: '50', language: 'en',
+    shotLimit: 10, guestCap: '50', language: 'en',
     revealMode: 'end', modeControl: 'lock', selectedModes: ['kodak'], lockedMode: 'kodak',
     scavengerHunt: false, scavengerPrompts: SCAVENGER_PROMPTS.slice(0, 6),
     guestBook: false, liveSlideshow: false, aiReel: true,
@@ -126,7 +126,7 @@ export default function CreateEvent() {
       const { data: event, error: err } = await supabase.from('events').insert({
         host_id: user.id, name: form.eventName || 'My Event',
         event_type: form.eventType, venue: form.venue || null,
-        event_date: form.date || null, shot_limit: form.shotLimit,
+        event_date: form.date || null, shot_limit: form.guestCap === '5' ? Math.min(form.shotLimit, 10) : Math.min(form.shotLimit, 40),
         guest_cap: form.guestCap === '∞' ? 9999 : parseInt(form.guestCap) || 5,
         primary_language: form.language, reveal_mode: form.revealMode as any,
         mode_control: form.modeControl as any, selected_modes: form.selectedModes,
@@ -229,15 +229,21 @@ export default function CreateEvent() {
                 <div>
                   <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 52, fontWeight: 700, color: '#e8ff47', lineHeight: 1 }}>{form.shotLimit}</div>
                   <div style={{ fontSize: 12, color: '#444', marginTop: 5 }}>shots per guest</div>
+                {form.guestCap === '5' && form.shotLimit >= 10 && (
+                  <div style={{ fontSize: 10, color: '#2ed573', marginTop: 3 }}>Free plan max</div>
+                )}
                 </div>
                 <div style={{ fontSize: 11, color: '#333' }}>{form.shotLimit <= 6 ? 'Ultra rare' : form.shotLimit <= 12 ? 'Classic film' : form.shotLimit <= 20 ? 'Generous' : 'Party mode'}</div>
               </div>
-              <input type="range" min={3} max={36} value={form.shotLimit} onChange={e => set('shotLimit', +e.target.value)} />
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 10, color: '#333', fontFamily: 'Space Mono, monospace' }}><span>3</span><span>36</span></div>
+              <input type="range" min={3} max={form.guestCap === '5' ? 10 : 40} value={Math.min(form.shotLimit, form.guestCap === '5' ? 10 : 40)} onChange={e => set('shotLimit', +e.target.value)} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 10, color: '#333', fontFamily: 'Space Mono, monospace' }}>
+                <span>3</span>
+                <span style={{ color: form.guestCap === '5' ? '#2ed573' : '#333' }}>{form.guestCap === '5' ? '10 (free max)' : '40'}</span>
+              </div>
             </div>
             <Label>Guest Cap</Label>
             {/* Free tier callout */}
-            <div onClick={() => set('guestCap', '5')}
+            <div onClick={() => { set('guestCap', '5'); if (form.shotLimit > 10) set('shotLimit', 10) }}
               style={{ background: form.guestCap === '5' ? 'rgba(46,213,115,0.08)' : '#111', border: `1px solid ${form.guestCap === '5' ? 'rgba(46,213,115,0.5)' : '#1e1e1e'}`, borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 700, color: form.guestCap === '5' ? '#2ed573' : '#ccc', marginBottom: 3 }}>≤ 5 guests — Free</div>
