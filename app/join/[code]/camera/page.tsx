@@ -261,10 +261,10 @@ export default function CameraPage() {
       WebkitUserSelect: 'none', userSelect: 'none',
     }}>
 
-      {/* ── VIEWFINDER ── */}
-      <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+      {/* ── VIEWFINDER ── full frame, no crop */}
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <video ref={videoRef} autoPlay playsInline muted
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none', filter: cssFilter, transition: 'filter .25s' }} />
+          style={{ width: '100%', height: '100%', objectFit: 'contain', display: cameraReady ? 'block' : 'none', filter: cssFilter, transition: 'filter .25s' }} />
 
         {/* Loading */}
         {!cameraReady && !cameraError && (
