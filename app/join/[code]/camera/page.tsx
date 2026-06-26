@@ -261,10 +261,10 @@ export default function CameraPage() {
       WebkitUserSelect: 'none', userSelect: 'none',
     }}>
 
-      {/* ── VIEWFINDER ── full frame, rounded corners */}
-      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '8px 8px 0', borderRadius: 24 }}>
+      {/* ── VIEWFINDER ── full frame, rounded corners, top bar overlaid inside */}
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 10px', borderRadius: 28 }}>
         <video ref={videoRef} autoPlay playsInline muted
-          style={{ width: '100%', height: '100%', objectFit: 'contain', display: cameraReady ? 'block' : 'none', filter: cssFilter, transition: 'filter .25s', borderRadius: 24 }} />
+          style={{ width: '100%', height: '100%', objectFit: 'contain', display: cameraReady ? 'block' : 'none', filter: cssFilter, transition: 'filter .25s' }} />
 
         {/* Loading */}
         {!cameraReady && !cameraError && (
@@ -283,6 +283,36 @@ export default function CameraPage() {
 
         {/* Flash */}
         {flashing && <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: 0.8, pointerEvents: 'none' }} />}
+
+        {/* TOP BAR — overlaid inside viewfinder */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 14px', zIndex: 10 }}>
+          {/* Flash bolt */}
+          <div style={{ width: 38, height: 38, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#e8ff47">
+              <path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/>
+            </svg>
+          </div>
+          {/* Event name */}
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#f0f0f0', letterSpacing: -0.3, textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>{event?.name || ''}</div>
+          </div>
+          {/* Gallery / folder */}
+          <button onClick={() => router.push(`/join/${code}/gallery`)}
+            style={{ width: 38, height: 38, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' } as any}>
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+          </button>
+        </div>
+
+        {/* FLIP — overlaid bottom-left of viewfinder */}
+        <button onClick={() => setFacingMode(f => f === 'environment' ? 'user' : 'environment')}
+          style={{ position: 'absolute', bottom: 16, left: 16, width: 44, height: 44, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10 }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
+            <path d="M1 4v6h6"/><path d="M23 20v-6h-6"/>
+            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+          </svg>
+        </button>
 
         {/* ── TOP BAR — matches Once exactly ── */}
         <div style={{
@@ -315,14 +345,7 @@ export default function CameraPage() {
           </button>
         </div>
 
-        {/* FLIP — floating bottom-left of viewfinder */}
-        <button onClick={() => setFacingMode(f => f === 'environment' ? 'user' : 'environment')}
-          style={{ position: 'absolute', bottom: 20, left: 20, width: 44, height: 44, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10 }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round">
-            <path d="M1 4v6h6"/><path d="M23 20v-6h-6"/>
-            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/>
-          </svg>
-        </button>
+
 
         {/* Toast */}
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: `translate(-50%,-50%) scale(${showToast ? 1 : 0.85})`, background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(16px)', borderRadius: 20, padding: '10px 20px', fontSize: 14, fontWeight: 700, color: 'white', opacity: showToast ? 1 : 0, transition: 'all .2s', pointerEvents: 'none', whiteSpace: 'nowrap', border: '1px solid rgba(255,255,255,0.08)' }}>
