@@ -1,15 +1,16 @@
 'use client'
-import { useState, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { IconBack, IconCheck, IconFlash } from '@/components/icons'
 
 const TIERS = [
-  { id: 'mini',      name: 'Starter',   price: '$1.99',  guests: '≤ 10 guests',   desc: 'Intimate dinner or small gathering', popular: false },
-  { id: 'standard',  name: 'Small',     price: '$4.99',  guests: '≤ 25 guests',   desc: 'Birthday party or brunch',           popular: false },
-  { id: 'medium',    name: 'Medium',    price: '$9.99',  guests: '≤ 50 guests',   desc: 'Engagement, shower, graduation',     popular: true  },
-  { id: 'large',     name: 'Large',     price: '$14.99', guests: '≤ 100 guests',  desc: 'Wedding or corporate event',         popular: false },
-  { id: 'xl',        name: 'XL',        price: '$29.99', guests: '≤ 200 guests',  desc: 'Big venue or festival',              popular: false },
-  { id: 'unlimited', name: 'Unlimited', price: '$99.99', guests: 'Unlimited',     desc: 'No guest cap, ever',                 popular: false },
+  { id: 'free',      name: 'Free',      price: 'Free',   guests: '≤ 5 guests',    desc: 'Try it out — no credit card needed', popular: false, free: true },
+  { id: 'mini',      name: 'Starter',   price: '$1.99',  guests: '≤ 10 guests',   desc: 'Intimate dinner or small gathering', popular: false, free: false },
+  { id: 'standard',  name: 'Small',     price: '$4.99',  guests: '≤ 25 guests',   desc: 'Birthday party or brunch',           popular: false, free: false },
+  { id: 'medium',    name: 'Medium',    price: '$9.99',  guests: '≤ 50 guests',   desc: 'Engagement, shower, graduation',     popular: true,  free: false },
+  { id: 'large',     name: 'Large',     price: '$14.99', guests: '≤ 100 guests',  desc: 'Wedding or corporate event',         popular: false, free: false },
+  { id: 'xl',        name: 'XL',        price: '$29.99', guests: '≤ 200 guests',  desc: 'Big venue or festival',              popular: false, free: false },
+  { id: 'unlimited', name: 'Unlimited', price: '$99.99', guests: 'Unlimited',     desc: 'No guest cap, ever',                 popular: false, free: false },
 ]
 
 function PricingPageInner() {
@@ -17,6 +18,14 @@ function PricingPageInner() {
   const searchParams = useSearchParams()
   const eventId = searchParams.get('eventId') || ''
   const cancelled = searchParams.get('cancelled')
+  const tierParam = searchParams.get('tier')
+
+  // Auto-trigger free tier activation if redirected with tier=free
+  useEffect(() => {
+    if (tierParam === 'free' && eventId) {
+      handleBuy('free')
+    }
+  }, [])
 
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState('')
@@ -37,6 +46,25 @@ function PricingPageInner() {
         setError('Please log in first')
         setLoading(null)
         router.push('/login?next=/pricing' + (eventId ? `?eventId=${eventId}` : ''))
+        return
+      }
+
+      // Free tier — activate directly without Stripe
+      if (tierId === 'free') {
+        const supabaseUrl = 'https://onvdddlkrlwaxwufgodq.supabase.co'
+        if (eventId) {
+          await fetch(`${supabaseUrl}/rest/v1/events?id=eq.${eventId}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9udmRkZGxrcmx3YXh3dWZnb2RxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTg0NDcsImV4cCI6MjA5NzczNDQ0N30.VZEZZPw4RaIJPtDenxavL8DyrgGaVDwT2x6Og_FPbaE',
+              'Authorization': `Bearer ${session.access_token}`,
+              'Prefer': 'return=minimal',
+            },
+            body: JSON.stringify({ paid: true, is_active: true, payment_tier: 'free', guest_cap: 5, paid_at: new Date().toISOString() }),
+          })
+        }
+        router.push(eventId ? `/host/${eventId}?payment=success` : '/host')
         return
       }
 
@@ -116,6 +144,11 @@ function PricingPageInner() {
                   Popular
                 </div>
               )}
+              {(t as any).free && (
+                <div style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(46,213,115,0.15)', color: '#2ed573', fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', borderRadius: 6, padding: '3px 8px', border: '1px solid rgba(46,213,115,0.3)' }}>
+                  No card needed
+                </div>
+              )}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ flex: 1, paddingRight: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 3 }}>
@@ -129,9 +162,9 @@ function PricingPageInner() {
                   onClick={() => handleBuy(t.id)}
                   disabled={!!loading}
                   style={{
-                    background: loading === t.id ? '#222' : t.popular ? '#e8ff47' : '#1e1e1e',
-                    color: loading === t.id ? '#555' : t.popular ? '#0a0a0a' : '#ccc',
-                    border: t.popular ? 'none' : '1px solid #333',
+                    background: loading === t.id ? '#222' : (t as any).free ? '#1a2a1a' : t.popular ? '#e8ff47' : '#1e1e1e',
+                    color: loading === t.id ? '#555' : (t as any).free ? '#2ed573' : t.popular ? '#0a0a0a' : '#ccc',
+                    border: (t as any).free ? '1px solid rgba(46,213,115,0.4)' : t.popular ? 'none' : '1px solid #333',
                     borderRadius: 12, padding: '0 20px', height: 44, minWidth: 76,
                     fontSize: 14, fontWeight: 700, cursor: loading ? 'default' : 'pointer',
                     fontFamily: 'inherit', flexShrink: 0,
@@ -140,7 +173,7 @@ function PricingPageInner() {
                 >
                   {loading === t.id ? (
                     <div style={{ width: 18, height: 18, border: '2px solid #444', borderTop: '2px solid #e8ff47', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
-                  ) : 'Buy'}
+                  ) : (t as any).free ? 'Get Free' : 'Buy'}
                 </button>
               </div>
             </div>

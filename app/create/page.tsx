@@ -127,7 +127,7 @@ export default function CreateEvent() {
         host_id: user.id, name: form.eventName || 'My Event',
         event_type: form.eventType, venue: form.venue || null,
         event_date: form.date || null, shot_limit: form.shotLimit,
-        guest_cap: form.guestCap === '\u221e' ? 9999 : parseInt(form.guestCap),
+        guest_cap: form.guestCap === '∞' ? 9999 : parseInt(form.guestCap) || 5,
         primary_language: form.language, reveal_mode: form.revealMode as any,
         mode_control: form.modeControl as any, selected_modes: form.selectedModes,
         locked_mode: form.lockedMode, scavenger_hunt: form.scavengerHunt,
@@ -141,7 +141,7 @@ export default function CreateEvent() {
         cover_image_url: coverImageUrl,
       }).select().single()
       if (err) throw err
-      router.push(`/pricing?eventId=${event.id}`)
+      router.push(`/pricing?eventId=${event.id}${form.guestCap === '5' ? '&tier=free' : ''}`)
     } catch (e: any) {
       setError(e.message || 'Failed to create event')
       setSaving(false)
@@ -236,6 +236,17 @@ export default function CreateEvent() {
               <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 10, color: '#333', fontFamily: 'Space Mono, monospace' }}><span>3</span><span>36</span></div>
             </div>
             <Label>Guest Cap</Label>
+            {/* Free tier callout */}
+            <div onClick={() => set('guestCap', '5')}
+              style={{ background: form.guestCap === '5' ? 'rgba(46,213,115,0.08)' : '#111', border: `1px solid ${form.guestCap === '5' ? 'rgba(46,213,115,0.5)' : '#1e1e1e'}`, borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: form.guestCap === '5' ? '#2ed573' : '#ccc', marginBottom: 3 }}>≤ 5 guests — Free</div>
+                <div style={{ fontSize: 12, color: '#444' }}>No payment needed · Perfect for testing</div>
+              </div>
+              <div style={{ background: 'rgba(46,213,115,0.12)', border: '1px solid rgba(46,213,115,0.3)', borderRadius: 8, padding: '4px 10px', fontSize: 10, fontWeight: 800, color: '#2ed573', letterSpacing: 1, textTransform: 'uppercase' }}>
+                Free
+              </div>
+            </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: 24 }}>
               {['10', '25', '50', '100', '200', '∞'].map(n => (
                 <div key={n} onClick={() => set('guestCap', n)} style={{ background: form.guestCap === n ? 'rgba(232,255,71,0.08)' : '#111', border: `1px solid ${form.guestCap === n ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 10, padding: '8px 16px', fontSize: 13, fontFamily: 'Space Mono, monospace', color: form.guestCap === n ? '#e8ff47' : '#444', cursor: 'pointer' }}>{n}</div>
