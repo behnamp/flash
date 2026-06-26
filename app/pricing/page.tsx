@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, Suspense } from 'react'
+import { isNativeIOS, purchaseWithStoreKit, TIER_TO_PRODUCT_ID } from '@/lib/storekit'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { IconBack, IconCheck, IconFlash } from '@/components/icons'
 
@@ -30,6 +31,11 @@ function PricingPageInner() {
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [promoCode, setPromoCode] = useState('')
+  const [nativeIOS, setNativeIOS] = useState(false)
+
+  useEffect(() => {
+    isNativeIOS().then(setNativeIOS)
+  }, [])
 
   const handleBuy = async (tierId: string) => {
     if (loading) return
@@ -37,6 +43,20 @@ function PricingPageInner() {
     setError('')
 
     try {
+      // Native iOS — use StoreKit instead of Stripe
+      if (nativeIOS && tierId !== 'free') {
+        const productId = TIER_TO_PRODUCT_ID[tierId]
+        if (!productId) { setError('Product not found'); setLoading(null); return }
+        const result = await purchaseWithStoreKit(productId, eventId)
+        if (result.success) {
+          router.push(`/host/${result.eventId}?payment=success`)
+        } else {
+          setError(result.error || 'Purchase failed')
+          setLoading(null)
+        }
+        return
+      }
+
       // Get auth token client-side
       const { createClient } = await import('@/lib/supabase/client')
       const sb = createClient()
