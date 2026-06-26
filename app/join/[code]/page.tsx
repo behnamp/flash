@@ -20,10 +20,11 @@ export default function JoinPage() {
     async function load() {
       const { data } = await supabase
         .from('events')
-        .select('id, name, event_type, is_active, join_code, shot_limit, guest_cap')
+        .select('id, name, event_type, is_active, paid, join_code, shot_limit, guest_cap')
         .eq('join_code', code.toUpperCase())
         .single()
       if (!data) { setError('Event not found'); setLoading(false); return }
+      if (!data.paid) { setError('This event is not active yet'); setLoading(false); return }
       if (!data.is_active) { setError('This event has ended'); setLoading(false); return }
       setEvent(data)
       setLoading(false)

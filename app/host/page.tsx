@@ -58,7 +58,7 @@ function HostDashboardInner() {
   const loadEvents = async (userId: string) => {
     const { data } = await supabase
       .from('events')
-      .select('id, name, event_type, join_code, is_active, revealed, shot_limit, created_at, reveal_mode, guest_cap')
+      .select('id, name, event_type, join_code, is_active, revealed, paid, shot_limit, created_at, reveal_mode, guest_cap, cover_image_url, cover_color')
       .eq('host_id', userId)
       .order('created_at', { ascending: false })
     setEvents(data || [])
@@ -273,6 +273,15 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
         </div>
 
         {/* Download banner for revealed events */}
+        {!ev.paid && (
+          <div style={{ borderTop: '1px solid #1a1a1a', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,149,0,0.05)' }}>
+            <span style={{ fontSize: 12, color: '#ff9500' }}>Payment required to activate</span>
+            <button onClick={() => router.push(`/pricing?eventId=${ev.id}`)}
+              style={{ background: '#ff9500', color: '#000', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+              Pay Now
+            </button>
+          </div>
+        )}
         {ev.revealed && (
           <div style={{ borderTop: '1px solid #161616', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(46,213,115,0.04)' }}>
             <div style={{ fontSize: 12, color: '#555' }}>Gallery revealed — download before photos expire</div>

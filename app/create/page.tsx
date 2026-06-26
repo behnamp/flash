@@ -136,7 +136,7 @@ export default function CreateEvent() {
         ai_reel: form.aiReel, print_enabled: form.printEnabled,
         allow_captions: form.allowCaptions, allow_voice: form.allowVoice,
         white_label: form.whiteLabel, brand_name: form.whiteLabel ? form.brandName : null,
-        brand_logo_url: null, stats_card_enabled: form.statsCard, is_active: true,
+        brand_logo_url: null, stats_card_enabled: form.statsCard, is_active: false, paid: false,
         cover_color: form.coverColor, cover_emoji: form.coverEmoji,
         cover_image_url: coverImageUrl,
       }).select().single()
