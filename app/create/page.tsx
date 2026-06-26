@@ -85,7 +85,7 @@ export default function CreateEvent() {
     revealMode: 'end', modeControl: 'lock', selectedModes: ['kodak'], lockedMode: 'kodak',
     scavengerHunt: false, scavengerPrompts: SCAVENGER_PROMPTS.slice(0, 6),
     guestBook: false, liveSlideshow: false, aiReel: true,
-    printEnabled: false, allowCaptions: true, allowVoice: false,
+    printEnabled: false, allowCaptions: false, allowVoice: false,
     whiteLabel: false, brandName: '', brandLogoPreview: '', brandLogoFile: null as File | null, statsCard: true,
     coverColor: '#0a0a0a', coverEmoji: '⚡', coverImageUrl: '', coverImageFile: null as File | null, coverOverlay: 'none',
   })
