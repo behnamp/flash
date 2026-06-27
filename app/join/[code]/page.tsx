@@ -96,7 +96,7 @@ export default function JoinPage() {
             placeholder="How should we call you?"
             maxLength={24}
             autoFocus
-            style={{ background: '#111', border: `1px solid ${nickname.trim() ? '#333' : '#1e1e1e'}`, borderRadius: 12, padding: '14px 16px', color: '#f0f0f0', fontSize: 16, width: '100%', outline: 'none', fontFamily: 'inherit', transition: 'border .15s' }}
+            style={{ background: '#111', border: `1px solid ${nickname.trim() ? '#333' : '#1e1e1e'}`, borderRadius: 12, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, color: '#f0f0f0', fontSize: 16, width: '100%', outline: 'none', fontFamily: 'inherit', transition: 'border .15s' }}
           />
           {!nickname.trim() && (
             <div style={{ fontSize: 11, color: '#333', marginTop: 6 }}>Required to join</div>

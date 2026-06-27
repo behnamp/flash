@@ -123,7 +123,7 @@ function PricingPageInner() {
     <main style={{ minHeight: '100vh', background: '#0a0a0a', color: '#f0f0f0', fontFamily: "'Space Grotesk', sans-serif" }}>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', borderBottom: '1px solid #161616', position: 'sticky', top: 0, zIndex: 10, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 18, paddingRight: 18, borderBottom: '1px solid #161616', position: 'sticky', top: 0, zIndex: 10, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)' }}>
         <button onClick={() => router.back()} style={{ width: 38, height: 38, background: '#161616', border: 'none', borderRadius: 12, color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconBack size={18} />
         </button>
@@ -224,7 +224,7 @@ function PricingPageInner() {
             { name: 'Creator', price: '$19.99/mo', desc: 'Up to 10 events/month · 200 guests each', color: '#888' },
             { name: 'Venue',   price: '$49.99/mo', desc: 'Unlimited events · White-label · Priority support', color: '#e8ff47' },
           ].map(plan => (
-            <div key={plan.name} style={{ background: '#0e0e0e', border: `1px solid ${plan.color === '#e8ff47' ? 'rgba(232,255,71,0.15)' : '#1a1a1a'}`, borderRadius: 12, padding: '14px 16px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div key={plan.name} style={{ background: '#0e0e0e', border: `1px solid ${plan.color === '#e8ff47' ? 'rgba(232,255,71,0.15)' : '#1a1a1a'}`, borderRadius: 12, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 700, color: plan.color, marginBottom: 3 }}>{plan.name}</div>
                 <div style={{ fontSize: 12, color: '#444' }}>{plan.desc}</div>

@@ -56,7 +56,7 @@ const Label = ({ children }: { children: React.ReactNode }) => (
 const Inp = ({ label, ...props }: any) => (
   <div style={{ marginBottom: 16 }}>
     {label && <Label>{label}</Label>}
-    <input {...props} style={{ background: '#141414', border: '1px solid #222', borderRadius: 12, padding: '14px 16px', color: '#f0f0f0', fontSize: 15, width: '100%', outline: 'none', fontFamily: 'inherit', ...props.style }} />
+    <input {...props} style={{ background: '#141414', border: '1px solid #222', borderRadius: 12, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, color: '#f0f0f0', fontSize: 15, width: '100%', outline: 'none', fontFamily: 'inherit', ...props.style }} />
   </div>
 )
 
@@ -157,7 +157,7 @@ export default function CreateEvent() {
 
   return (
     <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', position: 'sticky', top: 0, zIndex: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 18, paddingRight: 18, paddingTop: 'max(14px, env(safe-area-inset-top))', background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', position: 'sticky', top: 0, zIndex: 20 }}>
         <button onClick={() => step > 1 ? setStep(s => s - 1) : router.push('/host')} style={{ width: 38, height: 38, background: '#161616', border: 'none', borderRadius: 12, color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <ArrowLeft size={18} weight="regular" />
         </button>
@@ -244,7 +244,7 @@ export default function CreateEvent() {
             <Label>Guest Cap</Label>
             {/* Free tier callout */}
             <div onClick={() => { set('guestCap', '5'); if (form.shotLimit > 10) set('shotLimit', 10) }}
-              style={{ background: form.guestCap === '5' ? 'rgba(46,213,115,0.08)' : '#111', border: `1px solid ${form.guestCap === '5' ? 'rgba(46,213,115,0.5)' : '#1e1e1e'}`, borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              style={{ background: form.guestCap === '5' ? 'rgba(46,213,115,0.08)' : '#111', border: `1px solid ${form.guestCap === '5' ? 'rgba(46,213,115,0.5)' : '#1e1e1e'}`, borderRadius: 12, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, marginBottom: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 700, color: form.guestCap === '5' ? '#2ed573' : '#ccc', marginBottom: 3 }}>≤ 5 guests — Free</div>
                 <div style={{ fontSize: 12, color: '#444' }}>No payment needed · Perfect for testing</div>
@@ -291,7 +291,7 @@ export default function CreateEvent() {
               {MODE_CONTROLS.map(mc => {
                 const sel = form.modeControl === mc.id
                 return (
-                  <div key={mc.id} onClick={() => { set('modeControl', mc.id); if (mc.id === 'lock') { const first = form.selectedModes[0] || 'kodak'; set('selectedModes', [first]); set('lockedMode', first) } }} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 12, padding: '14px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <div key={mc.id} onClick={() => { set('modeControl', mc.id); if (mc.id === 'lock') { const first = form.selectedModes[0] || 'kodak'; set('selectedModes', [first]); set('lockedMode', first) } }} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 12, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
                     <div style={{ width: 20, height: 20, borderRadius: '50%', border: `1.5px solid ${sel ? '#e8ff47' : '#333'}`, background: sel ? '#e8ff47' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       {sel && <Check size={10} color="#000" weight="bold" />}
                     </div>
