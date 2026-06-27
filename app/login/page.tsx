@@ -1,5 +1,5 @@
 'use client'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 import { IconFlash } from '@/components/icons'
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -8,6 +8,13 @@ import Link from 'next/link'
 
 function LoginPageInner() {
   const router = useRouter()
+  const formRef = useRef<HTMLDivElement>(null)
+
+  const scrollToForm = () => {
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    }, 300) // wait for keyboard to open
+  }
   const searchParams = useSearchParams()
   const next = searchParams.get('next') || '/host'
   const supabase = createClient()
@@ -64,7 +71,7 @@ function LoginPageInner() {
   const canSubmit = mode === 'forgot' ? !!email : (!!email && !!password)
 
   return (
-    <main style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 22px', paddingTop: 'max(60px, env(safe-area-inset-top))' }}>
+    <main style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', padding: '20px 22px', paddingTop: 'max(60px, env(safe-area-inset-top))', paddingBottom: 'max(40px, env(safe-area-inset-bottom))', overflowY: 'auto' }}>
       <Link href="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0, marginBottom: 40, textDecoration: 'none' }}>
         <div style={{ width: 72, height: 72, background: '#e8ff47', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
           <IconFlash size={36} color="#0a0a0a" />
@@ -104,7 +111,7 @@ function LoginPageInner() {
           )}
           <div>
             <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444', marginBottom: 7 }}>Email</div>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+            <input type="email" onFocus={scrollToForm} value={email} onChange={e => setEmail(e.target.value)}
               placeholder="you@example.com" onKeyDown={e => e.key === 'Enter' && handleSubmit()} style={inp} />
           </div>
           {mode !== 'forgot' && (
@@ -118,7 +125,7 @@ function LoginPageInner() {
                   </button>
                 )}
               </div>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+              <input type="password" onFocus={scrollToForm} value={password} onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••" onKeyDown={e => e.key === 'Enter' && handleSubmit()} style={inp} />
             </div>
           )}
