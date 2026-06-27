@@ -363,7 +363,7 @@ export default function CameraPage() {
         )}
 
         {/* ZOOM PILL — centered, above shutter row */}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 14, paddingBottom: 4 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: 4 }}>
           <div style={{ display: 'flex', background: 'rgba(255,255,255,0.07)', borderRadius: 24, padding: '3px', gap: 1 }}>
             {ZOOM_LEVELS.map(z => {
               const active = zoom === z.value

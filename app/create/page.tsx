@@ -216,7 +216,7 @@ export default function CreateEvent() {
           <div>
             <Inp label="Event Name *" placeholder="e.g. Sarah & Marco's Wedding" value={form.eventName} onChange={(e: any) => set('eventName', e.target.value)} />
             {step === 2 && !form.eventName.trim() && <div style={{ fontSize: 11, color: '#ff4757', marginTop: -8, marginBottom: 8 }}>Required</div>}
-            <Inp label="Event Date *" type="date" value={form.date} onChange={(e: any) => set('date', e.target.value)} />
+            <Inp label="Event Date *" type="date" value={form.date} style={{ colorScheme: 'dark', width: '100%', boxSizing: 'border-box' }} onChange={(e: any) => set('date', e.target.value)} />
             {step === 2 && !form.date && <div style={{ fontSize: 11, color: '#ff4757', marginTop: -8, marginBottom: 8 }}>Required</div>}
             <Inp label="Venue (optional)" placeholder="e.g. Grand Ballroom, Toronto" value={form.venue} onChange={(e: any) => set('venue', e.target.value)} />
           </div>
