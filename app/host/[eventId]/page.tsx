@@ -228,7 +228,7 @@ export default function EventDashboard() {
 
             {!event?.revealed && event?.is_active && (
               <div style={{ marginTop: 20 }}>
-                <button onClick={handleReveal} disabled={revealing} style={{ width: '100%', background: 'var(--red)', color: 'white', border: 'none', borderRadius: 13, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 20, paddingRight: 20, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                <button onClick={handleReveal} disabled={revealing} style={{ width: '100%', background: 'var(--red)', color: 'white', border: 'none', borderRadius: 13, paddingBottom: '14px', paddingLeft: 20, paddingRight: 20, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
                   {revealing ? 'Revealing...' : 'Reveal Gallery Now'}
                 </button>
               </div>
@@ -336,7 +336,7 @@ export default function EventDashboard() {
         {/* HOST PHOTO LIGHTBOX */}
         {selectedShot && (
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.96)', zIndex: 200, display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, paddingTop: 'max(14px, env(safe-area-inset-top))', flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, flexShrink: 0 }}>
               <button onClick={() => setSelectedShot(null)}
                 style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>

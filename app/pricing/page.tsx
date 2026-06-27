@@ -224,7 +224,7 @@ function PricingPageInner() {
             { name: 'Creator', price: '$19.99/mo', desc: 'Up to 10 events/month · 200 guests each', color: '#888' },
             { name: 'Venue',   price: '$49.99/mo', desc: 'Unlimited events · White-label · Priority support', color: '#e8ff47' },
           ].map(plan => (
-            <div key={plan.name} style={{ background: '#0e0e0e', border: `1px solid ${plan.color === '#e8ff47' ? 'rgba(232,255,71,0.15)' : '#1a1a1a'}`, borderRadius: 12, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div key={plan.name} style={{ background: '#0e0e0e', border: `1px solid ${plan.color === '#e8ff47' ? 'rgba(232,255,71,0.15)' : '#1a1a1a'}`, borderRadius: 12, paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 700, color: plan.color, marginBottom: 3 }}>{plan.name}</div>
                 <div style={{ fontSize: 12, color: '#444' }}>{plan.desc}</div>
