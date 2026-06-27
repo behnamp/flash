@@ -10,7 +10,7 @@ export default function ScanPage() {
   const [scanning, setScanning] = useState(true)
   const [manualCode, setManualCode] = useState('')
   const streamRef = useRef<MediaStream | null>(null)
-  const rafRef = useRef<number>()
+  const rafRef = useRef<number | undefined>(undefined)
   const scanningRef = useRef(true)
 
   useEffect(() => {
