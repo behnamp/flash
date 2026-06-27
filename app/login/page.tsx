@@ -64,12 +64,13 @@ function LoginPageInner() {
   const canSubmit = mode === 'forgot' ? !!email : (!!email && !!password)
 
   return (
-    <main style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 22px' }}>
-      <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 44, textDecoration: 'none' }}>
-        <div style={{ width: 40, height: 40, background: '#e8ff47', borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <IconFlash size={20} color="#0a0a0a" />
+    <main style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 22px', paddingTop: 'max(60px, env(safe-area-inset-top))' }}>
+      <Link href="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0, marginBottom: 40, textDecoration: 'none' }}>
+        <div style={{ width: 72, height: 72, background: '#e8ff47', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
+          <IconFlash size={36} color="#0a0a0a" />
         </div>
-        <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 20, fontWeight: 700, color: '#f0f0f0' }}>Flash</span>
+        <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 26, fontWeight: 700, color: '#f0f0f0', marginBottom: 6 }}>Flash</span>
+        <span style={{ fontSize: 13, color: '#444' }}>Disposable camera for events</span>
       </Link>
 
       <div style={{ width: '100%', maxWidth: 320 }}>

@@ -100,6 +100,12 @@ export default function LandingPage() {
   const heroRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    // If running inside native app (Capacitor), skip landing page and go to login
+    const isNative = !!(window as any).Capacitor?.isNativePlatform?.()
+    if (isNative) {
+      window.location.replace('/login')
+      return
+    }
     const handler = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', handler)
     return () => window.removeEventListener('scroll', handler)
