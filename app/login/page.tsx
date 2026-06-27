@@ -72,13 +72,26 @@ function LoginPageInner() {
 
   return (
     <main style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', padding: '20px 22px', paddingTop: 'max(60px, env(safe-area-inset-top))', paddingBottom: 'max(40px, env(safe-area-inset-bottom))', overflowY: 'auto' }}>
-      <Link href="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0, marginBottom: 40, textDecoration: 'none' }}>
+      <Link href="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0, marginBottom: 32, textDecoration: 'none' }}>
         <div style={{ width: 72, height: 72, background: '#e8ff47', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
           <IconFlash size={36} color="#0a0a0a" />
         </div>
         <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 26, fontWeight: 700, color: '#f0f0f0', marginBottom: 6 }}>Flash</span>
         <span style={{ fontSize: 13, color: '#444' }}>Disposable camera for events</span>
       </Link>
+
+      {/* Join as guest — scan QR */}
+      <Link href="/scan" style={{ width: '100%', maxWidth: 400, background: '#e8ff47', borderRadius: 14, padding: '15px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, textDecoration: 'none', marginBottom: 20 }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.2" strokeLinecap="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3" rx="0.5" fill="#0a0a0a" stroke="none"/>
+          <rect x="18" y="14" width="3" height="3" rx="0.5" fill="#0a0a0a" stroke="none"/>
+          <rect x="14" y="18" width="3" height="3" rx="0.5" fill="#0a0a0a" stroke="none"/>
+          <rect x="18" y="18" width="3" height="3" rx="0.5" fill="#0a0a0a" stroke="none"/>
+        </svg>
+        <span style={{ fontSize: 15, fontWeight: 800, color: '#0a0a0a' }}>Scan QR to Join Event</span>
+      </Link>
+      <div style={{ fontSize: 12, color: '#2a2a2a', marginBottom: 20 }}>or sign in to host your own event</div>
 
       <div style={{ width: '100%', maxWidth: 320 }}>
 

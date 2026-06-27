@@ -131,6 +131,16 @@ function HostDashboardInner() {
           <IconFlash size={20} color="#0a0a0a" />
         </div>
         <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 16, fontWeight: 700, flex: 1, letterSpacing: -0.5 }}>Flash</span>
+        <button onClick={() => router.push('/scan')} style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 10, color: '#e8ff47', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="3" height="3" rx="0.5" fill="currentColor" stroke="none"/>
+            <rect x="18" y="14" width="3" height="3" rx="0.5" fill="currentColor" stroke="none"/>
+            <rect x="14" y="18" width="3" height="3" rx="0.5" fill="currentColor" stroke="none"/>
+            <rect x="18" y="18" width="3" height="3" rx="0.5" fill="currentColor" stroke="none"/>
+          </svg>
+        </button>
 <button onClick={handleLogout} style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 10, color: '#555', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconLogout size={18} />
         </button>
