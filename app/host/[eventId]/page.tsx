@@ -186,6 +186,15 @@ export default function EventDashboard() {
               Cast to TV / Slideshow
             </button>
 
+            {/* Scan poster button */}
+            <button onClick={() => router.push(`/host/${eventId}/poster`)}
+              style={{ width: '100%', maxWidth: 300, background: 'var(--surface2)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 13, padding: '13px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h4v4H7zM13 13h4v4h-4zM13 7h4M7 13v4"/>
+              </svg>
+              Scan poster / table tent
+            </button>
+
             {!event?.revealed && event?.is_active && (
               <button onClick={handleReveal} disabled={revealing} style={{ width: '100%', maxWidth: 300, background: 'var(--red)', color: 'white', border: 'none', borderRadius: 13, padding: '14px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
                 {revealing ? 'Revealing...' : 'Reveal Gallery Now'}

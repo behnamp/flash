@@ -94,15 +94,44 @@ function HostDashboardInner() {
   const handleDuplicate = async (ev: any) => {
     const { data: { user: u } } = await supabase.auth.getUser()
     if (!u) return
+    // Copy the full configuration — everything except identity, state, payment, and timestamps
     const { data } = await supabase.from('events').insert({
-      host_id: u.id, name: `${ev.name} (Copy)`,
-      event_type: ev.event_type, shot_limit: ev.shot_limit,
-      reveal_mode: ev.reveal_mode, guest_cap: ev.guest_cap,
+      host_id: u.id,
+      name: `${ev.name} (Copy)`,
+      event_type: ev.event_type,
+      venue: ev.venue,
+      shot_limit: ev.shot_limit,
+      guest_cap: ev.guest_cap,
+      allow_video: ev.allow_video,
+      allow_voice: ev.allow_voice,
+      allow_captions: ev.allow_captions,
+      mode_control: ev.mode_control,
+      selected_modes: ev.selected_modes,
+      locked_mode: ev.locked_mode,
+      scavenger_hunt: ev.scavenger_hunt,
+      scavenger_prompts: ev.scavenger_prompts,
+      guest_book: ev.guest_book,
+      live_slideshow: ev.live_slideshow,
+      ai_reel: ev.ai_reel,
+      print_enabled: ev.print_enabled,
+      primary_language: ev.primary_language,
+      auto_translate: ev.auto_translate,
+      white_label: ev.white_label,
+      brand_name: ev.brand_name,
+      brand_logo_url: ev.brand_logo_url,
+      brand_color: ev.brand_color,
+      reveal_mode: ev.reveal_mode,
+      stats_card_enabled: ev.stats_card_enabled,
+      cover_color: ev.cover_color,
+      cover_emoji: ev.cover_emoji,
+      cover_image_url: ev.cover_image_url,
+      // Fresh state — new draft, no date, unpaid
       is_active: false,
+      event_date: null,
     }).select().single()
     if (data) {
       setEvents(e => [data, ...e])
-      showToast('Event duplicated ✓')
+      showToast('Event duplicated ✓ — set a new date & pay to activate')
     }
     setMenuOpen(null)
   }
