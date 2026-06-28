@@ -287,7 +287,7 @@ export default function CameraPage() {
         {flashing && <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: 0.8, pointerEvents: 'none' }} />}
 
         {/* TOP BAR — overlaid inside viewfinder */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 14px', zIndex: 10 }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 'max(14px, calc(env(safe-area-inset-top) + 4px))', paddingBottom: 14, paddingLeft: 14, paddingRight: 14, zIndex: 10 }}>
           {/* Flash bolt */}
           <div style={{ width: 38, height: 38, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="#e8ff47">
@@ -363,7 +363,7 @@ export default function CameraPage() {
         )}
 
         {/* ZOOM PILL — centered, above shutter row */}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: 4 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 14, paddingBottom: 4 }}>
           <div style={{ display: 'flex', background: 'rgba(255,255,255,0.07)', borderRadius: 24, padding: '3px', gap: 1 }}>
             {ZOOM_LEVELS.map(z => {
               const active = zoom === z.value

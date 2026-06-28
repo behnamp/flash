@@ -34,13 +34,13 @@ export default function PublicGalleryPage() {
   }, [token])
 
   if (loading) return (
-    <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <IconFlash size={36} color="#e8ff47" />
     </main>
   )
 
   if (!event) return (
-    <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 24 }}>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 24 }}>
       <div>
         <div style={{ fontSize: 16, fontWeight: 600, color: '#555', marginBottom: 8 }}>Gallery not found</div>
         <div style={{ fontSize: 13, color: '#333' }}>This gallery may not exist or hasn't been revealed yet.</div>
@@ -49,9 +49,9 @@ export default function PublicGalleryPage() {
   )
 
   return (
-    <main style={{ minHeight: '100vh', background: '#0a0a0a' }}>
+    <main style={{ minHeight: '100dvh', background: '#0a0a0a' }}>
       {/* Header */}
-      <div style={{ padding: '20px 18px 16px', borderBottom: '1px solid #161616', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ paddingTop: 'max(20px, env(safe-area-inset-top))', paddingBottom: 16, paddingLeft: 18, paddingRight: 18, borderBottom: '1px solid #161616', display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ width: 30, height: 30, background: '#e8ff47', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconFlash size={16} color="#0a0a0a" />
         </div>

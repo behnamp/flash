@@ -115,7 +115,7 @@ function HostDashboardInner() {
   }
 
   if (loading) return (
-    <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="flash-loading"><IconFlash size={40} /></div>
     </main>
   )
@@ -124,7 +124,7 @@ function HostDashboardInner() {
   const pastEvents = events.filter(e => !e.is_active || e.revealed)
 
   return (
-    <main style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
+    <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', paddingTop: 'max(14px, env(safe-area-inset-top))', background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', position: 'sticky', top: 0, zIndex: 20 }}>
         <div style={{ width: 36, height: 36, background: '#e8ff47', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

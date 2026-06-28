@@ -38,7 +38,7 @@ function PaymentSuccessInner() {
   }, [sessionId, eventId])
 
   return (
-    <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>
       <div style={{ marginBottom: 32 }}>
         <div style={{ width: 64, height: 64, background: '#e8ff47', borderRadius: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
           <IconFlash size={32} color="#0a0a0a" />

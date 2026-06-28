@@ -26,7 +26,7 @@ function ResetPasswordInner() {
   const inp = { background: '#111', border: '1px solid #222', borderRadius: 10, padding: '14px', color: '#f0f0f0', fontSize: 15, width: '100%', outline: 'none', fontFamily: 'inherit' } as any
 
   return (
-    <main style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 22px' }}>
+    <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 22px' }}>
       <div style={{ width: 40, height: 40, background: '#e8ff47', borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 44 }}>
         <IconFlash size={20} color="#0a0a0a" />
       </div>

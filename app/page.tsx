@@ -112,7 +112,7 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div style={{ background: '#0a0a0a', color: '#f0f0f0', fontFamily: "'Space Grotesk', sans-serif", minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ background: '#0a0a0a', color: '#f0f0f0', fontFamily: "'Space Grotesk', sans-serif", minHeight: '100dvh', overflowX: 'hidden' }}>
       <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
       {/* ── NAV ── */}
@@ -164,7 +164,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section ref={heroRef} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px 24px 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section ref={heroRef} style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px 24px 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         {/* Background glow */}
         <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 600, background: 'radial-gradient(circle, rgba(232,255,71,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
 

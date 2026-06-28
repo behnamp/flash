@@ -68,7 +68,7 @@ export default function SlideshowPage() {
   }, [shots.length])
 
   if (loading) return (
-    <div style={{ height: '100vh', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ height: '100dvh', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ width: 2, height: 40, background: '#e8ff47', animation: 'blink 1s infinite' }} />
       <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}`}</style>
     </div>
@@ -78,7 +78,7 @@ export default function SlideshowPage() {
   const total = shots.length
 
   return (
-    <div style={{ height: '100vh', width: '100vw', background: '#000', position: 'relative', overflow: 'hidden', fontFamily: "'Space Grotesk', sans-serif" }}>
+    <div style={{ height: '100dvh', width: '100vw', background: '#000', position: 'relative', overflow: 'hidden', fontFamily: "'Space Grotesk', sans-serif" }}>
 
       {/* BACKGROUND — blurred version of current photo */}
       {shot?.storage_url && (
@@ -122,7 +122,7 @@ export default function SlideshowPage() {
       )}
 
       {/* TOP BAR */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '28px 40px' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 'max(28px, calc(env(safe-area-inset-top) + 16px))', paddingBottom: 28, paddingLeft: 40, paddingRight: 40 }}>
         {/* Flash logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 36, height: 36, background: '#e8ff47', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -146,7 +146,7 @@ export default function SlideshowPage() {
 
       {/* PHOTO INFO — bottom left */}
       {shot && (
-        <div style={{ position: 'absolute', bottom: 32, left: 40, display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ position: 'absolute', bottom: 'max(32px, calc(env(safe-area-inset-bottom) + 20px))', left: 40, display: 'flex', alignItems: 'center', gap: 12 }}>
           <div>
             <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>{shot.shooter_name}</div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>
@@ -158,7 +158,7 @@ export default function SlideshowPage() {
 
       {/* PHOTO COUNTER — bottom right */}
       {total > 0 && (
-        <div style={{ position: 'absolute', bottom: 32, right: 40, display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div style={{ position: 'absolute', bottom: 'max(32px, calc(env(safe-area-inset-bottom) + 20px))', right: 40, display: 'flex', alignItems: 'center', gap: 16 }}>
           {/* Dot indicators (max 12) */}
           <div style={{ display: 'flex', gap: 6 }}>
             {Array.from({ length: Math.min(total, 12) }).map((_, i) => (
@@ -174,7 +174,7 @@ export default function SlideshowPage() {
 
       {/* NEW PHOTO FLASH */}
       {newPhoto && (
-        <div style={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', background: 'rgba(232,255,71,0.95)', borderRadius: 100, padding: '8px 20px', display: 'flex', alignItems: 'center', gap: 8, animation: 'slideDown .3s ease' }}>
+        <div style={{ position: 'absolute', top: 'max(20px, calc(env(safe-area-inset-top) + 8px))', left: '50%', transform: 'translateX(-50%)', background: 'rgba(232,255,71,0.95)', borderRadius: 100, padding: '8px 20px', display: 'flex', alignItems: 'center', gap: 8, animation: 'slideDown .3s ease' }}>
           <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#0a0a0a', animation: 'pulse 1s infinite' }} />
           <span style={{ fontSize: 13, fontWeight: 700, color: '#0a0a0a' }}>New photo!</span>
         </div>

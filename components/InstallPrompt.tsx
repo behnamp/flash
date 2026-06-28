@@ -13,11 +13,12 @@ export default function InstallPrompt() {
   const [dismissed, setDismissed] = useState(false)
 
   useEffect(() => {
-    // Don't show if already installed or dismissed
+    // Don't show if already installed, dismissed, or running in native app
     const isDismissed = localStorage.getItem('flash_install_dismissed')
+    const isNative = !!(window as any).Capacitor?.isNativePlatform?.()
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
       || (window.navigator as any).standalone === true
-    if (isDismissed || isStandalone) return
+    if (isDismissed || isStandalone || isNative) return
 
     // iOS Safari — custom instruction sheet (no beforeinstallprompt support)
     const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && !(window as any).MSStream

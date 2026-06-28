@@ -119,13 +119,13 @@ export default function EventDashboard() {
   const joinUrl = typeof window !== 'undefined' ? `${window.location.origin}/join/${event?.join_code}` : ''
 
   if (loading) return (
-    <main style={{ height: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <main style={{ height: '100dvh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="flash-loading"><IconFlash size={40} /></div>
     </main>
   )
 
   return (
-    <main style={{ height: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
+    <main style={{ height: '100dvh', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', background: 'rgba(10,10,10,0.96)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10 }}>
         <button onClick={() => router.push('/host')} style={{ width: 36, height: 36, background: 'var(--surface2)', border: 'none', borderRadius: 10, color: 'var(--text)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconBack size={18} /></button>
@@ -187,7 +187,7 @@ export default function EventDashboard() {
             </button>
 
             {!event?.revealed && event?.is_active && (
-              <button onClick={handleReveal} disabled={revealing} style={{ width: '100%', maxWidth: 300, background: 'var(--red)', color: 'white', border: 'none', borderRadius: 13, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 20, paddingRight: 20, fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
+              <button onClick={handleReveal} disabled={revealing} style={{ width: '100%', maxWidth: 300, background: 'var(--red)', color: 'white', border: 'none', borderRadius: 13, padding: '14px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 10 }}>
                 {revealing ? 'Revealing...' : 'Reveal Gallery Now'}
               </button>
             )}

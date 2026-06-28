@@ -119,13 +119,13 @@ function DownloadPageInner() {
     : '#e8ff47'
 
   if (loading) return (
-    <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <IconFlash size={36} color="#e8ff47" />
     </main>
   )
 
   return (
-    <main style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
+    <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 18, paddingRight: 18, borderBottom: '1px solid #161616', background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 10 }}>
         <button onClick={() => router.push(`/host/${eventId}`)} style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

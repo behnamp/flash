@@ -51,7 +51,7 @@ export default function JoinPage() {
   }
 
   if (loading) return (
-    <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ width: 36, height: 36, background: '#e8ff47', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <IconFlash size={20} color="#0a0a0a" />
       </div>
@@ -59,7 +59,7 @@ export default function JoinPage() {
   )
 
   if (error && !event) return (
-    <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>
       <div>
         <div style={{ fontSize: 16, fontWeight: 600, color: '#555', marginBottom: 8 }}>{error}</div>
         <div style={{ fontSize: 13, color: '#333' }}>Check the QR code and try again.</div>
@@ -68,7 +68,7 @@ export default function JoinPage() {
   )
 
   return (
-    <main style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 20px' }}>
+    <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 20px' }}>
       {/* Flash logo */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 40 }}>
         <div style={{ width: 40, height: 40, background: '#e8ff47', borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

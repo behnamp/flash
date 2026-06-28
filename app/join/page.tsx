@@ -15,7 +15,7 @@ export default function JoinPage() {
   }
 
   return (
-    <main style={{ minHeight:'100vh', background:'#0a0a0a', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'40px 22px' }}>
+    <main style={{ minHeight:'100dvh', background:'#0a0a0a', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'40px 22px' }}>
       <div style={{ marginBottom:24, display:'flex', justifyContent:'center' }}>
         <div style={{ width:64, height:64, background:'#111', border:'1px solid #1e1e1e', borderRadius:18, display:'flex', alignItems:'center', justifyContent:'center' }}>
           <IconScan size={28} color="#666" />

@@ -124,7 +124,7 @@ export default function AdminPage() {
   }
 
   if (loading) return (
-    <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ color: '#444', fontSize: 13 }}>Verifying access...</div>
     </main>
   )
@@ -134,7 +134,7 @@ export default function AdminPage() {
   const inp = { background: '#111', border: '1px solid #222', borderRadius: 10, padding: '12px 14px', color: '#f0f0f0', fontSize: 14, width: '100%', outline: 'none', fontFamily: 'inherit' } as any
 
   return (
-    <main style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
+    <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 18, paddingRight: 18, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', position: 'sticky', top: 0, zIndex: 20 }}>
         <div style={{ width: 32, height: 32, background: '#e8ff47', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

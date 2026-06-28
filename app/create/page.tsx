@@ -156,7 +156,7 @@ export default function CreateEvent() {
   const TITLES = ["What's the occasion?", "Name your event", "Set the rules", "Photo modes", "When to reveal?", "Design your cover", "Final settings"]
 
   return (
-    <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 18, paddingRight: 18, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', position: 'sticky', top: 0, zIndex: 20 }}>
         <button onClick={() => step > 1 ? setStep(s => s - 1) : router.push('/host')} style={{ width: 38, height: 38, background: '#161616', border: 'none', borderRadius: 12, color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <ArrowLeft size={18} weight="regular" />
@@ -464,7 +464,7 @@ export default function CreateEvent() {
 
       </div>
 
-      <div style={{ padding: '14px 20px 34px', borderTop: '1px solid #161616', background: 'rgba(10,10,10,0.98)' }}>
+      <div style={{ paddingTop: 14, paddingLeft: 20, paddingRight: 20, paddingBottom: 'max(34px, calc(env(safe-area-inset-bottom) + 14px))', borderTop: '1px solid #161616', background: 'rgba(10,10,10,0.98)' }}>
         <button
           onClick={step < TOTAL ? () => { if (canContinue()) setStep(s => s + 1) } : handleCreate}
           disabled={saving || !canContinue()}

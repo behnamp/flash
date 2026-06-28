@@ -12,6 +12,11 @@ export default function ScanPage() {
   const streamRef = useRef<MediaStream | null>(null)
   const rafRef = useRef<number | undefined>(undefined)
   const scanningRef = useRef(true)
+  const [isNative, setIsNative] = useState(false)
+
+  useEffect(() => {
+    setIsNative(!!(window as any).Capacitor?.isNativePlatform?.())
+  }, [])
 
   useEffect(() => {
     startCamera()
@@ -140,7 +145,8 @@ export default function ScanPage() {
           style={{ width: '100%', background: '#111', border: '1px solid #222', borderRadius: 12, padding: '13px 16px', color: '#f0f0f0', fontSize: 18, fontFamily: 'Space Mono, monospace', letterSpacing: 4, textAlign: 'center', textTransform: 'uppercase', outline: 'none', boxSizing: 'border-box' }} />
       </div>
 
-      {/* Download banner */}
+      {/* Download banner — hidden in native app (already installed) */}
+      {!isNative && (
       <div style={{ background: '#e8ff47', padding: '12px 20px', paddingBottom: 'max(12px, env(safe-area-inset-bottom))', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
         <div>
           <div style={{ fontSize: 13, fontWeight: 800, color: '#0a0a0a' }}>Get the Flash app</div>
@@ -150,6 +156,7 @@ export default function ScanPage() {
           Download ↗
         </a>
       </div>
+      )}
 
       <style>{`@keyframes scan { 0%{top:8px} 50%{top:calc(100% - 10px)} 100%{top:8px} }`}</style>
     </div>
