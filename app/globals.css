@@ -14,6 +14,9 @@
   --accent-border: rgba(232,255,71,0.25);
   --red: #ff4757;
   --green: #2ed573;
+  /* Safe area insets */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }

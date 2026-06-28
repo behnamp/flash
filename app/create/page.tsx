@@ -56,7 +56,7 @@ const Label = ({ children }: { children: React.ReactNode }) => (
 const Inp = ({ label, ...props }: any) => (
   <div style={{ marginBottom: 16 }}>
     {label && <Label>{label}</Label>}
-    <input {...props} style={{ background: '#141414', border: '1px solid #222', borderRadius: 12, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, color: '#f0f0f0', fontSize: 15, width: '100%', outline: 'none', fontFamily: 'inherit', ...props.style }} />
+    <input {...props} style={{ background: '#141414', border: '1px solid #222', borderRadius: 12, padding: '13px 16px', color: '#f0f0f0', fontSize: 15, width: '100%', outline: 'none', fontFamily: 'inherit', ...props.style }} />
   </div>
 )
 
@@ -157,7 +157,7 @@ export default function CreateEvent() {
 
   return (
     <main style={{ height: '100vh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingBottom: '14px', paddingLeft: 18, paddingRight: 18, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', position: 'sticky', top: 0, zIndex: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 18, paddingRight: 18, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', position: 'sticky', top: 0, zIndex: 20 }}>
         <button onClick={() => step > 1 ? setStep(s => s - 1) : router.push('/host')} style={{ width: 38, height: 38, background: '#161616', border: 'none', borderRadius: 12, color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <ArrowLeft size={18} weight="regular" />
         </button>
