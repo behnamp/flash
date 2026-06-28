@@ -36,7 +36,7 @@ export default function GuestGalleryPage() {
 
   useEffect(() => {
     async function load() {
-      const { data: ev } = await supabase.from('events').select('id, name').eq('join_code', code.toUpperCase()).single()
+      const { data: ev } = await supabase.from('events').select('id, name, revealed').eq('join_code', code.toUpperCase()).single()
       if (!ev) { router.push(`/join/${code}`); return }
       setEventId(ev.id)
       const stored = localStorage.getItem(`flash_guest_${ev.id}`)
@@ -45,9 +45,16 @@ export default function GuestGalleryPage() {
       await loadShots(ev.id)
       setLoading(false)
 
-      // Realtime updates
+      // If already revealed and guest hasn't watched the reveal, play it
+      if (ev.revealed && !localStorage.getItem(`flash_reveal_seen_${ev.id}`)) {
+        router.push(`/reveal/${code}`); return
+      }
+
+      // Realtime updates — shots + reveal trigger
       const channel = supabase.channel(`gallery-${ev.id}`)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'shots', filter: `event_id=eq.${ev.id}` }, () => loadShots(ev.id))
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'events', filter: `id=eq.${ev.id}` },
+          (payload: any) => { if (payload.new?.revealed && !localStorage.getItem(`flash_reveal_seen_${ev.id}`)) router.push(`/reveal/${code}`) })
         .subscribe()
       return () => { supabase.removeChannel(channel) }
     }

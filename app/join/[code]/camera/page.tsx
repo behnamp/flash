@@ -19,6 +19,7 @@ export default function CameraPage() {
   const toastRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   const [event, setEvent] = useState<any>(null)
+  const revealChannelRef = useRef<(() => void) | undefined>(undefined)
   const [guest, setGuestData] = useState<any>(null)
   const [shotsUsed, setShotsUsed] = useState(0)
   const [shotLimit, setShotLimit] = useState(10)
@@ -70,8 +71,20 @@ export default function CameraPage() {
       }
       setAvailableModes(modes)
       setModeIndex(0)
+
+      // If already revealed, send guest straight to the reveal
+      if (ev.revealed && !localStorage.getItem(`flash_reveal_seen_${ev.id}`)) {
+        router.push(`/reveal/${code}`); return
+      }
+      // Realtime: when host reveals while guest is shooting, play the reveal
+      const channel = supabase.channel(`camera-${ev.id}`)
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'events', filter: `id=eq.${ev.id}` },
+          (payload: any) => { if (payload.new?.revealed && !localStorage.getItem(`flash_reveal_seen_${ev.id}`)) router.push(`/reveal/${code}`) })
+        .subscribe()
+      revealChannelRef.current = () => supabase.removeChannel(channel)
     }
     load()
+    return () => { revealChannelRef.current?.() }
   }, [code])
 
   const startCamera = async (facing: 'user' | 'environment') => {
