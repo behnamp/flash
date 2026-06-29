@@ -81,7 +81,7 @@ function LoginPageInner() {
       </Link>
 
       {/* Join as guest — scan QR */}
-      <Link href="/scan" style={{ width: '100%', maxWidth: 400, background: '#e8ff47', borderRadius: 14, padding: '15px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, textDecoration: 'none', marginBottom: 20 }}>
+      <Link href="/scan" style={{ width: '100%', maxWidth: 320, background: '#e8ff47', borderRadius: 14, padding: '15px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, textDecoration: 'none', marginBottom: 20 }}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.2" strokeLinecap="round">
           <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
           <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3" rx="0.5" fill="#0a0a0a" stroke="none"/>
