@@ -27,6 +27,11 @@ export default function JoinPage() {
       if (!data.paid) { setError('This event is not active yet'); setLoading(false); return }
       if (!data.is_active) { setError('This event has ended'); setLoading(false); return }
       setEvent(data)
+      // Returning guest — prefill their name so re-entry doesn't create a duplicate
+      try {
+        const stored = localStorage.getItem(`flash_guest_${data.id}`)
+        if (stored) setNickname(JSON.parse(stored).nickname || '')
+      } catch {}
       setLoading(false)
     }
     load()
@@ -36,6 +41,18 @@ export default function JoinPage() {
     if (!nickname.trim()) return
     setJoining(true)
     try {
+      // Already joined this event? Reuse the existing guest record.
+      const stored = localStorage.getItem(`flash_guest_${event.id}`)
+      if (stored) {
+        const g = JSON.parse(stored)
+        // Update the stored nickname in case they changed it
+        if (g.nickname !== nickname.trim()) {
+          await supabase.from('guests').update({ nickname: nickname.trim() }).eq('id', g.id)
+          localStorage.setItem(`flash_guest_${event.id}`, JSON.stringify({ id: g.id, nickname: nickname.trim() }))
+        }
+        router.push(`/join/${code}/camera`)
+        return
+      }
       const { data: guest, error: err } = await supabase
         .from('guests')
         .insert({ event_id: event.id, nickname: nickname.trim(), language: 'en' })
@@ -96,7 +113,7 @@ export default function JoinPage() {
             placeholder="How should we call you?"
             maxLength={24}
             autoFocus
-            style={{ background: '#111', border: `1px solid ${nickname.trim() ? '#333' : '#1e1e1e'}`, borderRadius: 12, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, color: '#f0f0f0', fontSize: 16, width: '100%', outline: 'none', fontFamily: 'inherit', transition: 'border .15s' }}
+            style={{ background: '#111', border: `1px solid ${nickname.trim() ? '#333' : '#1e1e1e'}`, borderRadius: 12, padding: '14px 16px', color: '#f0f0f0', fontSize: 16, width: '100%', outline: 'none', fontFamily: 'inherit', transition: 'border .15s' }}
           />
           {!nickname.trim() && (
             <div style={{ fontSize: 11, color: '#333', marginTop: 6 }}>Required to join</div>

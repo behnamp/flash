@@ -301,12 +301,12 @@ export default function CameraPage() {
 
         {/* TOP BAR — overlaid inside viewfinder */}
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 'max(14px, calc(env(safe-area-inset-top) + 4px))', paddingBottom: 14, paddingLeft: 14, paddingRight: 14, zIndex: 10 }}>
-          {/* Flash bolt */}
-          <div style={{ width: 38, height: 38, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)' }}>
+          {/* Flash bolt — tap to go back */}
+          <button onClick={() => router.push(`/join/${code}`)} aria-label="Back" style={{ width: 38, height: 38, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer', padding: 0 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="#e8ff47">
               <path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/>
             </svg>
-          </div>
+          </button>
           {/* Event name */}
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#f0f0f0', letterSpacing: -0.3, textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>{event?.name || ''}</div>
