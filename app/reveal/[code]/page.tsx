@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { CinematicReveal } from '@/components/CinematicReveal'
 
 type Stage = 'loading' | 'intro' | 'developing' | 'revealing' | 'finale'
 
@@ -78,9 +79,8 @@ export default function RevealPage() {
     }
 
     after(6400, () => setStage('revealing'))
-    // Reveal photos one at a time handled by CSS stagger in render
-    const animatedCount = Math.min(count, 12)
-    const revealDuration = animatedCount * 620 + 1400
+    // CinematicReveal handles its own stagger; wait for the grid to settle then show finale
+    const revealDuration = Math.min(count, 20) * 50 + 1400
     after(6400 + revealDuration, () => setStage('finale'))
   }
 
@@ -91,8 +91,6 @@ export default function RevealPage() {
 
   const skip = () => { clearTimers(); setRevealedCount(shots.length); setStage('finale') }
 
-  const animated = shots.slice(0, 12)
-  const extra = Math.max(0, shots.length - animated.length)
 
   // ── WAITING (not yet revealed) ──
   if (stage === 'loading' && event && !event.revealed) {
@@ -156,39 +154,19 @@ export default function RevealPage() {
 
       {/* ── REVEALING (photos develop in) ── */}
       {(stage === 'revealing' || stage === 'finale') && (
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, overflowY: 'auto', overflowX: 'hidden' }}>
           {shots.length === 0 ? (
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>{event?.cover_emoji || '📸'}</div>
-              <div style={{ fontSize: 18, color: '#888', fontWeight: 600 }}>No photos this time</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center' }}>
+              <div>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>{event?.cover_emoji || '📸'}</div>
+                <div style={{ fontSize: 18, color: '#888', fontWeight: 600 }}>No photos this time</div>
+              </div>
             </div>
           ) : (
-            <div style={{ position: 'relative', width: 'min(80vw, 320px)', height: 'min(80vw, 320px)' }}>
-              {animated.map((s, i) => {
-                // Scatter the developing photos like a pile of prints
-                const seed = (i * 73) % 100
-                const rot = ((seed % 30) - 15) + (i % 2 === 0 ? -4 : 4)
-                const dx = ((seed % 40) - 20)
-                const dy = (((seed * 7) % 40) - 20)
-                const isTop = i === animated.length - 1
-                return (
-                  <div key={s.id}
-                    style={{
-                      position: 'absolute', inset: 0, margin: 'auto',
-                      width: '78%', height: '78%',
-                      transform: `translate(${dx}px, ${dy}px) rotate(${rot}deg)`,
-                      borderRadius: 10, overflow: 'hidden', background: '#111',
-                      border: '4px solid #fafafa', boxShadow: '0 12px 40px rgba(0,0,0,0.6)',
-                      opacity: 0, zIndex: i,
-                      animation: stage === 'finale' && !isTop
-                        ? 'none'
-                        : `devPrint .9s cubic-bezier(.2,.7,.2,1) ${i * 0.62}s both`,
-                    }}>
-                    <img src={s.storage_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', animation: `chemBath 1.4s ease ${i * 0.62}s both` }} />
-                  </div>
-                )
-              })}
-            </div>
+            <CinematicReveal
+              photos={shots.map(s => ({ id: s.id, url: s.storage_url, mode: s.mode_name }))}
+              className="px-3 pt-6 pb-48"
+            />
           )}
         </div>
       )}
@@ -201,7 +179,6 @@ export default function RevealPage() {
               {shots.length > 0 ? `${shots.length} ${shots.length === 1 ? 'moment' : 'moments'}, revealed` : 'The reveal'}
             </div>
             <div style={{ fontSize: 26, fontWeight: 800, color: '#fff', letterSpacing: -0.5, marginBottom: 4, lineHeight: 1.2 }}>{event?.name?.trim() || 'Your event'}</div>
-            {extra > 0 && <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', marginBottom: 6 }}>+{extra} more inside</div>}
             <button onClick={goGallery}
               style={{ marginTop: 22, background: '#e8ff47', color: '#0a0a0a', border: 'none', borderRadius: 16, padding: '17px 40px', fontSize: 16, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: '0 8px 32px rgba(232,255,71,0.25)' }}>
               Open the gallery
