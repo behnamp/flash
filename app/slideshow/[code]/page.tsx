@@ -1,10 +1,11 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 export default function SlideshowPage() {
   const params = useParams()
+  const router = useRouter()
   const code = (params.code as string).toUpperCase()
   const supabase = createClient()
 
@@ -121,8 +122,14 @@ export default function SlideshowPage() {
         </div>
       )}
 
+      {/* CLOSE — exit slideshow (essential in native app) */}
+      <button onClick={() => router.back()} aria-label="Close slideshow"
+        style={{ position: 'absolute', top: 'max(20px, calc(env(safe-area-inset-top) + 10px))', right: 20, zIndex: 60, width: 40, height: 40, borderRadius: 20, background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+
       {/* TOP BAR */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 'max(28px, calc(env(safe-area-inset-top) + 16px))', paddingBottom: 28, paddingLeft: 40, paddingRight: 40 }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 'max(28px, calc(env(safe-area-inset-top) + 16px))', paddingBottom: 28, paddingLeft: 40, paddingRight: 76 }}>
         {/* Flash logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 36, height: 36, background: '#e8ff47', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
