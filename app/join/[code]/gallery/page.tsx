@@ -18,6 +18,7 @@ export default function GuestGalleryPage() {
   const [toast, setToast] = useState('')
   const [showToast, setShowToast] = useState(false)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const channelRef = useRef<any>(null)
 
   const showMsg = (msg: string) => {
     setToast(msg); setShowToast(true)
@@ -56,9 +57,12 @@ export default function GuestGalleryPage() {
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'events', filter: `id=eq.${ev.id}` },
           (payload: any) => { if (payload.new?.revealed && !localStorage.getItem(`flash_reveal_seen_${ev.id}`)) router.push(`/reveal/${code}`) })
         .subscribe()
-      return () => { supabase.removeChannel(channel) }
+      channelRef.current = channel
     }
     load()
+    return () => {
+      if (channelRef.current) { supabase.removeChannel(channelRef.current); channelRef.current = null }
+    }
   }, [code])
 
   const deleteShot = async (shot: any) => {

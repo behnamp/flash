@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { REVEAL_MODES } from '@/constants/revealModes'
@@ -78,6 +78,11 @@ export default function CreateEvent() {
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
   const coverInputRef = useRef<HTMLInputElement>(null)
+  const coverObjectUrlRef = useRef<string>('')
+
+  useEffect(() => {
+    return () => { if (coverObjectUrlRef.current) URL.revokeObjectURL(coverObjectUrlRef.current) }
+  }, [])
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     eventType: 'wedding', eventName: '', date: '', venue: '',
@@ -405,7 +410,7 @@ export default function CreateEvent() {
                 </button>
                 {/* Remove */}
                 {form.coverImageUrl && (
-                  <button onClick={() => { set('coverImageUrl', ''); set('coverImageFile', null) }}
+                  <button onClick={() => { if (coverObjectUrlRef.current) { URL.revokeObjectURL(coverObjectUrlRef.current); coverObjectUrlRef.current = '' } set('coverImageUrl', ''); set('coverImageFile', null) }}
                     style={{ width: '100%', background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.35)', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit', marginTop: 6, paddingBottom: 0 }}>
                     Remove photo
                   </button>
@@ -446,7 +451,10 @@ export default function CreateEvent() {
 
             <input ref={coverInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
               const file = e.target.files?.[0]; if (!file) return
-              set('coverImageUrl', URL.createObjectURL(file))
+              if (coverObjectUrlRef.current) URL.revokeObjectURL(coverObjectUrlRef.current)
+              const url = URL.createObjectURL(file)
+              coverObjectUrlRef.current = url
+              set('coverImageUrl', url)
               set('coverImageFile', file)
               e.target.value = ''
             }} />
