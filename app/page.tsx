@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 
 const IMAGES = {
   hero:    'https://d8j0ntlcm91z4.cloudfront.net/user_2y6wAIlmwDKTK54POxKgzxeDouA/hf_20260625_151843_1d70550d-dee8-4aac-b906-8a9d7b971f33.png',
@@ -20,35 +20,39 @@ const NAV_LINKS = [
 ]
 
 const STATS = [
-  { value: '4.9', label: 'APP RATING' },
-  { value: '29', label: 'FILM MODES' },
-  { value: '100%', label: 'NO DOWNLOAD' },
+  { value: '4.9', label: 'App rating' },
+  { value: '29', label: 'Film modes' },
+  { value: '0', label: 'Downloads needed' },
 ]
 
 const STEPS = [
   {
     num: '01',
     title: 'Create your event',
-    body: 'Name your event, set the shot limit, choose when the gallery reveals. Done in under a minute.',
-    accent: 'Event name, date, rules — your call.',
+    body: 'Name your event, set the shot limit, choose when the gallery reveals.',
+    accent: 'We timed it. Under a minute.',
+    img: 'step01' as const,
   },
   {
     num: '02',
     title: 'Share the QR code',
-    body: 'One QR code opens the camera on every guest\'s phone. No app download, no account, no friction.',
-    accent: 'Works on any iPhone or Android.',
+    body: "One code opens the camera on every guest's phone. No app, no account, no friction.",
+    accent: 'Works on any iPhone or Android. Yes, even that old one.',
+    img: 'step02' as const,
   },
   {
     num: '03',
     title: 'Everyone shoots',
-    body: 'Guests pick a film mode, use their shot limit, upload from gallery too. Every photo goes into your shared roll.',
-    accent: 'Kodak Gold, B&W, Portra, Polaroid, Golden Hour.',
+    body: "Guests pick a film mode, use their shots, upload from gallery too. Everything goes into your shared roll.",
+    accent: "They'll fight over who picked the best filter.",
+    img: 'step03' as const,
   },
   {
     num: '04',
     title: 'Reveal together',
-    body: 'Unlock the gallery when you\'re ready — instant, end of event, morning after, or milestone. Download forever for $4.99.',
-    accent: 'Photos yours to keep.',
+    body: "Unlock the gallery when you're ready — instantly, end of event, morning after, or when every shot is used.",
+    accent: 'The morning-after reveal hits differently. Just saying.',
+    img: null,
   },
 ]
 
@@ -63,19 +67,19 @@ const USE_CASES = [
 const REVIEWS = [
   {
     title: 'Used it for our wedding — everyone loved it',
-    body: 'We placed the QR at every table. By the end of the night we had 340 photos from angles we never would have seen. The film modes made everything look incredible. Worth every cent.',
+    body: "We placed the QR at every table. By end of night we had 340 photos from angles we'd never have seen ourselves. The film modes made everything look incredible.",
     author: 'Sarah M.',
     date: 'June 2026',
   },
   {
-    title: 'Best birthday gift to myself',
-    body: 'Set it up in 2 minutes for my 30th. Guests figured it out instantly — even my 70-year-old aunt. The reveal the next morning was genuinely emotional. Didn\'t expect that.',
+    title: 'The morning reveal made me cry (good tears)',
+    body: "Set it up in 2 minutes for my 30th. Guests figured it out instantly — even my 70-year-old aunt. The reveal the next morning was genuinely emotional. Didn't expect that.",
     author: 'James K.',
     date: 'May 2026',
   },
   {
-    title: 'We use Flash at every 777 event now',
-    body: 'Run a sports venue. Been using Flash for every match party. Guests love the disposable camera vibe. The Kodak Gold filter makes everything look cinematic.',
+    title: 'We use Flash at every event now',
+    body: "Run a sports venue. Been using Flash for every match party. Guests love the disposable camera vibe. The Kodak Gold filter makes everything look cinematic.",
     author: 'Ahmed R.',
     date: 'June 2026',
   },
@@ -88,28 +92,68 @@ const FAQS = [
   { q: 'Can guests upload from their phone gallery?', a: 'Yes. The upload icon in the camera lets guests pick any photo — the same film filter is applied.' },
   { q: 'What film modes are available?', a: 'Five: Kodak Gold, Black & White (Ilford), Portra 400, Polaroid, and Golden Hour. Each is baked into the photo before upload — no post-processing needed.' },
   { q: 'Can I delete individual photos as host?', a: 'Yes. In your event dashboard, tap any photo to delete it from the gallery.' },
-  { q: 'What\'s the difference between plans?', a: 'Plans are per-event based on guest count: Starter (10 guests, $1.99) up to Unlimited ($99.99). You pay once per event, no subscriptions.' },
+  { q: "What's the difference between plans?", a: 'Plans are per-event based on guest count: Starter (10 guests, $1.99) up to Unlimited ($99.99). You pay once per event, no subscriptions.' },
   { q: 'Can I embed the gallery on my website?', a: 'Yes. The download page gives you an embed code — paste it anywhere and the live gallery appears in an iframe.' },
 ]
+
+const TICKER = [
+  'Kodak Gold', '·', 'Ilford B&W', '·', 'Portra 400', '·', 'Polaroid', '·', 'Golden Hour',
+  '·', 'No download', '·', 'Just a QR code', '·', 'Weddings', '·', 'Birthdays', '·',
+  'Parties', '·', 'Trips', '·', '29 film modes', '·', 'Reveal together', '·',
+]
+
+// ── Shared animation presets ──────────────────────────────────────
+const E = [0.16, 1, 0.3, 1] as const   // ease-out for entering
+
+const heroContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+}
+const heroItem = {
+  hidden: { opacity: 0, y: 24, filter: 'blur(4px)' },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.55, ease: E } },
+}
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: E } },
+}
+const staggerGrid = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08 } },
+}
+const cardItem = {
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: E } },
+}
+
+// viewport config reused across sections
+const VP = { once: true, margin: '-60px' } as const
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeUseCase, setActiveUseCase] = useState(0)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [scrolled, setScrolled] = useState(false)
-  const heroRef = useRef<HTMLDivElement>(null)
+  const reduced = useReducedMotion()
 
   useEffect(() => {
-    // If running inside native app (Capacitor), skip landing page and go to login
     const isNative = !!(window as any).Capacitor?.isNativePlatform?.()
-    if (isNative) {
-      window.location.replace('/login')
-      return
-    }
+    if (isNative) { window.location.replace('/login'); return }
     const handler = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', handler)
     return () => window.removeEventListener('scroll', handler)
   }, [])
+
+  // Strip transform from variants when reduced motion is on
+  const hi = reduced
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
+    : heroItem
+  const fu = reduced
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
+    : fadeUp
+  const ci = reduced
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
+    : cardItem
 
   return (
     <div style={{ background: '#0a0a0a', color: '#f0f0f0', fontFamily: "'Space Grotesk', sans-serif", minHeight: '100dvh', overflowX: 'hidden' }}>
@@ -118,7 +162,6 @@ export default function LandingPage() {
       {/* ── NAV ── */}
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, transition: 'background .3s, border .3s', background: scrolled ? 'rgba(10,10,10,0.92)' : 'transparent', backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: scrolled ? '1px solid #161616' : '1px solid transparent' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', height: 64 }}>
-          {/* Logo */}
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', marginRight: 'auto' }}>
             <div style={{ width: 32, height: 32, background: '#e8ff47', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
@@ -126,10 +169,10 @@ export default function LandingPage() {
             <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 16, fontWeight: 700, color: '#f0f0f0', letterSpacing: -0.5 }}>Flash</span>
           </Link>
 
-          {/* Desktop nav */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 32 }} className="desktop-nav">
             {NAV_LINKS.map(l => (
-              <Link key={l.label} href={l.href} style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: '#555', textDecoration: 'none', textTransform: 'uppercase', transition: 'color .15s' }}
+              <Link key={l.label} href={l.href}
+                style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: '#555', textDecoration: 'none', textTransform: 'uppercase', transition: 'color .15s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#f0f0f0')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#555')}>
                 {l.label}
@@ -137,169 +180,244 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <Link href="/login" style={{ marginLeft: 32, background: '#e8ff47', color: '#0a0a0a', borderRadius: 10, padding: '9px 20px', fontSize: 13, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap', transition: 'opacity .15s' }}
+          <Link href="/login"
+            style={{ marginLeft: 32, background: '#e8ff47', color: '#0a0a0a', borderRadius: 10, padding: '9px 20px', fontSize: 13, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap', transition: 'opacity .15s' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
             Create Event
           </Link>
 
-          {/* Mobile hamburger */}
-          <button onClick={() => setMenuOpen(!menuOpen)} className="mobile-menu-btn" style={{ marginLeft: 16, background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: '#f0f0f0' }}>
+          <button onClick={() => setMenuOpen(!menuOpen)} className="mobile-menu-btn"
+            style={{ marginLeft: 16, background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: '#f0f0f0' }}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              {menuOpen ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></> : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>}
+              {menuOpen
+                ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
+                : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>}
             </svg>
           </button>
         </div>
 
-        {/* Mobile menu */}
-        {menuOpen && (
-          <div style={{ background: '#0a0a0a', borderTop: '1px solid #161616', padding: '16px 24px 24px' }}>
-            {NAV_LINKS.map(l => (
-              <Link key={l.label} href={l.href} onClick={() => setMenuOpen(false)} style={{ display: 'block', padding: '12px 0', fontSize: 13, fontWeight: 700, letterSpacing: 1.5, color: '#555', textDecoration: 'none', textTransform: 'uppercase', borderBottom: '1px solid #161616' }}>
-                {l.label}
-              </Link>
-            ))}
-          </div>
-        )}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18, ease: E }}
+              style={{ background: '#0a0a0a', borderTop: '1px solid #161616', padding: '16px 24px 24px' }}>
+              {NAV_LINKS.map(l => (
+                <Link key={l.label} href={l.href} onClick={() => setMenuOpen(false)}
+                  style={{ display: 'block', padding: '12px 0', fontSize: 13, fontWeight: 700, letterSpacing: 1.5, color: '#555', textDecoration: 'none', textTransform: 'uppercase', borderBottom: '1px solid #161616' }}>
+                  {l.label}
+                </Link>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* ── HERO ── */}
-      <section ref={heroRef} style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px 24px 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px 24px 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         {/* Background glow */}
-        <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 600, background: 'radial-gradient(circle, rgba(232,255,71,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,-50%)', width: 700, height: 700, background: 'radial-gradient(circle, rgba(232,255,71,0.07) 0%, transparent 65%)', pointerEvents: 'none' }} />
 
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(232,255,71,0.08)', border: '1px solid rgba(232,255,71,0.2)', borderRadius: 20, padding: '6px 14px', marginBottom: 32 }}>
-          <div style={{ width: 6, height: 6, background: '#e8ff47', borderRadius: '50%' }} />
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#e8ff47' }}>No download needed</span>
-        </div>
+        <motion.div variants={heroContainer} initial="hidden" animate="visible"
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
 
-        <h1 style={{ fontSize: 'clamp(42px, 8vw, 88px)', fontWeight: 700, lineHeight: 1.0, letterSpacing: -2, margin: '0 0 24px', maxWidth: 900, color: '#f0f0f0' }}>
-          Every guest.<br />
-          <span style={{ color: '#e8ff47' }}>One roll.</span><br />
-          Revealed together.
-        </h1>
+          {/* Badge */}
+          <motion.div variants={hi} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(232,255,71,0.08)', border: '1px solid rgba(232,255,71,0.2)', borderRadius: 20, padding: '6px 14px', marginBottom: 32 }}>
+            <motion.div
+              animate={{ scale: [1, 1.4, 1] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ width: 6, height: 6, background: '#e8ff47', borderRadius: '50%' }} />
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#e8ff47' }}>No download needed</span>
+          </motion.div>
 
-        <p style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: '#666', lineHeight: 1.7, maxWidth: 520, margin: '0 0 44px' }}>
-          Flash is a disposable camera for events. Guests join by QR, shoot with film modes, and the gallery unlocks when you say so.
-        </p>
+          {/* Headline */}
+          <motion.h1 variants={hi}
+            style={{ fontSize: 'clamp(42px, 8vw, 88px)', fontWeight: 700, lineHeight: 1.0, letterSpacing: -2, margin: '0 0 24px', maxWidth: 900, color: '#f0f0f0' }}>
+            Every guest.<br />
+            <span style={{ color: '#e8ff47' }}>One roll.</span><br />
+            Revealed together.
+          </motion.h1>
 
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 80 }}>
-          <Link href="/login" style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 14, padding: '16px 32px', fontSize: 16, fontWeight: 700, textDecoration: 'none', transition: 'transform .15s, opacity .15s' }}
-            onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px)')}
-            onMouseLeave={e => (e.currentTarget.style.transform = 'none')}>
-            Create your event
-          </Link>
-          <a href="#how" style={{ background: 'transparent', color: '#f0f0f0', borderRadius: 14, padding: '16px 32px', fontSize: 16, fontWeight: 700, textDecoration: 'none', border: '1px solid #222', transition: 'border-color .15s' }}
-            onMouseEnter={e => (e.currentTarget.style.borderColor = '#444')}
-            onMouseLeave={e => (e.currentTarget.style.borderColor = '#222')}>
-            See how it works
-          </a>
-        </div>
+          {/* Sub */}
+          <motion.p variants={hi}
+            style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: '#555', lineHeight: 1.7, maxWidth: 520, margin: '0 0 44px' }}>
+            Flash is a disposable camera for events. Guests join by QR, shoot with film modes, and the gallery unlocks when you say so.
+          </motion.p>
 
-        {/* Hero phone mockup */}
-        <div style={{ position: 'relative', marginBottom: 56, width: 220, height: 'auto' }}>
-          <div style={{ borderRadius: 28, overflow: 'hidden', border: '1px solid #1e1e1e', boxShadow: '0 40px 80px rgba(0,0,0,0.6)' }}>
-            <img src={IMAGES.hero} alt="Flash camera UI" style={{ width: 220, height: 'auto', display: 'block' }} />
-          </div>
-          <div style={{ position: 'absolute', bottom: -16, right: -16, background: '#e8ff47', borderRadius: 14, padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <div style={{ width: 8, height: 8, background: '#0a0a0a', borderRadius: '50%' }} />
-            <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, fontWeight: 700, color: '#0a0a0a' }}>Live</span>
-          </div>
-        </div>
+          {/* CTAs */}
+          <motion.div variants={hi} style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 72 }}>
+            <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
+              <Link href="/login"
+                style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 14, padding: '16px 32px', fontSize: 16, fontWeight: 700, textDecoration: 'none', display: 'block' }}>
+                Create your event
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ borderColor: '#444' }} transition={{ duration: 0.15 }}>
+              <a href="#how"
+                style={{ background: 'transparent', color: '#f0f0f0', borderRadius: 14, padding: '16px 32px', fontSize: 16, fontWeight: 700, textDecoration: 'none', border: '1px solid #222', display: 'block' }}>
+                See how it works
+              </a>
+            </motion.div>
+          </motion.div>
 
-        {/* Stats */}
-        <div style={{ display: 'flex', gap: 0, border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden', background: '#111' }}>
-          {STATS.map((s, i) => (
-            <div key={s.label} style={{ padding: '20px 32px', textAlign: 'center', borderRight: i < STATS.length - 1 ? '1px solid #1a1a1a' : 'none' }}>
-              <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 28, fontWeight: 700, color: '#e8ff47', lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444', marginTop: 6 }}>{s.label}</div>
+          {/* Phone mockup */}
+          <motion.div variants={hi} style={{ position: 'relative', marginBottom: 56, width: 220 }}
+            whileHover={{ y: -4 }} transition={{ duration: 0.3, ease: E }}>
+            <div style={{ borderRadius: 28, overflow: 'hidden', border: '1px solid #1e1e1e', boxShadow: '0 40px 80px rgba(0,0,0,0.6)' }}>
+              <img src={IMAGES.hero} alt="Flash camera UI" style={{ width: 220, height: 'auto', display: 'block' }} />
             </div>
-          ))}
-        </div>
+            {/* Annotation */}
+            <motion.div
+              initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.1, duration: 0.4, ease: E }}
+              style={{ position: 'absolute', top: 20, right: -88, background: '#161616', border: '1px solid #222', borderRadius: 10, padding: '6px 10px', whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: 10, color: '#666', fontFamily: 'Space Mono, monospace' }}>← your guests use this</span>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.9, duration: 0.35, ease: E }}
+              style={{ position: 'absolute', bottom: -16, right: -16, background: '#e8ff47', borderRadius: 14, padding: '8px 14px', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.6, repeat: Infinity }}
+                style={{ width: 8, height: 8, background: '#0a0a0a', borderRadius: '50%' }} />
+              <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, fontWeight: 700, color: '#0a0a0a' }}>Live</span>
+            </motion.div>
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div variants={hi}
+            style={{ display: 'flex', gap: 0, border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden', background: '#111' }}>
+            {STATS.map((s, i) => (
+              <div key={s.label} style={{ padding: '20px 32px', textAlign: 'center', borderRight: i < STATS.length - 1 ? '1px solid #1a1a1a' : 'none' }}>
+                <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 28, fontWeight: 700, color: '#e8ff47', lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444', marginTop: 6 }}>{s.label}</div>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* ── REVIEWS ── */}
-      <section style={{ padding: '80px 24px', maxWidth: 1100, margin: '0 auto' }}>
-        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 40, textAlign: 'center' }}>What hosts say</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
-          {REVIEWS.map((r, i) => (
-            <div key={i} style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 18, padding: '28px 24px' }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', marginBottom: 12, lineHeight: 1.3 }}>{r.title}</div>
-              <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, margin: '0 0 20px' }}>{r.body}</p>
-              <div style={{ fontSize: 11, color: '#333' }}>{r.author} · {r.date}</div>
-            </div>
+      {/* ── TICKER STRIP ── */}
+      <div style={{ borderTop: '1px solid #161616', borderBottom: '1px solid #161616', overflow: 'hidden', background: '#080808', padding: '14px 0' }}>
+        <div style={{ display: 'flex', gap: 32, animation: 'ticker 28s linear infinite', whiteSpace: 'nowrap', width: 'max-content' }}>
+          {[...TICKER, ...TICKER].map((t, i) => (
+            <span key={i} style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: t === '·' ? '#e8ff47' : '#2a2a2a' }}>{t}</span>
           ))}
         </div>
+      </div>
+
+      {/* ── REVIEWS ── */}
+      <section style={{ padding: '100px 24px', maxWidth: 1100, margin: '0 auto' }}>
+        <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+          style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 12, textAlign: 'center' }}>
+          What hosts say
+        </motion.div>
+        <motion.p variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+          style={{ fontSize: 'clamp(22px, 4vw, 36px)', fontWeight: 700, letterSpacing: -1, textAlign: 'center', marginBottom: 56, lineHeight: 1.2, color: '#f0f0f0', maxWidth: 600, margin: '0 auto 56px' }}>
+          Real people. Real events.<br />
+          <span style={{ color: '#555' }}>Real happy.</span>
+        </motion.p>
+        <motion.div variants={staggerGrid} initial="hidden" whileInView="visible" viewport={VP}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
+          {REVIEWS.map((r, i) => (
+            <motion.div key={i} variants={ci}
+              whileHover={{ y: -4, borderColor: '#2a2a2a' }}
+              transition={{ duration: 0.2 }}
+              style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 18, padding: '28px 24px', cursor: 'default' }}>
+              {/* Stars */}
+              <div style={{ display: 'flex', gap: 3, marginBottom: 14 }}>
+                {Array.from({ length: 5 }).map((_, si) => (
+                  <svg key={si} width="12" height="12" viewBox="0 0 24 24" fill="#e8ff47"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                ))}
+              </div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#f0f0f0', marginBottom: 12, lineHeight: 1.35 }}>{r.title}</div>
+              <p style={{ fontSize: 14, color: '#555', lineHeight: 1.75, margin: '0 0 20px' }}>{r.body}</p>
+              <div style={{ fontSize: 11, color: '#2e2e2e', fontFamily: 'Space Mono, monospace' }}>{r.author} · {r.date}</div>
+            </motion.div>
+          ))}
+        </motion.div>
       </section>
 
       {/* ── USE CASES ── */}
       <section style={{ padding: '80px 24px', background: '#0d0d0d' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 24, textAlign: 'center' }}>Use cases</div>
-          <h2 style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 48, lineHeight: 1.1 }}>
+          <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+            Use cases
+          </motion.div>
+          <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 48, lineHeight: 1.1 }}>
             "Your guests captured<br />
-            <span style={{ color: '#e8ff47' }}>moments you never saw.</span>"
-          </h2>
+            <span style={{ color: '#e8ff47' }}>moments you never saw."</span>
+          </motion.h2>
 
-          {/* Use case tabs */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 48 }}>
+          <motion.div variants={staggerGrid} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 48 }}>
             {USE_CASES.map((uc, i) => (
-              <button key={uc.label} onClick={() => setActiveUseCase(i)} style={{ background: activeUseCase === i ? 'rgba(232,255,71,0.08)' : 'transparent', border: `1px solid ${activeUseCase === i ? '#e8ff47' : '#222'}`, borderRadius: 20, padding: '8px 20px', fontSize: 13, fontWeight: 600, color: activeUseCase === i ? '#e8ff47' : '#555', cursor: 'pointer', transition: 'all .2s', fontFamily: 'inherit' }}>
+              <motion.button key={uc.label} variants={ci}
+                onClick={() => setActiveUseCase(i)}
+                whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                style={{ background: activeUseCase === i ? 'rgba(232,255,71,0.08)' : 'transparent', border: `1px solid ${activeUseCase === i ? '#e8ff47' : '#222'}`, borderRadius: 20, padding: '8px 20px', fontSize: 13, fontWeight: 600, color: activeUseCase === i ? '#e8ff47' : '#555', cursor: 'pointer', transition: 'color .2s, background .2s, border-color .2s', fontFamily: 'inherit' }}>
                 {uc.label}
-              </button>
+              </motion.button>
             ))}
-          </div>
+          </motion.div>
 
-          {/* Use case content */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, maxWidth: 780, margin: '0 auto' }}>
-            {/* Left: scene image */}
+          <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, maxWidth: 780, margin: '0 auto' }}>
             <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', maxHeight: 480, boxShadow: '0 24px 48px rgba(0,0,0,0.5)' }}>
-              <img
-                src={activeUseCase === 0 ? IMAGES.wedding : IMAGES.party}
-                alt={USE_CASES[activeUseCase].label}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'opacity .3s' }}
-              />
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={activeUseCase}
+                  src={activeUseCase === 0 ? IMAGES.wedding : IMAGES.party}
+                  alt={USE_CASES[activeUseCase].label}
+                  initial={{ opacity: 0, scale: 1.03 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3, ease: E }}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+              </AnimatePresence>
             </div>
-            {/* Right: camera UI */}
             <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', maxHeight: 480, boxShadow: '0 24px 48px rgba(0,0,0,0.5)' }}>
-              <img
-                src={IMAGES.hero}
-                alt="Flash camera"
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-              />
+              <img src={IMAGES.hero} alt="Flash camera" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ── HOW IT WORKS ── */}
       <section id="how" style={{ padding: '100px 24px', maxWidth: 1100, margin: '0 auto' }}>
-        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>How it works</div>
-        <h2 style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 80, lineHeight: 1.1 }}>
+        <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+          style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+          How it works
+        </motion.div>
+        <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+          style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 80, lineHeight: 1.1 }}>
           How a night becomes a film.
-        </h2>
+        </motion.h2>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
           {STEPS.map((step, i) => (
-            <div key={step.num} style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: 32, paddingBottom: 60, borderLeft: i < STEPS.length - 1 ? '1px solid #161616' : 'none', marginLeft: 39, paddingLeft: 40, position: 'relative' }}>
-              {/* Step dot */}
+            <motion.div key={step.num}
+              variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+              style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: 32, paddingBottom: 60, borderLeft: i < STEPS.length - 1 ? '1px solid #161616' : 'none', marginLeft: 39, paddingLeft: 40, position: 'relative' }}>
               <div style={{ position: 'absolute', left: -8, top: 4, width: 16, height: 16, borderRadius: '50%', background: '#e8ff47', border: '3px solid #0a0a0a' }} />
-              {/* Step number */}
               <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, fontWeight: 700, color: '#e8ff47', letterSpacing: 2, paddingTop: 2 }}>{step.num}</div>
-              {/* Content */}
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 32, flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: 240 }}>
                   <h3 style={{ fontSize: 22, fontWeight: 700, color: '#f0f0f0', marginBottom: 12, letterSpacing: -0.5 }}>{step.title}</h3>
-                  <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7, marginBottom: 12 }}>{step.body}</p>
+                  <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7, marginBottom: 10 }}>{step.body}</p>
                   <div style={{ fontSize: 12, color: '#333', fontStyle: 'italic' }}>{step.accent}</div>
                 </div>
-                {[IMAGES.step01, IMAGES.step02, IMAGES.step03, null][i] && (
-                  <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', flexShrink: 0, width: 140, boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
-                    <img src={[IMAGES.step01, IMAGES.step02, IMAGES.step03, null][i] as string} alt={step.title} style={{ width: '100%', display: 'block' }} />
-                  </div>
+                {step.img && (
+                  <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.25 }}
+                    style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', flexShrink: 0, width: 140, boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+                    <img src={IMAGES[step.img]} alt={step.title} style={{ width: '100%', display: 'block' }} />
+                  </motion.div>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -307,70 +425,107 @@ export default function LandingPage() {
       {/* ── CTA BANNER ── */}
       <section style={{ padding: '80px 24px', background: '#0d0d0d', textAlign: 'center' }}>
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, letterSpacing: -1.5, marginBottom: 16, lineHeight: 1.1 }}>
+          <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, letterSpacing: -1.5, marginBottom: 16, lineHeight: 1.1 }}>
             Life happens once.<br />
             <span style={{ color: '#e8ff47' }}>Don't let it fade.</span>
-          </h2>
-          <p style={{ fontSize: 16, color: '#555', marginBottom: 40, lineHeight: 1.6 }}>
+          </motion.h2>
+          <motion.p variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ fontSize: 16, color: '#555', marginBottom: 40, lineHeight: 1.6 }}>
             Start free. Your first 10 guests are on us.
-          </p>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/login" style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 14, padding: '16px 36px', fontSize: 16, fontWeight: 700, textDecoration: 'none' }}>
-              Create your event
-            </Link>
-            <Link href="/pricing" style={{ background: 'transparent', color: '#f0f0f0', borderRadius: 14, padding: '16px 36px', fontSize: 16, fontWeight: 700, textDecoration: 'none', border: '1px solid #222' }}>
+          </motion.p>
+          <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
+              <Link href="/login" style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 14, padding: '16px 36px', fontSize: 16, fontWeight: 700, textDecoration: 'none', display: 'block' }}>
+                Create your event
+              </Link>
+            </motion.div>
+            <Link href="/pricing" style={{ background: 'transparent', color: '#f0f0f0', borderRadius: 14, padding: '16px 36px', fontSize: 16, fontWeight: 700, textDecoration: 'none', border: '1px solid #222', display: 'block' }}>
               See pricing
             </Link>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ── FAQ ── */}
       <section id="faq" style={{ padding: '100px 24px', maxWidth: 780, margin: '0 auto' }}>
-        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>FAQ</div>
-        <h2 style={{ fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 60, lineHeight: 1.1 }}>
-          Frequently asked<br />questions.
-        </h2>
+        <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+          style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+          FAQ
+        </motion.div>
+        <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+          style={{ fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 60, lineHeight: 1.1 }}>
+          Got questions?<br />
+          <span style={{ color: '#444' }}>We've got answers.</span>
+        </motion.h2>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+        <motion.div variants={staggerGrid} initial="hidden" whileInView="visible" viewport={VP}
+          style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
           {FAQS.map((faq, i) => (
-            <div key={i} style={{ borderTop: '1px solid #161616' }}>
-              <button onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ width: '100%', background: 'none', border: 'none', padding: '22px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', gap: 16 }}>
+            <motion.div key={i} variants={ci} style={{ borderTop: '1px solid #161616' }}>
+              <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                style={{ width: '100%', background: 'none', border: 'none', padding: '22px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', gap: 16 }}>
                 <span style={{ fontSize: 16, fontWeight: 600, color: '#f0f0f0', lineHeight: 1.4 }}>{faq.q}</span>
-                <div style={{ width: 28, height: 28, background: '#161616', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'transform .2s', transform: openFaq === i ? 'rotate(45deg)' : 'none' }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                </div>
+                <motion.div
+                  animate={{ rotate: openFaq === i ? 45 : 0 }}
+                  transition={{ duration: 0.2, ease: E }}
+                  style={{ width: 28, height: 28, background: '#161616', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round">
+                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                </motion.div>
               </button>
-              {openFaq === i && (
-                <div style={{ paddingBottom: 22 }}>
-                  <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7, margin: 0 }}>{faq.a}</p>
-                </div>
-              )}
-            </div>
+              <AnimatePresence initial={false}>
+                {openFaq === i && (
+                  <motion.div
+                    key="answer"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.28, ease: E }}
+                    style={{ overflow: 'hidden' }}>
+                    <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7, margin: '0 0 22px', paddingRight: 44 }}>{faq.a}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           ))}
           <div style={{ borderTop: '1px solid #161616' }} />
-        </div>
+        </motion.div>
       </section>
 
       {/* ── FINAL CTA ── */}
       <section style={{ padding: '100px 24px 60px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 700, height: 400, background: 'radial-gradient(ellipse, rgba(232,255,71,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ marginBottom: 48, borderRadius: 20, overflow: 'hidden', border: '1px solid #1a1a1a', maxWidth: 680, margin: '0 auto 48px', boxShadow: '0 32px 64px rgba(0,0,0,0.6)' }}>
+
+        <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+          style={{ marginBottom: 48, borderRadius: 20, overflow: 'hidden', border: '1px solid #1a1a1a', maxWidth: 680, margin: '0 auto 48px', boxShadow: '0 32px 64px rgba(0,0,0,0.6)' }}
+          whileHover={{ scale: 1.01 }} transition={{ duration: 0.3, ease: E }}>
           <img src={IMAGES.cta} alt="Flash gallery reveal" style={{ width: '100%', display: 'block' }} />
-        </div>
-        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#333', marginBottom: 24 }}>A single day becomes timeless</p>
-        <h2 style={{ fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 700, letterSpacing: -2, marginBottom: 48, lineHeight: 1.0, color: '#f0f0f0' }}>
+        </motion.div>
+
+        <motion.p variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+          style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#333', marginBottom: 24 }}>
+          A single day becomes timeless
+        </motion.p>
+        <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+          style={{ fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 700, letterSpacing: -2, marginBottom: 48, lineHeight: 1.0, color: '#f0f0f0' }}>
           when remembered<br />together.
-        </h2>
-        <Link href="/login" style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 14, padding: '18px 44px', fontSize: 17, fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
-          Create your event →
-        </Link>
+        </motion.h2>
+        <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+          whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}
+          style={{ display: 'inline-block' }}>
+          <Link href="/login"
+            style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 14, padding: '18px 44px', fontSize: 17, fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
+            Create your event →
+          </Link>
+        </motion.div>
       </section>
 
       {/* ── FOOTER ── */}
       <footer style={{ borderTop: '1px solid #161616', padding: '60px 24px 40px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 40 }}>
-          {/* Brand */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
               <div style={{ width: 28, height: 28, background: '#e8ff47', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -381,7 +536,6 @@ export default function LandingPage() {
             <p style={{ fontSize: 13, color: '#333', lineHeight: 1.7, maxWidth: 240 }}>A disposable camera for events. Shoot together, reveal together.</p>
           </div>
 
-          {/* Product */}
           <div>
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#333', marginBottom: 16 }}>Product</div>
             {[{ l: 'How it works', h: '#how' }, { l: 'Pricing', h: '/pricing' }, { l: 'FAQ', h: '#faq' }].map(({ l, h }) => (
@@ -393,7 +547,6 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Events */}
           <div>
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#333', marginBottom: 16 }}>Events</div>
             {['Wedding', 'Birthday', 'Party', 'Corporate', 'Trip'].map(l => (
@@ -401,7 +554,6 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Legal */}
           <div>
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#333', marginBottom: 16 }}>Legal</div>
             {[{ l: 'Privacy', h: '/legal/privacy' }, { l: 'Terms', h: '/legal/terms' }].map(({ l, h }) => (
@@ -427,15 +579,11 @@ export default function LandingPage() {
 
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        @media (max-width: 768px) {
-          .desktop-nav { display: none !important; }
-        }
-        @media (min-width: 769px) {
-          .mobile-menu-btn { display: none !important; }
-        }
-        @media (max-width: 640px) {
-          footer > div > div { grid-template-columns: 1fr 1fr !important; }
-        }
+        @keyframes ticker { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+        @media (max-width: 768px) { .desktop-nav { display: none !important; } }
+        @media (min-width: 769px) { .mobile-menu-btn { display: none !important; } }
+        @media (max-width: 640px) { footer > div > div { grid-template-columns: 1fr 1fr !important; } }
+        @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; } }
       `}</style>
     </div>
   )
