@@ -3,6 +3,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
+import { createClient } from '@/lib/supabase/client'
+import { useSanityContent } from '@/lib/sanity/useSanityContent'
 
 const E = [0.16, 1, 0.3, 1] as const
 const VP = { once: true, margin: '-60px' } as const
@@ -17,7 +19,7 @@ const ci = {
 }
 const sg = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }
 
-const PLANS = [
+const DEFAULT_PLANS = [
   {
     id: 'dj',
     name: 'DJ & Promoter',
@@ -27,7 +29,7 @@ const PLANS = [
     events: '12 events / month',
     guests: '250 guests / event',
     highlight: false,
-    badge: null,
+    badge: null as string | null,
     features: [
       'All 29 film modes',
       'Gallery reveal controls',
@@ -46,7 +48,7 @@ const PLANS = [
     events: 'Unlimited events',
     guests: '500 guests / event',
     highlight: true,
-    badge: 'Most Popular',
+    badge: 'Most Popular' as string | null,
     features: [
       'Everything in DJ plan',
       'White-label (remove Flash branding)',
@@ -65,7 +67,7 @@ const PLANS = [
     events: 'Unlimited events',
     guests: 'Unlimited guests',
     highlight: false,
-    badge: null,
+    badge: null as string | null,
     features: [
       'Everything in Venue plan',
       '5 staff accounts',
@@ -109,7 +111,7 @@ const WHO = [
   },
 ]
 
-const TESTIMONIALS = [
+const DEFAULT_TESTIMONIALS = [
   {
     quote: "I've been using Flash at every club night since January. The Kodak Gold mode makes everything look like a 90s rave — guests post the photos everywhere. It's the best marketing I've ever done.",
     author: 'Marcus L.',
@@ -127,7 +129,7 @@ const TESTIMONIALS = [
   },
 ]
 
-const PRO_FAQS = [
+const DEFAULT_PRO_FAQS = [
   {
     q: 'Is billing monthly or annual?',
     a: 'Monthly, cancel anytime. Annual billing (2 months free) is available — email us at hello@flashcam.app.',
@@ -157,9 +159,14 @@ const PRO_FAQS = [
 export default function PlannersPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
-  const [subError, setSubError] = useState('')
+  const [toast, setToast] = useState<{ msg: string; type: 'error' | 'info' } | null>(null)
   const reduced = useReducedMotion()
   const router = useRouter()
+  const cms = useSanityContent('plannersPage')
+
+  const PLANS = (cms?.plans ?? DEFAULT_PLANS) as typeof DEFAULT_PLANS
+  const TESTIMONIALS = (cms?.testimonials ?? DEFAULT_TESTIMONIALS) as typeof DEFAULT_TESTIMONIALS
+  const PRO_FAQS = (cms?.faq ?? DEFAULT_PRO_FAQS) as typeof DEFAULT_PRO_FAQS
 
   const f = reduced
     ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
@@ -168,15 +175,20 @@ export default function PlannersPage() {
     ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
     : ci
 
+  const showToast = (msg: string, type: 'error' | 'info' = 'error') => {
+    setToast({ msg, type })
+    setTimeout(() => setToast(null), 4000)
+  }
+
   const handleSubscribe = async (planId: string) => {
     if (loadingPlan) return
     setLoadingPlan(planId)
-    setSubError('')
+    setToast(null)
     try {
-      const { createClient } = await import('@/lib/supabase/client')
       const sb = createClient()
       const { data: { session } } = await sb.auth.getSession()
       if (!session?.access_token) {
+        setLoadingPlan(null)
         router.push(`/login?next=/planners%23plans`)
         return
       }
@@ -186,10 +198,16 @@ export default function PlannersPage() {
         body: JSON.stringify({ plan: planId }),
       })
       const data = await res.json()
-      if (!res.ok || data.error) { setSubError(data.error || `Error ${res.status}`); setLoadingPlan(null); return }
+      if (!res.ok || data.error) {
+        console.error('Subscription error:', data.error, res.status)
+        showToast(data.error || `Error ${res.status}`)
+        setLoadingPlan(null)
+        return
+      }
       window.location.assign(data.url)
     } catch (e: any) {
-      setSubError(e.message || 'Something went wrong')
+      console.error('Subscription exception:', e)
+      showToast(e.message || 'Something went wrong')
       setLoadingPlan(null)
     }
   }
@@ -197,6 +215,29 @@ export default function PlannersPage() {
   return (
     <div style={{ background: '#0a0a0a', color: '#f0f0f0', fontFamily: "'Space Grotesk', sans-serif", minHeight: '100dvh', overflowX: 'hidden' }}>
       <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+      {/* Fixed toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.22 }}
+            style={{
+              position: 'fixed', top: 72, left: '50%', transform: 'translateX(-50%)',
+              zIndex: 200, maxWidth: 420, width: 'calc(100vw - 48px)',
+              background: toast.type === 'error' ? 'rgba(255,71,87,0.95)' : 'rgba(20,20,20,0.97)',
+              backdropFilter: 'blur(16px)',
+              border: `1px solid ${toast.type === 'error' ? 'rgba(255,71,87,0.4)' : '#2a2a2a'}`,
+              borderRadius: 14, padding: '14px 18px',
+              fontSize: 14, fontWeight: 600, color: '#fff',
+              textAlign: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+            }}>
+            {toast.msg}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── NAV ── */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616' }}>
@@ -244,7 +285,7 @@ export default function PlannersPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: E, delay: 0.25 }}
           style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: '#555', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 48px' }}>
-          DJs, venues, and promoters use Flash to capture every event — no photographer, no app, no friction. Just a QR code and film.
+          {cms?.heroSub || 'DJs, venues, and promoters use Flash to capture every event — no photographer, no app, no friction. Just a QR code and film.'}
         </motion.p>
 
         <motion.div
@@ -355,7 +396,6 @@ export default function PlannersPage() {
                 </div>
                 <div style={{ fontSize: 13, color: '#555', marginBottom: 24, lineHeight: 1.5 }}>{plan.tagline}</div>
 
-                {/* Limits */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28, padding: '16px', background: plan.highlight ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.25)', borderRadius: 12 }}>
                   {[plan.events, plan.guests].map((l, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -367,7 +407,6 @@ export default function PlannersPage() {
                   ))}
                 </div>
 
-                {/* Features */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32 }}>
                   {plan.features.map((feat, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
@@ -416,14 +455,6 @@ export default function PlannersPage() {
             ))}
           </motion.div>
 
-          {/* Subscription error */}
-          {subError && (
-            <div style={{ marginTop: 20, background: 'rgba(255,71,87,0.1)', border: '1px solid rgba(255,71,87,0.3)', borderRadius: 12, padding: '12px 16px', fontSize: 14, color: '#ff4757', fontWeight: 600, textAlign: 'center' }}>
-              {subError}
-            </div>
-          )}
-
-          {/* Per-event note */}
           <motion.div variants={f} initial="hidden" whileInView="visible" viewport={VP}
             style={{ marginTop: 24, textAlign: 'center', padding: '20px 24px', background: '#0e0e0e', border: '1px solid #1a1a1a', borderRadius: 14 }}>
             <span style={{ fontSize: 13, color: '#444' }}>
