@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
+import { createClient } from '@/lib/supabase/client'
 
 const E = [0.16, 1, 0.3, 1] as const
 const VP = { once: true, margin: '-60px' } as const
@@ -157,7 +158,7 @@ const PRO_FAQS = [
 export default function PlannersPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
-  const [subError, setSubError] = useState('')
+  const [toast, setToast] = useState<{ msg: string; type: 'error' | 'info' } | null>(null)
   const reduced = useReducedMotion()
   const router = useRouter()
 
@@ -168,15 +169,20 @@ export default function PlannersPage() {
     ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
     : ci
 
+  const showToast = (msg: string, type: 'error' | 'info' = 'error') => {
+    setToast({ msg, type })
+    setTimeout(() => setToast(null), 4000)
+  }
+
   const handleSubscribe = async (planId: string) => {
     if (loadingPlan) return
     setLoadingPlan(planId)
-    setSubError('')
+    setToast(null)
     try {
-      const { createClient } = await import('@/lib/supabase/client')
       const sb = createClient()
       const { data: { session } } = await sb.auth.getSession()
       if (!session?.access_token) {
+        setLoadingPlan(null)
         router.push(`/login?next=/planners%23plans`)
         return
       }
@@ -186,10 +192,16 @@ export default function PlannersPage() {
         body: JSON.stringify({ plan: planId }),
       })
       const data = await res.json()
-      if (!res.ok || data.error) { setSubError(data.error || `Error ${res.status}`); setLoadingPlan(null); return }
+      if (!res.ok || data.error) {
+        console.error('Subscription error:', data.error, res.status)
+        showToast(data.error || `Error ${res.status}`)
+        setLoadingPlan(null)
+        return
+      }
       window.location.assign(data.url)
     } catch (e: any) {
-      setSubError(e.message || 'Something went wrong')
+      console.error('Subscription exception:', e)
+      showToast(e.message || 'Something went wrong')
       setLoadingPlan(null)
     }
   }
@@ -197,6 +209,29 @@ export default function PlannersPage() {
   return (
     <div style={{ background: '#0a0a0a', color: '#f0f0f0', fontFamily: "'Space Grotesk', sans-serif", minHeight: '100dvh', overflowX: 'hidden' }}>
       <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+      {/* Fixed error toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.22 }}
+            style={{
+              position: 'fixed', top: 72, left: '50%', transform: 'translateX(-50%)',
+              zIndex: 200, maxWidth: 420, width: 'calc(100vw - 48px)',
+              background: toast.type === 'error' ? 'rgba(255,71,87,0.95)' : 'rgba(20,20,20,0.97)',
+              backdropFilter: 'blur(16px)',
+              border: `1px solid ${toast.type === 'error' ? 'rgba(255,71,87,0.4)' : '#2a2a2a'}`,
+              borderRadius: 14, padding: '14px 18px',
+              fontSize: 14, fontWeight: 600, color: '#fff',
+              textAlign: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+            }}>
+            {toast.msg}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── NAV ── */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616' }}>
@@ -413,12 +448,6 @@ export default function PlannersPage() {
               </motion.div>
             ))}
           </motion.div>
-
-          {subError && (
-            <div style={{ marginTop: 20, background: 'rgba(255,71,87,0.1)', border: '1px solid rgba(255,71,87,0.3)', borderRadius: 12, padding: '12px 16px', fontSize: 14, color: '#ff4757', fontWeight: 600, textAlign: 'center' }}>
-              {subError}
-            </div>
-          )}
 
           <motion.div variants={f} initial="hidden" whileInView="visible" viewport={VP}
             style={{ marginTop: 24, textAlign: 'center', padding: '20px 24px', background: '#0e0e0e', border: '1px solid #1a1a1a', borderRadius: 14 }}>
