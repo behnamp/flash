@@ -16,6 +16,7 @@ const IMAGES = {
 const NAV_LINKS = [
   { label: 'HOW IT WORKS', href: '#how' },
   { label: 'PRICING', href: '/pricing' },
+  { label: 'FOR PROS', href: '/planners' },
   { label: 'FAQ', href: '#faq' },
 ]
 
@@ -523,6 +524,37 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
+      {/* ── FOR PLANNERS BANNER ── */}
+      <section style={{ padding: '0 24px 80px' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <motion.div
+            variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ background: 'linear-gradient(135deg, #111 0%, #141414 100%)', border: '1px solid #1e1e1e', borderRadius: 24, padding: '44px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
+            {/* Background glow */}
+            <div style={{ position: 'absolute', right: -60, top: -60, width: 280, height: 280, background: 'radial-gradient(circle, rgba(232,255,71,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
+            <div style={{ flex: 1, minWidth: 240 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#555', marginBottom: 12 }}>DJ · Venue · Promoter</div>
+              <h3 style={{ fontSize: 'clamp(20px, 3vw, 30px)', fontWeight: 700, letterSpacing: -0.8, marginBottom: 10, lineHeight: 1.2, color: '#f0f0f0' }}>
+                Running events every week?<br />
+                <span style={{ color: '#e8ff47' }}>There's a plan for that.</span>
+              </h3>
+              <p style={{ fontSize: 14, color: '#555', lineHeight: 1.6, maxWidth: 400 }}>
+                Flash Pro gives DJs, venues, and promoters unlimited monthly events at a flat rate — no per-event fees, ever.
+              </p>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }}>
+              <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
+                <Link href="/planners"
+                  style={{ display: 'block', background: '#e8ff47', color: '#0a0a0a', borderRadius: 13, padding: '14px 32px', fontSize: 15, fontWeight: 700, textDecoration: 'none', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                  Flash for Planners →
+                </Link>
+              </motion.div>
+              <div style={{ fontSize: 11, color: '#333', textAlign: 'center' }}>From $39/mo · Cancel anytime</div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── FOOTER ── */}
       <footer style={{ borderTop: '1px solid #161616', padding: '60px 24px 40px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 40 }}>
@@ -538,7 +570,7 @@ export default function LandingPage() {
 
           <div>
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#333', marginBottom: 16 }}>Product</div>
-            {[{ l: 'How it works', h: '#how' }, { l: 'Pricing', h: '/pricing' }, { l: 'FAQ', h: '#faq' }].map(({ l, h }) => (
+            {[{ l: 'How it works', h: '#how' }, { l: 'Pricing', h: '/pricing' }, { l: 'For Planners', h: '/planners' }, { l: 'FAQ', h: '#faq' }].map(({ l, h }) => (
               <Link key={l} href={h} style={{ display: 'block', fontSize: 13, color: '#444', textDecoration: 'none', marginBottom: 10, transition: 'color .15s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#f0f0f0')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#444')}>
