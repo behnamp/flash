@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 
 const E = [0.16, 1, 0.3, 1] as const
@@ -27,7 +28,6 @@ const PLANS = [
     guests: '250 guests / event',
     highlight: false,
     badge: null,
-    stripe: 'https://buy.stripe.com/dJ203e9Ij4OjbCM144', // placeholder
     features: [
       'All 29 film modes',
       'Gallery reveal controls',
@@ -47,7 +47,6 @@ const PLANS = [
     guests: '500 guests / event',
     highlight: true,
     badge: 'Most Popular',
-    stripe: 'https://buy.stripe.com/dJ203e9Ij4OjbCM144', // placeholder
     features: [
       'Everything in DJ plan',
       'White-label (remove Flash branding)',
@@ -67,7 +66,6 @@ const PLANS = [
     guests: 'Unlimited guests',
     highlight: false,
     badge: null,
-    stripe: null,
     features: [
       'Everything in Venue plan',
       '5 staff accounts',
@@ -158,7 +156,10 @@ const PRO_FAQS = [
 
 export default function PlannersPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
+  const [subError, setSubError] = useState('')
   const reduced = useReducedMotion()
+  const router = useRouter()
 
   const f = reduced
     ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
@@ -166,6 +167,32 @@ export default function PlannersPage() {
   const c = reduced
     ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
     : ci
+
+  const handleSubscribe = async (planId: string) => {
+    if (loadingPlan) return
+    setLoadingPlan(planId)
+    setSubError('')
+    try {
+      const { createClient } = await import('@/lib/supabase/client')
+      const sb = createClient()
+      const { data: { session } } = await sb.auth.getSession()
+      if (!session?.access_token) {
+        router.push(`/login?next=/planners%23plans`)
+        return
+      }
+      const res = await fetch('/api/stripe/create-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+        body: JSON.stringify({ plan: planId }),
+      })
+      const data = await res.json()
+      if (!res.ok || data.error) { setSubError(data.error || `Error ${res.status}`); setLoadingPlan(null); return }
+      window.location.assign(data.url)
+    } catch (e: any) {
+      setSubError(e.message || 'Something went wrong')
+      setLoadingPlan(null)
+    }
+  }
 
   return (
     <div style={{ background: '#0a0a0a', color: '#f0f0f0', fontFamily: "'Space Grotesk', sans-serif", minHeight: '100dvh', overflowX: 'hidden' }}>
@@ -352,22 +379,26 @@ export default function PlannersPage() {
                   ))}
                 </div>
 
-                {plan.stripe ? (
-                  <motion.a
-                    href="/login?next=/planners/dashboard"
-                    whileHover={{ opacity: 0.9 }}
-                    whileTap={{ scale: 0.98 }}
+                {plan.id !== 'agency' ? (
+                  <motion.button
+                    onClick={() => handleSubscribe(plan.id)}
+                    disabled={!!loadingPlan}
+                    whileHover={loadingPlan ? {} : { opacity: 0.9 }}
+                    whileTap={loadingPlan ? {} : { scale: 0.98 }}
                     style={{
-                      display: 'block', textAlign: 'center',
-                      background: plan.highlight ? '#e8ff47' : '#1e1e1e',
-                      color: plan.highlight ? '#0a0a0a' : '#ccc',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      width: '100%', textAlign: 'center',
+                      background: loadingPlan === plan.id ? '#222' : plan.highlight ? '#e8ff47' : '#1e1e1e',
+                      color: loadingPlan === plan.id ? '#555' : plan.highlight ? '#0a0a0a' : '#ccc',
                       border: plan.highlight ? 'none' : '1px solid #333',
                       borderRadius: 12, padding: '15px 20px',
-                      fontSize: 14, fontWeight: 700, textDecoration: 'none',
-                      fontFamily: 'inherit',
+                      fontSize: 14, fontWeight: 700, cursor: loadingPlan ? 'default' : 'pointer',
+                      fontFamily: 'inherit', height: 52,
                     }}>
-                    Get started →
-                  </motion.a>
+                    {loadingPlan === plan.id
+                      ? <div style={{ width: 18, height: 18, border: '2px solid #444', borderTop: `2px solid ${plan.highlight ? '#e8ff47' : '#888'}`, borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
+                      : 'Get started →'}
+                  </motion.button>
                 ) : (
                   <a
                     href="mailto:hello@flashcam.app?subject=Agency Plan Inquiry"
@@ -384,6 +415,13 @@ export default function PlannersPage() {
               </motion.div>
             ))}
           </motion.div>
+
+          {/* Subscription error */}
+          {subError && (
+            <div style={{ marginTop: 20, background: 'rgba(255,71,87,0.1)', border: '1px solid rgba(255,71,87,0.3)', borderRadius: 12, padding: '12px 16px', fontSize: 14, color: '#ff4757', fontWeight: 600, textAlign: 'center' }}>
+              {subError}
+            </div>
+          )}
 
           {/* Per-event note */}
           <motion.div variants={f} initial="hidden" whileInView="visible" viewport={VP}
@@ -522,6 +560,7 @@ export default function PlannersPage() {
 
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        @keyframes spin { to { transform: rotate(360deg) } }
         @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; } }
       `}</style>
     </div>

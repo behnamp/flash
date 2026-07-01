@@ -1,6 +1,6 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, useRef, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
@@ -55,8 +55,9 @@ function UsageBar({ used, max }: { used: number; max: number | null }) {
   )
 }
 
-export default function PlannerDashboard() {
+function PlannerDashboardInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
 
   const [loading, setLoading] = useState(true)
@@ -93,10 +94,13 @@ export default function PlannerDashboard() {
       const eventList = (evs || []) as Event[]
       setEvents(eventList)
 
-      // Detect plan tier from the most recent paid subscription-style event
-      // In production this would come from a subscriptions table or Stripe webhook
       const subTier = u.user_metadata?.planner_plan || null
       setPlanTier(subTier)
+
+      if (searchParams.get('subscribed') === '1') {
+        showToast('Subscription activated! Welcome to Flash Pro.')
+        router.replace('/planners/dashboard')
+      }
 
       setLoading(false)
     }
@@ -336,4 +340,8 @@ export default function PlannerDashboard() {
       )}
     </main>
   )
+}
+
+export default function PlannerDashboard() {
+  return <Suspense><PlannerDashboardInner /></Suspense>
 }
