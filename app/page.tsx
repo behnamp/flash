@@ -524,34 +524,99 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* ── FOR PLANNERS BANNER ── */}
-      <section style={{ padding: '0 24px 80px' }}>
+      {/* ── FOR PLANNERS ── */}
+      <section id="planners" style={{ padding: '100px 24px', background: '#0d0d0d', borderTop: '1px solid #111', borderBottom: '1px solid #111' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <motion.div
-            variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ background: 'linear-gradient(135deg, #111 0%, #141414 100%)', border: '1px solid #1e1e1e', borderRadius: 24, padding: '44px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap', position: 'relative', overflow: 'hidden' }}>
-            {/* Background glow */}
-            <div style={{ position: 'absolute', right: -60, top: -60, width: 280, height: 280, background: 'radial-gradient(circle, rgba(232,255,71,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
-            <div style={{ flex: 1, minWidth: 240 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#555', marginBottom: 12 }}>DJ · Venue · Promoter</div>
-              <h3 style={{ fontSize: 'clamp(20px, 3vw, 30px)', fontWeight: 700, letterSpacing: -0.8, marginBottom: 10, lineHeight: 1.2, color: '#f0f0f0' }}>
-                Running events every week?<br />
-                <span style={{ color: '#e8ff47' }}>There's a plan for that.</span>
-              </h3>
-              <p style={{ fontSize: 14, color: '#555', lineHeight: 1.6, maxWidth: 400 }}>
-                Flash Pro gives DJs, venues, and promoters unlimited monthly events at a flat rate — no per-event fees, ever.
-              </p>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }}>
-              <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
-                <Link href="/planners"
-                  style={{ display: 'block', background: '#e8ff47', color: '#0a0a0a', borderRadius: 13, padding: '14px 32px', fontSize: 15, fontWeight: 700, textDecoration: 'none', textAlign: 'center', whiteSpace: 'nowrap' }}>
-                  Flash for Planners →
-                </Link>
-              </motion.div>
-              <div style={{ fontSize: 11, color: '#333', textAlign: 'center' }}>From $39/mo · Cancel anytime</div>
-            </div>
+
+          {/* Header */}
+          <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+            Flash for Professionals
           </motion.div>
+          <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ fontSize: 'clamp(32px, 5vw, 60px)', fontWeight: 700, letterSpacing: -2, lineHeight: 1.0, textAlign: 'center', marginBottom: 20 }}>
+            Built for the people<br />
+            <span style={{ color: '#e8ff47' }}>who run the night.</span>
+          </motion.h2>
+          <motion.p variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ fontSize: 16, color: '#555', textAlign: 'center', lineHeight: 1.7, maxWidth: 480, margin: '0 auto 72px' }}>
+            DJs, venues, and promoters run Flash every weekend. One flat monthly rate — no per-event fees, no surprise charges.
+          </motion.p>
+
+          {/* Audience cards */}
+          <motion.div variants={staggerGrid} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14, marginBottom: 56 }}>
+            {[
+              {
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8ff47" strokeWidth="1.6" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 6.8A5 5 0 0 1 17 10h1a2 2 0 0 1 0 4h-1a5 5 0 0 1-5 4.9"/><circle cx="9.5" cy="14.5" r="1"/></svg>,
+                label: 'DJs & Photographers',
+                body: 'Drop a QR on your booth. Guests capture the night with 29 film-mode cameras. Every set, documented.',
+              },
+              {
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8ff47" strokeWidth="1.6" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+                label: 'Venues & Clubs',
+                body: 'Run Flash every weekend. Set up once, reuse your template, embed the gallery on your site — guests keep coming back.',
+              },
+              {
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8ff47" strokeWidth="1.6" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+                label: 'Promoters & Agencies',
+                body: 'Attach Flash to any event. The morning-after gallery reveal drives social content without hiring a photographer.',
+              },
+            ].map((w, i) => (
+              <motion.div key={i} variants={ci}
+                style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 20, padding: '28px 24px' }}>
+                <div style={{ width: 48, height: 48, background: 'rgba(232,255,71,0.08)', borderRadius: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                  {w.icon}
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#f0f0f0', marginBottom: 10, letterSpacing: -0.3 }}>{w.label}</div>
+                <div style={{ fontSize: 13, color: '#555', lineHeight: 1.7 }}>{w.body}</div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Plan tiers */}
+          <motion.div variants={staggerGrid} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 10, marginBottom: 40 }}>
+            {[
+              { name: 'DJ & Promoter', price: '$39', period: '/mo', desc: '12 events · 250 guests each', color: '#888', highlight: false },
+              { name: 'Venue',         price: '$89', period: '/mo', desc: 'Unlimited events · White-label · 500 guests', color: '#e8ff47', highlight: true },
+              { name: 'Agency',        price: '$199', period: '/mo', desc: 'Unlimited · 5 seats · API access', color: '#c084fc', highlight: false },
+            ].map((plan) => (
+              <motion.div key={plan.name} variants={ci}
+                style={{
+                  background: plan.highlight ? 'rgba(232,255,71,0.04)' : '#111',
+                  border: `1px solid ${plan.highlight ? 'rgba(232,255,71,0.25)' : '#1a1a1a'}`,
+                  borderRadius: 16,
+                  padding: '20px 22px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 12,
+                }}>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: plan.color, marginBottom: 4, letterSpacing: 0.3 }}>{plan.name}</div>
+                  <div style={{ fontSize: 11, color: '#444', lineHeight: 1.5 }}>{plan.desc}</div>
+                </div>
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                  <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 18, fontWeight: 700, color: plan.highlight ? '#e8ff47' : '#f0f0f0' }}>{plan.price}</span>
+                  <span style={{ fontSize: 11, color: '#444' }}>{plan.period} CAD</span>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* CTA */}
+          <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
+            style={{ textAlign: 'center' }}>
+            <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }} style={{ display: 'inline-block' }}>
+              <Link href="/planners"
+                style={{ display: 'inline-block', background: '#e8ff47', color: '#0a0a0a', borderRadius: 14, padding: '16px 44px', fontSize: 16, fontWeight: 700, textDecoration: 'none' }}>
+                See professional plans →
+              </Link>
+            </motion.div>
+            <div style={{ fontSize: 12, color: '#333', marginTop: 14 }}>Monthly billing · Cancel anytime · No setup fees</div>
+          </motion.div>
+
         </div>
       </section>
 
