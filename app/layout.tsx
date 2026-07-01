@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { SanityVisualEditing } from './components/SanityVisualEditing'
 
 export const metadata: Metadata = {
   title: 'Flash — Disposable Camera for Events',
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         {children}
+        <SanityVisualEditing />
       </body>
     </html>
   )
