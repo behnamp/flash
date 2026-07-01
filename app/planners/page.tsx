@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { createClient } from '@/lib/supabase/client'
+import { useSanityContent } from '@/lib/sanity/useSanityContent'
 
 const E = [0.16, 1, 0.3, 1] as const
 const VP = { once: true, margin: '-60px' } as const
@@ -18,7 +19,7 @@ const ci = {
 }
 const sg = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }
 
-const PLANS = [
+const DEFAULT_PLANS = [
   {
     id: 'dj',
     name: 'DJ & Promoter',
@@ -28,7 +29,7 @@ const PLANS = [
     events: '12 events / month',
     guests: '250 guests / event',
     highlight: false,
-    badge: null,
+    badge: null as string | null,
     features: [
       'All 29 film modes',
       'Gallery reveal controls',
@@ -47,7 +48,7 @@ const PLANS = [
     events: 'Unlimited events',
     guests: '500 guests / event',
     highlight: true,
-    badge: 'Most Popular',
+    badge: 'Most Popular' as string | null,
     features: [
       'Everything in DJ plan',
       'White-label (remove Flash branding)',
@@ -66,7 +67,7 @@ const PLANS = [
     events: 'Unlimited events',
     guests: 'Unlimited guests',
     highlight: false,
-    badge: null,
+    badge: null as string | null,
     features: [
       'Everything in Venue plan',
       '5 staff accounts',
@@ -110,7 +111,7 @@ const WHO = [
   },
 ]
 
-const TESTIMONIALS = [
+const DEFAULT_TESTIMONIALS = [
   {
     quote: "I've been using Flash at every club night since January. The Kodak Gold mode makes everything look like a 90s rave — guests post the photos everywhere. It's the best marketing I've ever done.",
     author: 'Marcus L.',
@@ -128,7 +129,7 @@ const TESTIMONIALS = [
   },
 ]
 
-const PRO_FAQS = [
+const DEFAULT_PRO_FAQS = [
   {
     q: 'Is billing monthly or annual?',
     a: 'Monthly, cancel anytime. Annual billing (2 months free) is available — email us at hello@flashcam.app.',
@@ -161,6 +162,11 @@ export default function PlannersPage() {
   const [toast, setToast] = useState<{ msg: string; type: 'error' | 'info' } | null>(null)
   const reduced = useReducedMotion()
   const router = useRouter()
+  const cms = useSanityContent('plannersPage')
+
+  const PLANS = (cms?.plans ?? DEFAULT_PLANS) as typeof DEFAULT_PLANS
+  const TESTIMONIALS = (cms?.testimonials ?? DEFAULT_TESTIMONIALS) as typeof DEFAULT_TESTIMONIALS
+  const PRO_FAQS = (cms?.faq ?? DEFAULT_PRO_FAQS) as typeof DEFAULT_PRO_FAQS
 
   const f = reduced
     ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
@@ -210,7 +216,7 @@ export default function PlannersPage() {
     <div style={{ background: '#0a0a0a', color: '#f0f0f0', fontFamily: "'Space Grotesk', sans-serif", minHeight: '100dvh', overflowX: 'hidden' }}>
       <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
-      {/* Fixed error toast */}
+      {/* Fixed toast */}
       <AnimatePresence>
         {toast && (
           <motion.div
@@ -279,7 +285,7 @@ export default function PlannersPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: E, delay: 0.25 }}
           style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: '#555', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 48px' }}>
-          DJs, venues, and promoters use Flash to capture every event — no photographer, no app, no friction. Just a QR code and film.
+          {cms?.heroSub || 'DJs, venues, and promoters use Flash to capture every event — no photographer, no app, no friction. Just a QR code and film.'}
         </motion.p>
 
         <motion.div
