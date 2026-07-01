@@ -215,29 +215,34 @@ function PricingPageInner() {
           <div style={{ fontSize: 11, color: '#333', marginTop: 8 }}>Apply at checkout or enter above for free events</div>
         </div>
 
-        {/* Creator & Venue plans */}
-        <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 16, padding: '20px 18px', marginBottom: 20 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444', marginBottom: 12 }}>Frequent use?</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: '#e0e0e0', marginBottom: 6, letterSpacing: -0.3 }}>Creator & Venue Plans</div>
-          <div style={{ fontSize: 13, color: '#555', lineHeight: 1.6, marginBottom: 16 }}>Run multiple events per month? Get unlimited events at a flat rate.</div>
-          {[
-            { name: 'Creator', price: '$19.99/mo', desc: 'Up to 10 events/month · 200 guests each', color: '#888' },
-            { name: 'Venue',   price: '$49.99/mo', desc: 'Unlimited events · White-label · Priority support', color: '#e8ff47' },
-          ].map(plan => (
-            <div key={plan.name} style={{ background: '#0e0e0e', border: `1px solid ${plan.color === '#e8ff47' ? 'rgba(232,255,71,0.15)' : '#1a1a1a'}`, borderRadius: 12, paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: plan.color, marginBottom: 3 }}>{plan.name}</div>
-                <div style={{ fontSize: 12, color: '#444' }}>{plan.desc}</div>
-              </div>
-              <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 12 }}>
-                <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, fontWeight: 700, color: '#f0f0f0' }}>{plan.price}</div>
-              </div>
+        {/* Flash for Planners */}
+        <a href="/planners" style={{ display: 'block', textDecoration: 'none', marginBottom: 20 }}>
+          <div style={{ background: 'linear-gradient(135deg, #111 0%, #141410 100%)', border: '1px solid rgba(232,255,71,0.18)', borderRadius: 16, padding: '20px 18px', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', right: -20, top: -20, width: 140, height: 140, background: 'radial-gradient(circle, rgba(232,255,71,0.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#555', marginBottom: 10 }}>DJ · Venue · Promoter</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', marginBottom: 6, letterSpacing: -0.3 }}>Flash for Planners</div>
+            <div style={{ fontSize: 13, color: '#555', lineHeight: 1.6, marginBottom: 16 }}>Run multiple events per month? Flat monthly rate — no per-event fees, ever.</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+              {[
+                { name: 'DJ & Promoter', price: '$39/mo', desc: '12 events · 250 guests each', color: '#888' },
+                { name: 'Venue',         price: '$89/mo', desc: 'Unlimited events · White-label · 500 guests', color: '#e8ff47' },
+                { name: 'Agency',        price: '$199/mo', desc: 'Unlimited · 5 seats · API access', color: '#c084fc' },
+              ].map(plan => (
+                <div key={plan.name} style={{ background: '#0e0e0e', border: `1px solid ${plan.color === '#e8ff47' ? 'rgba(232,255,71,0.15)' : plan.color === '#c084fc' ? 'rgba(192,132,252,0.15)' : '#1a1a1a'}`, borderRadius: 10, padding: '11px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: plan.color, marginBottom: 2 }}>{plan.name}</div>
+                    <div style={{ fontSize: 11, color: '#444' }}>{plan.desc}</div>
+                  </div>
+                  <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, fontWeight: 700, color: '#f0f0f0', flexShrink: 0, marginLeft: 12 }}>{plan.price}</div>
+                </div>
+              ))}
             </div>
-          ))}
-          <div style={{ fontSize: 12, color: '#333', marginTop: 10, textAlign: 'center' }}>
-            Contact <a href="mailto:hello@flashcam.app" style={{ color: '#444', textDecoration: 'none' }}>hello@flashcam.app</a>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: '#e8ff47' }}>
+              View professional plans
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e8ff47" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </div>
           </div>
-        </div>
+        </a>
 
         <div style={{ fontSize: 12, color: '#2a2a2a', textAlign: 'center', lineHeight: 1.6 }}>
           Secure payment via Stripe · CAD · No recurring charges
