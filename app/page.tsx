@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
+import { useSanityContent } from '@/lib/sanity/useSanityContent'
 
 const IMAGES = {
   hero:    'https://d8j0ntlcm91z4.cloudfront.net/user_2y6wAIlmwDKTK54POxKgzxeDouA/hf_20260625_151843_1d70550d-dee8-4aac-b906-8a9d7b971f33.png',
@@ -136,6 +137,7 @@ export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [scrolled, setScrolled] = useState(false)
   const reduced = useReducedMotion()
+  const cms = useSanityContent('landingPage')
 
   useEffect(() => {
     const isNative = !!(window as any).Capacitor?.isNativePlatform?.()
@@ -243,7 +245,7 @@ export default function LandingPage() {
           {/* Sub */}
           <motion.p variants={hi}
             style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: '#555', lineHeight: 1.7, maxWidth: 520, margin: '0 0 44px' }}>
-            Flash is a disposable camera for events. Guests join by QR, shoot with film modes, and the gallery unlocks when you say so.
+            {cms?.heroSub || 'Flash is a disposable camera for events. Guests join by QR, shoot with film modes, and the gallery unlocks when you say so.'}
           </motion.p>
 
           {/* CTAs */}
@@ -320,7 +322,7 @@ export default function LandingPage() {
         </motion.p>
         <motion.div variants={staggerGrid} initial="hidden" whileInView="visible" viewport={VP}
           style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
-          {REVIEWS.map((r, i) => (
+          {(cms?.reviews ?? REVIEWS).map((r: typeof REVIEWS[0], i: number) => (
             <motion.div key={i} variants={ci}
               whileHover={{ y: -4, borderColor: '#2a2a2a' }}
               transition={{ duration: 0.2 }}
@@ -463,7 +465,7 @@ export default function LandingPage() {
 
         <motion.div variants={staggerGrid} initial="hidden" whileInView="visible" viewport={VP}
           style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-          {FAQS.map((faq, i) => (
+          {(cms?.faq ?? FAQS).map((faq: typeof FAQS[0], i: number) => (
             <motion.div key={i} variants={ci} style={{ borderTop: '1px solid #161616' }}>
               <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 style={{ width: '100%', background: 'none', border: 'none', padding: '22px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', gap: 16 }}>
@@ -677,10 +679,9 @@ export default function LandingPage() {
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes ticker { from { transform: translateX(0) } to { transform: translateX(-50%) } }
-        @media (max-width: 768px) { .desktop-nav { display: none !important; } }
-        @media (min-width: 769px) { .mobile-menu-btn { display: none !important; } }
-        @media (max-width: 640px) { footer > div > div { grid-template-columns: 1fr 1fr !important; } }
-        @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; } }
+        .desktop-nav { display: none; }
+        @media (min-width: 768px) { .desktop-nav { display: flex; } .mobile-menu-btn { display: none; } }
+        @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; } .ticker { animation: none !important; } }
       `}</style>
     </div>
   )
