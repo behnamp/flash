@@ -131,7 +131,7 @@ function PricingPageInner() {
           <div style={{ fontSize: 15, fontWeight: 700 }}>Choose a plan</div>
           {eventId && <div style={{ fontSize: 11, color: '#444' }}>Event ID: {eventId.slice(0, 8)}...</div>}
         </div>
-        <div style={{ width: 32, height: 32, background: '#e8ff47', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 32, height: 32, background: '#ffb800', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconFlash size={16} color="#0a0a0a" />
         </div>
       </div>
@@ -158,9 +158,9 @@ function PricingPageInner() {
         {/* Tier cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28 }}>
           {TIERS.map(t => (
-            <div key={t.id} style={{ background: t.popular ? 'rgba(232,255,71,0.04)' : '#111', border: `1px solid ${t.popular ? 'rgba(232,255,71,0.25)' : '#1e1e1e'}`, borderRadius: 16, padding: '16px 18px', position: 'relative', overflow: 'hidden' }}>
+            <div key={t.id} style={{ background: t.popular ? 'rgba(255,184,0,0.04)' : '#111', border: `1px solid ${t.popular ? 'rgba(255,184,0,0.25)' : '#1e1e1e'}`, borderRadius: 16, padding: '16px 18px', position: 'relative', overflow: 'hidden' }}>
               {t.popular && (
-                <div style={{ position: 'absolute', top: 12, right: 12, background: '#e8ff47', color: '#0a0a0a', fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', borderRadius: 6, padding: '3px 8px' }}>
+                <div style={{ position: 'absolute', top: 12, right: 12, background: '#ffb800', color: '#0a0a0a', fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', borderRadius: 6, padding: '3px 8px' }}>
                   Popular
                 </div>
               )}
@@ -172,7 +172,7 @@ function PricingPageInner() {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ flex: 1, paddingRight: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 3 }}>
-                    <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 22, fontWeight: 700, color: t.popular ? '#e8ff47' : '#f0f0f0' }}>{t.price}</span>
+                    <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 22, fontWeight: 700, color: t.popular ? '#ffb800' : '#f0f0f0' }}>{t.price}</span>
                     <span style={{ fontSize: 11, color: '#444' }}>CAD</span>
                   </div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: '#ccc', marginBottom: 2 }}>{t.guests}</div>
@@ -182,7 +182,7 @@ function PricingPageInner() {
                   onClick={() => handleBuy(t.id)}
                   disabled={!!loading}
                   style={{
-                    background: loading === t.id ? '#222' : (t as any).free ? '#1a2a1a' : t.popular ? '#e8ff47' : '#1e1e1e',
+                    background: loading === t.id ? '#222' : (t as any).free ? '#1a2a1a' : t.popular ? '#ffb800' : '#1e1e1e',
                     color: loading === t.id ? '#555' : (t as any).free ? '#2ed573' : t.popular ? '#0a0a0a' : '#ccc',
                     border: (t as any).free ? '1px solid rgba(46,213,115,0.4)' : t.popular ? 'none' : '1px solid #333',
                     borderRadius: 12, padding: '0 20px', height: 44, minWidth: 76,
@@ -192,7 +192,7 @@ function PricingPageInner() {
                   }}
                 >
                   {loading === t.id ? (
-                    <div style={{ width: 18, height: 18, border: '2px solid #444', borderTop: '2px solid #e8ff47', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
+                    <div style={{ width: 18, height: 18, border: '2px solid #444', borderTop: '2px solid #ffb800', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
                   ) : (t as any).free ? 'Get Free' : 'Buy'}
                 </button>
               </div>
@@ -217,18 +217,18 @@ function PricingPageInner() {
 
         {/* Flash for Planners */}
         <a href="/planners" style={{ display: 'block', textDecoration: 'none', marginBottom: 20 }}>
-          <div style={{ background: 'linear-gradient(135deg, #111 0%, #141410 100%)', border: '1px solid rgba(232,255,71,0.18)', borderRadius: 16, padding: '20px 18px', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', right: -20, top: -20, width: 140, height: 140, background: 'radial-gradient(circle, rgba(232,255,71,0.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          <div style={{ background: 'linear-gradient(135deg, #111 0%, #141410 100%)', border: '1px solid rgba(255,184,0,0.18)', borderRadius: 16, padding: '20px 18px', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', right: -20, top: -20, width: 140, height: 140, background: 'radial-gradient(circle, rgba(255,184,0,0.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
             <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#555', marginBottom: 10 }}>DJ · Venue · Promoter</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', marginBottom: 6, letterSpacing: -0.3 }}>Flash for Planners</div>
             <div style={{ fontSize: 13, color: '#555', lineHeight: 1.6, marginBottom: 16 }}>Run multiple events per month? Flat monthly rate — no per-event fees, ever.</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
               {[
                 { name: 'DJ & Promoter', price: '$39/mo', desc: '12 events · 250 guests each', color: '#888' },
-                { name: 'Venue',         price: '$89/mo', desc: 'Unlimited events · White-label · 500 guests', color: '#e8ff47' },
+                { name: 'Venue',         price: '$89/mo', desc: 'Unlimited events · White-label · 500 guests', color: '#ffb800' },
                 { name: 'Agency',        price: '$199/mo', desc: 'Unlimited · 5 seats · API access', color: '#c084fc' },
               ].map(plan => (
-                <div key={plan.name} style={{ background: '#0e0e0e', border: `1px solid ${plan.color === '#e8ff47' ? 'rgba(232,255,71,0.15)' : plan.color === '#c084fc' ? 'rgba(192,132,252,0.15)' : '#1a1a1a'}`, borderRadius: 10, padding: '11px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div key={plan.name} style={{ background: '#0e0e0e', border: `1px solid ${plan.color === '#ffb800' ? 'rgba(255,184,0,0.15)' : plan.color === '#c084fc' ? 'rgba(192,132,252,0.15)' : '#1a1a1a'}`, borderRadius: 10, padding: '11px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: plan.color, marginBottom: 2 }}>{plan.name}</div>
                     <div style={{ fontSize: 11, color: '#444' }}>{plan.desc}</div>
@@ -237,9 +237,9 @@ function PricingPageInner() {
                 </div>
               ))}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: '#e8ff47' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: '#ffb800' }}>
               View professional plans
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e8ff47" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffb800" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </div>
           </div>
         </a>

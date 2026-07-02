@@ -59,7 +59,7 @@ function Badge({ store, size = 'md' }: { store: 'ios' | 'android'; size?: 'sm' |
       </span>
       {/* Coming soon ribbon */}
       {!s.live && (
-        <span style={{ position: 'absolute', top: -8, right: -8, background: '#e8ff47', color: '#0a0a0a', fontSize: 8, fontWeight: 800, letterSpacing: 0.5, textTransform: 'uppercase', padding: '2px 6px', borderRadius: 6, whiteSpace: 'nowrap' }}>Soon</span>
+        <span style={{ position: 'absolute', top: -8, right: -8, background: '#ffb800', color: '#0a0a0a', fontSize: 8, fontWeight: 800, letterSpacing: 0.5, textTransform: 'uppercase', padding: '2px 6px', borderRadius: 6, whiteSpace: 'nowrap' }}>Soon</span>
       )}
       {/* Click toast */}
       {poke && (

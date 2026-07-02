@@ -116,15 +116,15 @@ export default function ScanPage() {
             {/* Corners */}
             {([['top','left'],['top','right'],['bottom','left'],['bottom','right']] as const).map(([v,h],i) => (
               <div key={i} style={{ position: 'absolute', width: 26, height: 26, [v]: -1, [h]: -1,
-                borderTop: v === 'top' ? '3px solid #e8ff47' : 'none',
-                borderBottom: v === 'bottom' ? '3px solid #e8ff47' : 'none',
-                borderLeft: h === 'left' ? '3px solid #e8ff47' : 'none',
-                borderRight: h === 'right' ? '3px solid #e8ff47' : 'none',
+                borderTop: v === 'top' ? '3px solid #ffb800' : 'none',
+                borderBottom: v === 'bottom' ? '3px solid #ffb800' : 'none',
+                borderLeft: h === 'left' ? '3px solid #ffb800' : 'none',
+                borderRight: h === 'right' ? '3px solid #ffb800' : 'none',
                 borderRadius: h === 'left' && v === 'top' ? '4px 0 0 0' : h === 'right' && v === 'top' ? '0 4px 0 0' : h === 'left' ? '0 0 0 4px' : '0 0 4px 0'
               }} />
             ))}
             {/* Scan line */}
-            <div style={{ position: 'absolute', left: 8, right: 8, height: 2, background: '#e8ff47', borderRadius: 1, animation: 'scan 2s ease-in-out infinite', opacity: 0.9 }} />
+            <div style={{ position: 'absolute', left: 8, right: 8, height: 2, background: '#ffb800', borderRadius: 1, animation: 'scan 2s ease-in-out infinite', opacity: 0.9 }} />
           </div>
         </div>
 
@@ -147,12 +147,12 @@ export default function ScanPage() {
 
       {/* Download banner — hidden in native app (already installed) */}
       {!isNative && (
-      <div style={{ background: '#e8ff47', padding: '12px 20px', paddingBottom: 'max(12px, env(safe-area-inset-bottom))', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+      <div style={{ background: '#ffb800', padding: '12px 20px', paddingBottom: 'max(12px, env(safe-area-inset-bottom))', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
         <div>
           <div style={{ fontSize: 13, fontWeight: 800, color: '#0a0a0a' }}>Get the Flash app</div>
           <div style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)' }}>Better camera · install free</div>
         </div>
-        <a href="https://apps.apple.com" target="_blank" style={{ background: '#0a0a0a', color: '#e8ff47', borderRadius: 10, padding: '9px 16px', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>
+        <a href="https://apps.apple.com" target="_blank" style={{ background: '#0a0a0a', color: '#ffb800', borderRadius: 10, padding: '9px 16px', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>
           Download ↗
         </a>
       </div>

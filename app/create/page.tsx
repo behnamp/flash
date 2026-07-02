@@ -66,7 +66,7 @@ const Toggle = ({ on, onChange, label, sub }: { on: boolean; onChange: (v: boole
       <div style={{ fontSize: 14, fontWeight: 500, color: '#ddd' }}>{label}</div>
       {sub && <div style={{ fontSize: 12, color: '#444', marginTop: 3 }}>{sub}</div>}
     </div>
-    <div onClick={() => onChange(!on)} style={{ width: 46, height: 26, borderRadius: 13, background: on ? '#e8ff47' : '#222', position: 'relative', cursor: 'pointer', transition: 'background .2s', flexShrink: 0 }}>
+    <div onClick={() => onChange(!on)} style={{ width: 46, height: 26, borderRadius: 13, background: on ? '#ffb800' : '#222', position: 'relative', cursor: 'pointer', transition: 'background .2s', flexShrink: 0 }}>
       <div style={{ position: 'absolute', width: 20, height: 20, borderRadius: '50%', background: on ? '#0a0a0a' : '#444', top: 3, left: on ? 23 : 3, transition: 'left .18s' }} />
     </div>
   </div>
@@ -165,7 +165,7 @@ export default function CreateEvent() {
         <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, color: '#333' }}>{step}/{TOTAL}</span>
       </div>
       <div style={{ height: 1, background: '#161616' }}>
-        <div style={{ height: 1, background: '#e8ff47', width: `${(step / TOTAL) * 100}%`, transition: 'width .5s cubic-bezier(.4,0,.2,1)' }} />
+        <div style={{ height: 1, background: '#ffb800', width: `${(step / TOTAL) * 100}%`, transition: 'width .5s cubic-bezier(.4,0,.2,1)' }} />
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '28px 20px 20px' }}>
@@ -178,11 +178,11 @@ export default function CreateEvent() {
               {EVENT_TYPES.slice(0, 2).map(({ id, label, Icon }) => {
                 const sel = form.eventType === id
                 return (
-                  <div key={id} onClick={() => set('eventType', id)} style={{ background: sel ? 'rgba(232,255,71,0.07)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 16, padding: '26px 16px 20px', cursor: 'pointer', textAlign: 'center', transition: 'all .18s' }}>
+                  <div key={id} onClick={() => set('eventType', id)} style={{ background: sel ? 'rgba(255,184,0,0.07)' : '#111', border: `1px solid ${sel ? '#ffb800' : '#1e1e1e'}`, borderRadius: 16, padding: '26px 16px 20px', cursor: 'pointer', textAlign: 'center', transition: 'all .18s' }}>
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
-                      <Icon size={34} color={sel ? '#e8ff47' : '#3a3a3a'} weight={sel ? 'regular' : 'light'} />
+                      <Icon size={34} color={sel ? '#ffb800' : '#3a3a3a'} weight={sel ? 'regular' : 'light'} />
                     </div>
-                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: sel ? '#e8ff47' : '#444' }}>{label}</div>
+                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: sel ? '#ffb800' : '#444' }}>{label}</div>
                   </div>
                 )
               })}
@@ -191,11 +191,11 @@ export default function CreateEvent() {
               {EVENT_TYPES.slice(2, 8).map(({ id, label, Icon }) => {
                 const sel = form.eventType === id
                 return (
-                  <div key={id} onClick={() => set('eventType', id)} style={{ background: sel ? 'rgba(232,255,71,0.07)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 14, padding: '20px 8px 15px', cursor: 'pointer', textAlign: 'center', transition: 'all .18s' }}>
+                  <div key={id} onClick={() => set('eventType', id)} style={{ background: sel ? 'rgba(255,184,0,0.07)' : '#111', border: `1px solid ${sel ? '#ffb800' : '#1e1e1e'}`, borderRadius: 14, padding: '20px 8px 15px', cursor: 'pointer', textAlign: 'center', transition: 'all .18s' }}>
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 11 }}>
-                      <Icon size={28} color={sel ? '#e8ff47' : '#3a3a3a'} weight={sel ? 'regular' : 'light'} />
+                      <Icon size={28} color={sel ? '#ffb800' : '#3a3a3a'} weight={sel ? 'regular' : 'light'} />
                     </div>
-                    <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: sel ? '#e8ff47' : '#444' }}>{label}</div>
+                    <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: sel ? '#ffb800' : '#444' }}>{label}</div>
                   </div>
                 )
               })}
@@ -203,9 +203,9 @@ export default function CreateEvent() {
             {EVENT_TYPES.slice(8).map(({ id, label, Icon }) => {
               const sel = form.eventType === id
               return (
-                <div key={id} onClick={() => set('eventType', id)} style={{ background: sel ? 'rgba(232,255,71,0.07)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 14, padding: '16px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14, transition: 'all .18s' }}>
-                  <Icon size={22} color={sel ? '#e8ff47' : '#3a3a3a'} weight={sel ? 'regular' : 'light'} />
-                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: sel ? '#e8ff47' : '#444' }}>{label}</div>
+                <div key={id} onClick={() => set('eventType', id)} style={{ background: sel ? 'rgba(255,184,0,0.07)' : '#111', border: `1px solid ${sel ? '#ffb800' : '#1e1e1e'}`, borderRadius: 14, padding: '16px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14, transition: 'all .18s' }}>
+                  <Icon size={22} color={sel ? '#ffb800' : '#3a3a3a'} weight={sel ? 'regular' : 'light'} />
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: sel ? '#ffb800' : '#444' }}>{label}</div>
                 </div>
               )
             })}
@@ -227,7 +227,7 @@ export default function CreateEvent() {
             <div style={{ background: '#111', borderRadius: 16, padding: '20px 18px', marginBottom: 20, border: '1px solid #1e1e1e' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 18 }}>
                 <div>
-                  <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 52, fontWeight: 700, color: '#e8ff47', lineHeight: 1 }}>{form.shotLimit}</div>
+                  <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 52, fontWeight: 700, color: '#ffb800', lineHeight: 1 }}>{form.shotLimit}</div>
                   <div style={{ fontSize: 12, color: '#444', marginTop: 5 }}>shots per guest</div>
                 {form.guestCap === '5' && form.shotLimit >= 10 && (
                   <div style={{ fontSize: 10, color: '#2ed573', marginTop: 3 }}>Free plan max</div>
@@ -255,7 +255,7 @@ export default function CreateEvent() {
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: 24 }}>
               {['10', '25', '50', '100', '200', '∞'].map(n => (
-                <div key={n} onClick={() => set('guestCap', n)} style={{ background: form.guestCap === n ? 'rgba(232,255,71,0.08)' : '#111', border: `1px solid ${form.guestCap === n ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 10, padding: '8px 16px', fontSize: 13, fontFamily: 'Space Mono, monospace', color: form.guestCap === n ? '#e8ff47' : '#444', cursor: 'pointer' }}>{n}</div>
+                <div key={n} onClick={() => set('guestCap', n)} style={{ background: form.guestCap === n ? 'rgba(255,184,0,0.08)' : '#111', border: `1px solid ${form.guestCap === n ? '#ffb800' : '#1e1e1e'}`, borderRadius: 10, padding: '8px 16px', fontSize: 13, fontFamily: 'Space Mono, monospace', color: form.guestCap === n ? '#ffb800' : '#444', cursor: 'pointer' }}>{n}</div>
               ))}
             </div>
             <Toggle on={form.allowCaptions} onChange={v => set('allowCaptions', v)} label="Photo Captions" sub="Guests add text — auto-translated for all" />
@@ -271,8 +271,8 @@ export default function CreateEvent() {
                     <div key={p} onClick={() => {
                       const cur = form.scavengerPrompts
                       set('scavengerPrompts', cur.includes(p) ? cur.filter((x: string) => x !== p) : [...cur, p])
-                    }} style={{ background: on ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${on ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 10, padding: '11px 14px', marginBottom: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <div style={{ width: 18, height: 18, borderRadius: '50%', border: `1.5px solid ${on ? '#e8ff47' : '#333'}`, background: on ? '#e8ff47' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    }} style={{ background: on ? 'rgba(255,184,0,0.06)' : '#111', border: `1px solid ${on ? '#ffb800' : '#1e1e1e'}`, borderRadius: 10, padding: '11px 14px', marginBottom: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ width: 18, height: 18, borderRadius: '50%', border: `1.5px solid ${on ? '#ffb800' : '#333'}`, background: on ? '#ffb800' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                         {on && <Check size={10} color="#000" weight="bold" />}
                       </div>
                       <span style={{ fontSize: 13, color: on ? '#ddd' : '#555' }}>{p}</span>
@@ -291,12 +291,12 @@ export default function CreateEvent() {
               {MODE_CONTROLS.map(mc => {
                 const sel = form.modeControl === mc.id
                 return (
-                  <div key={mc.id} onClick={() => { set('modeControl', mc.id); if (mc.id === 'lock') { const first = form.selectedModes[0] || 'kodak'; set('selectedModes', [first]); set('lockedMode', first) } }} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 12, paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
-                    <div style={{ width: 20, height: 20, borderRadius: '50%', border: `1.5px solid ${sel ? '#e8ff47' : '#333'}`, background: sel ? '#e8ff47' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <div key={mc.id} onClick={() => { set('modeControl', mc.id); if (mc.id === 'lock') { const first = form.selectedModes[0] || 'kodak'; set('selectedModes', [first]); set('lockedMode', first) } }} style={{ background: sel ? 'rgba(255,184,0,0.06)' : '#111', border: `1px solid ${sel ? '#ffb800' : '#1e1e1e'}`, borderRadius: 12, paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div style={{ width: 20, height: 20, borderRadius: '50%', border: `1.5px solid ${sel ? '#ffb800' : '#333'}`, background: sel ? '#ffb800' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       {sel && <Check size={10} color="#000" weight="bold" />}
                     </div>
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: sel ? '#e8ff47' : '#ccc' }}>{mc.label}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: sel ? '#ffb800' : '#ccc' }}>{mc.label}</div>
                       <div style={{ fontSize: 12, color: '#444', marginTop: 2 }}>{mc.desc}</div>
                     </div>
                   </div>
@@ -310,8 +310,8 @@ export default function CreateEvent() {
                   {(modes as any[]).map((m: any) => {
                     const sel = form.selectedModes.includes(m.id)
                     return (
-                      <div key={m.id} onClick={() => toggleMode(m.id)} style={{ background: '#0e0e0e', border: `1px solid ${sel ? '#e8ff47' : '#1a1a1a'}`, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', position: 'relative', transition: 'border .15s' }}>
-                        {sel && <div style={{ position: 'absolute', top: 7, right: 7, width: 17, height: 17, background: '#e8ff47', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}><Check size={9} color="#000" weight="bold" /></div>}
+                      <div key={m.id} onClick={() => toggleMode(m.id)} style={{ background: '#0e0e0e', border: `1px solid ${sel ? '#ffb800' : '#1a1a1a'}`, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', position: 'relative', transition: 'border .15s' }}>
+                        {sel && <div style={{ position: 'absolute', top: 7, right: 7, width: 17, height: 17, background: '#ffb800', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}><Check size={9} color="#000" weight="bold" /></div>}
                         {/* CSS gradient preview — no external images, always loads */}
                         <div style={{ height: 90, position: 'relative', overflow: 'hidden' }}>
                           {/* Base gradient */}
@@ -327,10 +327,10 @@ export default function CreateEvent() {
                           {/* Vignette */}
                           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%)', pointerEvents: 'none' }} />
                           {/* Selected border */}
-                          {sel && <div style={{ position: 'absolute', inset: 0, border: '2px solid #e8ff47', borderRadius: 14, pointerEvents: 'none' }} />}
+                          {sel && <div style={{ position: 'absolute', inset: 0, border: '2px solid #ffb800', borderRadius: 14, pointerEvents: 'none' }} />}
                         </div>
                         <div style={{ padding: '7px 6px 9px', textAlign: 'center' }}>
-                          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', color: sel ? '#e8ff47' : '#555' }}>{m.name}</div>
+                          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', color: sel ? '#ffb800' : '#555' }}>{m.name}</div>
                         </div>
                       </div>
                     )
@@ -348,12 +348,12 @@ export default function CreateEvent() {
                 const sel = form.revealMode === r.id
                 const Icon = REVEAL_ICONS[r.id]
                 return (
-                  <div key={r.id} onClick={() => set('revealMode', r.id)} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 14, padding: '16px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 14 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, background: sel ? 'rgba(232,255,71,0.12)' : '#161616', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {Icon && <Icon size={18} color={sel ? '#e8ff47' : '#555'} />}
+                  <div key={r.id} onClick={() => set('revealMode', r.id)} style={{ background: sel ? 'rgba(255,184,0,0.06)' : '#111', border: `1px solid ${sel ? '#ffb800' : '#1e1e1e'}`, borderRadius: 14, padding: '16px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+                    <div style={{ width: 36, height: 36, borderRadius: 10, background: sel ? 'rgba(255,184,0,0.12)' : '#161616', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {Icon && <Icon size={18} color={sel ? '#ffb800' : '#555'} />}
                     </div>
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: sel ? '#e8ff47' : '#ccc', marginBottom: 4 }}>{r.name}</div>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: sel ? '#ffb800' : '#ccc', marginBottom: 4 }}>{r.name}</div>
                       <div style={{ fontSize: 12, color: '#444', lineHeight: 1.5 }}>{r.desc}</div>
                     </div>
                   </div>
@@ -427,7 +427,7 @@ export default function CreateEvent() {
                     { v: 'rgba(160,120,0,0.5)',     bg: '#a07800' },
                   ].map(ov => (
                     <div key={ov.v} onClick={() => set('coverOverlay', ov.v)}
-                      style={{ width: 30, height: 30, borderRadius: 9, background: ov.bg || 'transparent', border: form.coverOverlay === ov.v ? '2.5px solid #e8ff47' : (ov.border || '2px solid transparent'), cursor: 'pointer', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.5)', transition: 'border .15s' }} />
+                      style={{ width: 30, height: 30, borderRadius: 9, background: ov.bg || 'transparent', border: form.coverOverlay === ov.v ? '2.5px solid #ffb800' : (ov.border || '2px solid transparent'), cursor: 'pointer', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.5)', transition: 'border .15s' }} />
                   ))}
                 </div>
                 {/* Emoji icons */}
@@ -435,7 +435,7 @@ export default function CreateEvent() {
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                   {['⚡','💍','🎂','🎉','✈️','🏆','🎵','📷','🌅','🎬','🌿','🔥','🎊','🥂','🎈','❤️'].map(em => (
                     <div key={em} onClick={() => set('coverEmoji', em)}
-                      style={{ width: 34, height: 34, borderRadius: 9, background: form.coverEmoji === em ? 'rgba(232,255,71,0.25)' : 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', border: `1.5px solid ${form.coverEmoji === em ? '#e8ff47' : 'rgba(255,255,255,0.15)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, cursor: 'pointer', transition: 'all .15s' }}>
+                      style={{ width: 34, height: 34, borderRadius: 9, background: form.coverEmoji === em ? 'rgba(255,184,0,0.25)' : 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', border: `1.5px solid ${form.coverEmoji === em ? '#ffb800' : 'rgba(255,255,255,0.15)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, cursor: 'pointer', transition: 'all .15s' }}>
                       {em}
                     </div>
                   ))}
@@ -468,7 +468,7 @@ export default function CreateEvent() {
         <button
           onClick={step < TOTAL ? () => { if (canContinue()) setStep(s => s + 1) } : handleCreate}
           disabled={saving || !canContinue()}
-          style={{ width: '100%', background: saving || !canContinue() ? '#161616' : '#e8ff47', color: saving || !canContinue() ? '#333' : '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: saving || !canContinue() ? 'not-allowed' : 'pointer', fontFamily: 'inherit', letterSpacing: -0.3, transition: 'all .2s' }}>
+          style={{ width: '100%', background: saving || !canContinue() ? '#161616' : '#ffb800', color: saving || !canContinue() ? '#333' : '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: saving || !canContinue() ? 'not-allowed' : 'pointer', fontFamily: 'inherit', letterSpacing: -0.3, transition: 'all .2s' }}>
           {saving ? 'Creating...' : step < TOTAL ? 'Continue →' : 'Continue to Payment →'}
         </button>
         {step === 2 && (!form.eventName.trim() || !form.date) && (

@@ -17,7 +17,7 @@ export default function TermsOfService() {
           <IconBack size={18} />
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 28, height: 28, background: '#e8ff47', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 28, height: 28, background: '#ffb800', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <IconFlash size={15} color="#0a0a0a" />
           </div>
           <span style={{ fontSize: 15, fontWeight: 600 }}>Terms of Service</span>
@@ -63,10 +63,10 @@ export default function TermsOfService() {
             <Li>Technical failure that prevents event creation or camera access — full refund</Li>
             <Li>Duplicate accidental purchase within 24 hours — full refund</Li>
             <Li>Event cancelled before any guests join — full refund within 7 days</Li>
-            <P style={{ marginTop: 8 }}>No refunds are issued for events where guests have already joined and taken photos. To request a refund, contact <a href={`mailto:${EMAIL}`} style={{ color: '#e8ff47' }}>{EMAIL}</a> within 30 days of purchase.</P>
+            <P style={{ marginTop: 8 }}>No refunds are issued for events where guests have already joined and taken photos. To request a refund, contact <a href={`mailto:${EMAIL}`} style={{ color: '#ffb800' }}>{EMAIL}</a> within 30 days of purchase.</P>
           </SubSection>
           <SubSection title="Payment Processing">
-            <P>All payments are processed by Stripe. We do not store credit card information. By making a payment, you agree to <a href="https://stripe.com/legal" target="_blank" rel="noopener" style={{ color: '#e8ff47' }}>Stripe's Terms of Service</a>.</P>
+            <P>All payments are processed by Stripe. We do not store credit card information. By making a payment, you agree to <a href="https://stripe.com/legal" target="_blank" rel="noopener" style={{ color: '#ffb800' }}>Stripe's Terms of Service</a>.</P>
           </SubSection>
         </Section>
 
@@ -152,14 +152,14 @@ export default function TermsOfService() {
 
         <Section title="14. Contact">
           <P>For legal questions or concerns:</P>
-          <Li>Email: <a href={`mailto:${EMAIL}`} style={{ color: '#e8ff47' }}>{EMAIL}</a></Li>
-          <Li>Website: <a href={APP_URL} style={{ color: '#e8ff47' }}>{APP_URL}</a></Li>
+          <Li>Email: <a href={`mailto:${EMAIL}`} style={{ color: '#ffb800' }}>{EMAIL}</a></Li>
+          <Li>Website: <a href={APP_URL} style={{ color: '#ffb800' }}>{APP_URL}</a></Li>
         </Section>
 
         <div style={{ marginTop: 40, padding: '20px', background: '#111', borderRadius: 14, border: '1px solid #1e1e1e', textAlign: 'center' }}>
           <div style={{ fontSize: 13, color: '#555', lineHeight: 1.7 }}>
             By using Flash, you agree to these Terms of Service.<br />
-            <a href="/legal/privacy" style={{ color: '#e8ff47', textDecoration: 'none' }}>View Privacy Policy →</a>
+            <a href="/legal/privacy" style={{ color: '#ffb800', textDecoration: 'none' }}>View Privacy Policy →</a>
           </div>
         </div>
       </div>

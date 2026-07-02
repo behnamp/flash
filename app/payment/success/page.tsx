@@ -40,7 +40,7 @@ function PaymentSuccessInner() {
   return (
     <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>
       <div style={{ marginBottom: 32 }}>
-        <div style={{ width: 64, height: 64, background: '#e8ff47', borderRadius: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+        <div style={{ width: 64, height: 64, background: '#ffb800', borderRadius: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
           <IconFlash size={32} color="#0a0a0a" />
         </div>
         <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 18, fontWeight: 700 }}>Flash</div>
@@ -48,7 +48,7 @@ function PaymentSuccessInner() {
 
       {status === 'verifying' && (
         <div>
-          <div style={{ width: 56, height: 56, border: '3px solid #1e1e1e', borderTop: '3px solid #e8ff47', borderRadius: '50%', margin: '0 auto 20px', animation: 'spin 0.8s linear infinite' }} />
+          <div style={{ width: 56, height: 56, border: '3px solid #1e1e1e', borderTop: '3px solid #ffb800', borderRadius: '50%', margin: '0 auto 20px', animation: 'spin 0.8s linear infinite' }} />
           <div style={{ fontSize: 16, fontWeight: 600, color: '#e0e0e0', marginBottom: 6 }}>Confirming payment...</div>
           <div style={{ fontSize: 13, color: '#555' }}>Activating your event</div>
         </div>
@@ -72,7 +72,7 @@ function PaymentSuccessInner() {
           </div>
           <div style={{ fontSize: 18, fontWeight: 700, color: '#f0f0f0', marginBottom: 8 }}>Something went wrong</div>
           <div style={{ fontSize: 13, color: '#555', marginBottom: 24 }}>{error}</div>
-          <button onClick={() => router.push('/host')} style={{ background: '#e8ff47', color: '#0a0a0a', border: 'none', borderRadius: 12, padding: '12px 24px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+          <button onClick={() => router.push('/host')} style={{ background: '#ffb800', color: '#0a0a0a', border: 'none', borderRadius: 12, padding: '12px 24px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
             Go to Dashboard
           </button>
         </div>

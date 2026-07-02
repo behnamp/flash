@@ -69,7 +69,7 @@ export default function InstallPrompt() {
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 44, height: 44, background: '#e8ff47', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ width: 44, height: 44, background: '#ffb800', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
           </div>
           <div>
@@ -112,7 +112,7 @@ export default function InstallPrompt() {
       boxShadow: '0 8px 40px rgba(0,0,0,0.6)',
       animation: 'slideUp .3s ease',
     }}>
-      <div style={{ width: 44, height: 44, background: '#e8ff47', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <div style={{ width: 44, height: 44, background: '#ffb800', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
       </div>
       <div style={{ flex: 1 }}>
@@ -123,7 +123,7 @@ export default function InstallPrompt() {
         <button onClick={dismiss} style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 10, padding: '8px 14px', color: '#555', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
           Not now
         </button>
-        <button onClick={install} style={{ background: '#e8ff47', border: 'none', borderRadius: 10, padding: '8px 16px', color: '#0a0a0a', fontSize: 12, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button onClick={install} style={{ background: '#ffb800', border: 'none', borderRadius: 10, padding: '8px 16px', color: '#0a0a0a', fontSize: 12, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
           Install
         </button>
       </div>

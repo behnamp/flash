@@ -109,7 +109,7 @@ export default function RevealPage() {
   }
 
   if (stage === 'loading') {
-    return <Shell><div style={{ width: 2, height: 36, background: '#e8ff47', animation: 'flashBlink 1s ease-in-out infinite' }} /><GlobalCSS /></Shell>
+    return <Shell><div style={{ width: 2, height: 36, background: '#ffb800', animation: 'flashBlink 1s ease-in-out infinite' }} /><GlobalCSS /></Shell>
   }
 
   return (
@@ -175,12 +175,12 @@ export default function RevealPage() {
       {stage === 'finale' && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 'max(48px, calc(env(safe-area-inset-bottom) + 40px))', background: 'linear-gradient(to bottom, transparent 40%, rgba(10,10,10,0.5) 70%, rgba(10,10,10,0.96))', animation: 'revealFadeIn 1s ease both' }}>
           <div style={{ textAlign: 'center', padding: '0 28px', animation: 'revealRise .8s cubic-bezier(.2,.7,.2,1) .2s both' }}>
-            <div style={{ fontSize: 11, letterSpacing: 4, textTransform: 'uppercase', color: '#e8ff47', fontFamily: 'Space Mono, monospace', marginBottom: 12 }}>
+            <div style={{ fontSize: 11, letterSpacing: 4, textTransform: 'uppercase', color: '#ffb800', fontFamily: 'Space Mono, monospace', marginBottom: 12 }}>
               {shots.length > 0 ? `${shots.length} ${shots.length === 1 ? 'moment' : 'moments'}, revealed` : 'The reveal'}
             </div>
             <div style={{ fontSize: 26, fontWeight: 800, color: '#fff', letterSpacing: -0.5, marginBottom: 4, lineHeight: 1.2 }}>{event?.name?.trim() || 'Your event'}</div>
             <button onClick={goGallery}
-              style={{ marginTop: 22, background: '#e8ff47', color: '#0a0a0a', border: 'none', borderRadius: 16, padding: '17px 40px', fontSize: 16, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: '0 8px 32px rgba(232,255,71,0.25)' }}>
+              style={{ marginTop: 22, background: '#ffb800', color: '#0a0a0a', border: 'none', borderRadius: 16, padding: '17px 40px', fontSize: 16, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: '0 8px 32px rgba(255,184,0,0.25)' }}>
               Open the gallery
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </button>
@@ -215,14 +215,14 @@ function Shell({ children, red }: { children: React.ReactNode; red?: boolean }) 
 
 function Bolt({ size = 48, glow }: { size?: number; glow?: boolean }) {
   return (
-    <div style={{ width: size, height: size, background: '#e8ff47', borderRadius: size * 0.28, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: glow ? '0 0 50px rgba(232,255,71,0.45)' : 'none', animation: glow ? 'boltPulse 2s ease-in-out infinite' : 'none' }}>
+    <div style={{ width: size, height: size, background: '#ffb800', borderRadius: size * 0.28, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: glow ? '0 0 50px rgba(255,184,0,0.45)' : 'none', animation: glow ? 'boltPulse 2s ease-in-out infinite' : 'none' }}>
       <svg width={size * 0.5} height={size * 0.5} viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
     </div>
   )
 }
 
 function Dot({ delay }: { delay: number }) {
-  return <div style={{ width: 7, height: 7, borderRadius: 4, background: '#e8ff47', animation: `dotPulse 1.2s ease-in-out ${delay}s infinite` }} />
+  return <div style={{ width: 7, height: 7, borderRadius: 4, background: '#ffb800', animation: `dotPulse 1.2s ease-in-out ${delay}s infinite` }} />
 }
 
 function Grain({ intense }: { intense?: boolean }) {

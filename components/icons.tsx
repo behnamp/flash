@@ -106,7 +106,7 @@ export {
 // ── Custom icons not in Phosphor ──────────────────────────────────────────────
 
 // Flash brand bolt
-export const IconFlash = ({ size = 24, color = '#e8ff47', style }: { size?: number; color?: string; style?: React.CSSProperties }) => (
+export const IconFlash = ({ size = 24, color = '#ffb800', style }: { size?: number; color?: string; style?: React.CSSProperties }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={style}>
     <path d="M13 2L4 13.5H11L9 22L20 9.5H13V2Z" fill={color} />
   </svg>
