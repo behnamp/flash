@@ -30,7 +30,7 @@ const config: CapacitorConfig = {
       androidScaleType: 'CENTER_CROP',
       showSpinner: false,
       iosSpinnerStyle: 'small',
-      spinnerColor: '#e8ff47',
+      spinnerColor: '#ffb800',
     },
     StatusBar: {
       style: 'dark',

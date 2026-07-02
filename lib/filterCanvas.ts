@@ -176,7 +176,7 @@ export async function applyFilterToCanvas(
     const bs = logoSize
 
     // Yellow circle background
-    ctx.fillStyle = '#e8ff47'
+    ctx.fillStyle = '#ffb800'
     ctx.beginPath()
     ctx.roundRect(bx, by, bs, bs, bs * 0.22)
     ctx.fill()

@@ -27,7 +27,7 @@ function ResetPasswordInner() {
 
   return (
     <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 22px' }}>
-      <div style={{ width: 40, height: 40, background: '#e8ff47', borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 44 }}>
+      <div style={{ width: 40, height: 40, background: '#ffb800', borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 44 }}>
         <IconFlash size={20} color="#0a0a0a" />
       </div>
 
@@ -49,7 +49,7 @@ function ResetPasswordInner() {
             </div>
             {error && <div style={{ color: '#ff4757', fontSize: 13, marginTop: 14, background: 'rgba(255,71,87,0.08)', borderRadius: 8, padding: '10px 14px' }}>{error}</div>}
             <button onClick={handleReset} disabled={loading || !password || !confirm}
-              style={{ width: '100%', marginTop: 20, background: password && confirm && !loading ? '#e8ff47' : '#161616', color: password && confirm && !loading ? '#0a0a0a' : '#333', border: 'none', borderRadius: 13, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+              style={{ width: '100%', marginTop: 20, background: password && confirm && !loading ? '#ffb800' : '#161616', color: password && confirm && !loading ? '#0a0a0a' : '#333', border: 'none', borderRadius: 13, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
               {loading ? '...' : 'Update Password'}
             </button>
           </>

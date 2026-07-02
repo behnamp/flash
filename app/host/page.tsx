@@ -21,7 +21,7 @@ const EVENT_TYPE_ICONS: Record<string, any> = {
 const STATUS = (ev: any) => {
   if (ev.revealed) return { label: 'Revealed', color: '#2ed573', dot: '#2ed573' }
   if (!ev.is_active) return { label: 'Ended', color: '#444', dot: '#333' }
-  return { label: 'Live', color: '#e8ff47', dot: '#e8ff47' }
+  return { label: 'Live', color: '#ffb800', dot: '#ffb800' }
 }
 
 function HostDashboardInner() {
@@ -156,11 +156,11 @@ function HostDashboardInner() {
     <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', paddingTop: 'max(14px, env(safe-area-inset-top))', background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', position: 'sticky', top: 0, zIndex: 20 }}>
-        <div style={{ width: 36, height: 36, background: '#e8ff47', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 36, height: 36, background: '#ffb800', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconFlash size={20} color="#0a0a0a" />
         </div>
         <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 16, fontWeight: 700, flex: 1, letterSpacing: -0.5 }}>Flash</span>
-        <button onClick={() => router.push('/scan')} style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 10, color: '#e8ff47', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
+        <button onClick={() => router.push('/scan')} style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 10, color: '#ffb800', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 4 }}>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
             <rect x="3" y="14" width="7" height="7" rx="1"/>
@@ -199,7 +199,7 @@ function HostDashboardInner() {
 
         {/* Create button */}
         <Link href="/create" style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
-          <div style={{ background: '#e8ff47', borderRadius: 16, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ background: '#ffb800', borderRadius: 16, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
             <div style={{ width: 42, height: 42, background: 'rgba(0,0,0,0.12)', borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <IconPlus size={22} color="#0a0a0a" weight="bold" />
             </div>
@@ -214,7 +214,7 @@ function HostDashboardInner() {
         {liveEvents.length > 0 && (
           <div style={{ marginBottom: 28 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e8ff47' }} className="pulse" />
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ffb800' }} className="pulse" />
               <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: '#555' }}>Live Now</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -270,12 +270,12 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
         {/* Main row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px' }}>
           {/* Cover thumbnail */}
-          <div style={{ width: 52, height: 52, borderRadius: 12, overflow: 'hidden', flexShrink: 0, cursor: 'pointer', position: 'relative', background: ev.cover_color || '#161616', border: `1px solid ${ev.is_active && !ev.revealed ? 'rgba(232,255,71,0.2)' : '#1e1e1e'}` }} onClick={() => router.push(`/host/${ev.id}`)}>
+          <div style={{ width: 52, height: 52, borderRadius: 12, overflow: 'hidden', flexShrink: 0, cursor: 'pointer', position: 'relative', background: ev.cover_color || '#161616', border: `1px solid ${ev.is_active && !ev.revealed ? 'rgba(255,184,0,0.2)' : '#1e1e1e'}` }} onClick={() => router.push(`/host/${ev.id}`)}>
             {ev.cover_image_url
               ? <img src={ev.cover_image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : (
                 <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1a1a1a, #222)' }}>
-                  <Icon size={22} color={ev.is_active && !ev.revealed ? '#e8ff47' : '#333'} />
+                  <Icon size={22} color={ev.is_active && !ev.revealed ? '#ffb800' : '#333'} />
                 </div>
               )
             }
@@ -353,7 +353,7 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
           <MenuItem icon={<IconDuplicate size={15} color="#666" />} label="Duplicate" onClick={() => onDuplicate(ev)} />
           {ev.is_active && !ev.revealed && <>
             <div style={{ height: 1, background: '#222', margin: '6px 0' }} />
-            <MenuItem icon={<IconReveal size={15} color="#e8ff47" />} label="Reveal Gallery" onClick={() => onReveal(ev.id)} accent="#e8ff47" />
+            <MenuItem icon={<IconReveal size={15} color="#ffb800" />} label="Reveal Gallery" onClick={() => onReveal(ev.id)} accent="#ffb800" />
             <MenuItem icon={<IconStop size={15} color="#666" />} label="End Event" onClick={() => onEnd(ev.id)} />
           </>}
           <div style={{ height: 1, background: '#222', margin: '6px 0' }} />

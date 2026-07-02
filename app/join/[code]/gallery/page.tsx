@@ -80,7 +80,7 @@ export default function GuestGalleryPage() {
 
   if (loading) return (
     <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: 2, height: 32, background: '#e8ff47', animation: 'blink 1s ease-in-out infinite' }} />
+      <div style={{ width: 2, height: 32, background: '#ffb800', animation: 'blink 1s ease-in-out infinite' }} />
       <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}`}</style>
     </main>
   )
@@ -127,7 +127,7 @@ export default function GuestGalleryPage() {
                     </div>
                   )}
                   {isMe && !isDev && (
-                    <div style={{ position: 'absolute', top: 4, right: 4, width: 18, height: 18, borderRadius: 5, background: '#e8ff47', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ position: 'absolute', top: 4, right: 4, width: 18, height: 18, borderRadius: 5, background: '#ffb800', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <svg width="9" height="9" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </div>
                   )}
@@ -141,7 +141,7 @@ export default function GuestGalleryPage() {
       {/* BACK TO CAMERA BUTTON */}
       <div style={{ padding: '12px 16px', paddingBottom: 'max(12px, env(safe-area-inset-bottom))', background: '#0a0a0a', borderTop: '1px solid #111', flexShrink: 0 }}>
         <button onClick={() => router.push(`/join/${code}/camera`)}
-          style={{ width: '100%', background: '#e8ff47', color: '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+          style={{ width: '100%', background: '#ffb800', color: '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.2" strokeLinecap="round">
             <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="#0a0a0a" stroke="none"/>
           </svg>

@@ -73,7 +73,7 @@ function LoginPageInner() {
   return (
     <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', padding: '20px 22px', paddingTop: 'max(60px, env(safe-area-inset-top))', paddingBottom: 'max(40px, env(safe-area-inset-bottom))', overflowY: 'auto' }}>
       <Link href="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0, marginBottom: 32, textDecoration: 'none' }}>
-        <div style={{ width: 72, height: 72, background: '#e8ff47', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
+        <div style={{ width: 72, height: 72, background: '#ffb800', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
           <IconFlash size={36} color="#0a0a0a" />
         </div>
         <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 26, fontWeight: 700, color: '#f0f0f0', marginBottom: 6 }}>Flash</span>
@@ -81,7 +81,7 @@ function LoginPageInner() {
       </Link>
 
       {/* Join as guest — scan QR */}
-      <Link href="/scan" style={{ width: '100%', maxWidth: 320, background: '#e8ff47', borderRadius: 14, padding: '15px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, textDecoration: 'none', marginBottom: 20 }}>
+      <Link href="/scan" style={{ width: '100%', maxWidth: 320, background: '#ffb800', borderRadius: 14, padding: '15px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, textDecoration: 'none', marginBottom: 20 }}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.2" strokeLinecap="round">
           <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
           <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3" rx="0.5" fill="#0a0a0a" stroke="none"/>
@@ -154,7 +154,7 @@ function LoginPageInner() {
         {success && <div style={{ color: '#2ed573', fontSize: 13, marginTop: 14, textAlign: 'center', background: 'rgba(46,213,115,0.08)', borderRadius: 8, padding: '10px 14px' }}>{success}</div>}
 
         <button onClick={handleSubmit} disabled={loading || !canSubmit}
-          style={{ width: '100%', marginTop: 20, background: canSubmit && !loading ? '#e8ff47' : '#161616', color: canSubmit && !loading ? '#0a0a0a' : '#333', border: 'none', borderRadius: 13, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: canSubmit && !loading ? 'pointer' : 'not-allowed', transition: 'all .15s', fontFamily: 'inherit' }}>
+          style={{ width: '100%', marginTop: 20, background: canSubmit && !loading ? '#ffb800' : '#161616', color: canSubmit && !loading ? '#0a0a0a' : '#333', border: 'none', borderRadius: 13, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: canSubmit && !loading ? 'pointer' : 'not-allowed', transition: 'all .15s', fontFamily: 'inherit' }}>
           {loading ? '...' : mode === 'login' ? 'Log In' : mode === 'signup' ? 'Create Account' : 'Send Reset Link'}
         </button>
 
@@ -162,14 +162,14 @@ function LoginPageInner() {
         <div style={{ textAlign: 'center', marginTop: 20 }}>
           {mode === 'forgot' ? (
             <button onClick={() => { setMode('login'); setError(''); setSuccess('') }}
-              style={{ background: 'none', border: 'none', color: '#e8ff47', cursor: 'pointer', fontWeight: 600, fontSize: 13, fontFamily: 'inherit' }}>
+              style={{ background: 'none', border: 'none', color: '#ffb800', cursor: 'pointer', fontWeight: 600, fontSize: 13, fontFamily: 'inherit' }}>
               ← Back to log in
             </button>
           ) : (
             <p style={{ fontSize: 13, color: '#444' }}>
               {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
               <button onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); setSuccess('') }}
-                style={{ background: 'none', border: 'none', color: '#e8ff47', cursor: 'pointer', fontWeight: 600, fontSize: 13, fontFamily: 'inherit' }}>
+                style={{ background: 'none', border: 'none', color: '#ffb800', cursor: 'pointer', fontWeight: 600, fontSize: 13, fontFamily: 'inherit' }}>
                 {mode === 'login' ? 'Sign up' : 'Log in'}
               </button>
             </p>

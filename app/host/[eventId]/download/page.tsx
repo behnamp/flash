@@ -116,11 +116,11 @@ function DownloadPageInner() {
     : daysLeft === null ? '#2ed573'
     : daysLeft <= 2 ? '#ff4757'
     : daysLeft <= 5 ? '#ffa502'
-    : '#e8ff47'
+    : '#ffb800'
 
   if (loading) return (
     <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <IconFlash size={36} color="#e8ff47" />
+      <IconFlash size={36} color="#ffb800" />
     </main>
   )
 
@@ -135,7 +135,7 @@ function DownloadPageInner() {
           <div style={{ fontSize: 14, fontWeight: 700 }}>{event?.name}</div>
           <div style={{ fontSize: 10, color: '#444', textTransform: 'uppercase', letterSpacing: 1 }}>Download & Share</div>
         </div>
-        <div style={{ width: 28, height: 28, background: '#e8ff47', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 28, height: 28, background: '#ffb800', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconFlash size={14} color="#0a0a0a" />
         </div>
       </div>
@@ -161,7 +161,7 @@ function DownloadPageInner() {
             </div>
           </div>
         ) : daysLeft !== null && daysLeft > 0 ? (
-          <div style={{ background: `rgba(${daysLeft <= 2 ? '255,71,87' : daysLeft <= 5 ? '255,165,2' : '232,255,71'},0.06)`, border: `1px solid ${urgencyColor}33`, borderRadius: 14, padding: '16px 18px', marginBottom: 18 }}>
+          <div style={{ background: `rgba(${daysLeft <= 2 ? '255,71,87' : daysLeft <= 5 ? '255,165,2' : '255,184,0'},0.06)`, border: `1px solid ${urgencyColor}33`, borderRadius: 14, padding: '16px 18px', marginBottom: 18 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: urgencyColor, marginBottom: 4 }}>
               {daysLeft === 1 ? 'Last day to download!' : `${daysLeft} days until photos are deleted`}
             </div>
@@ -169,12 +169,12 @@ function DownloadPageInner() {
               Photos delete permanently on {new Date(event.photos_expire_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </div>
             {/* Keep Forever CTA */}
-            <button onClick={handleKeepForever} disabled={keepLoading} style={{ width: '100%', background: '#1a1a1a', border: '1px solid #e8ff47', borderRadius: 10, padding: '12px 16px', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <button onClick={handleKeepForever} disabled={keepLoading} style={{ width: '100%', background: '#1a1a1a', border: '1px solid #ffb800', borderRadius: 10, padding: '12px 16px', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#e8ff47' }}>Keep Forever — $4.99 CAD</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#ffb800' }}>Keep Forever — $4.99 CAD</div>
                 <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>Never expire · Unlimited downloads</div>
               </div>
-              <div style={{ fontSize: 12, color: '#e8ff47', fontWeight: 700 }}>{keepLoading ? '...' : '→'}</div>
+              <div style={{ fontSize: 12, color: '#ffb800', fontWeight: 700 }}>{keepLoading ? '...' : '→'}</div>
             </button>
           </div>
         ) : daysLeft !== null && daysLeft <= 0 ? (
@@ -203,13 +203,13 @@ function DownloadPageInner() {
         {/* Download button */}
         {photos.length > 0 && (daysLeft === null || daysLeft > 0 || event?.keep_forever) && (
           <>
-            <button onClick={downloadAll} disabled={downloading} style={{ width: '100%', background: downloading ? '#161616' : '#e8ff47', color: downloading ? '#333' : '#0a0a0a', border: 'none', borderRadius: 13, padding: '15px 20px', fontSize: 15, fontWeight: 700, cursor: downloading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 10, transition: 'all .15s' }}>
+            <button onClick={downloadAll} disabled={downloading} style={{ width: '100%', background: downloading ? '#161616' : '#ffb800', color: downloading ? '#333' : '#0a0a0a', border: 'none', borderRadius: 13, padding: '15px 20px', fontSize: 15, fontWeight: 700, cursor: downloading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 10, transition: 'all .15s' }}>
               <IconSave size={18} color={downloading ? '#333' : '#0a0a0a'} weight="bold" />
               {downloading ? `Downloading ${downloaded} / ${photos.length}...` : `Download All ${photos.length} Photos`}
             </button>
             {downloading && (
               <div style={{ background: '#161616', borderRadius: 8, height: 5, marginBottom: 14, overflow: 'hidden' }}>
-                <div style={{ height: '100%', background: '#e8ff47', width: `${(downloaded / photos.length) * 100}%`, transition: 'width .3s', borderRadius: 8 }} />
+                <div style={{ height: '100%', background: '#ffb800', width: `${(downloaded / photos.length) * 100}%`, transition: 'width .3s', borderRadius: 8 }} />
               </div>
             )}
             {!downloading && downloaded > 0 && (
@@ -229,7 +229,7 @@ function DownloadPageInner() {
           <div style={{ background: '#0e0e0e', border: '1px solid #1a1a1a', borderRadius: 10, padding: '11px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, cursor: 'pointer' }}
             onClick={() => { navigator.clipboard?.writeText(shareUrl); showToast('Gallery link copied!') }}>
             <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 10, color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{shareUrl}</span>
-            <IconCopy size={14} color="#e8ff47" style={{ flexShrink: 0, marginLeft: 8 }} />
+            <IconCopy size={14} color="#ffb800" style={{ flexShrink: 0, marginLeft: 8 }} />
           </div>
 
           {/* Social share buttons */}

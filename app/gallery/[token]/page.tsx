@@ -35,7 +35,7 @@ export default function PublicGalleryPage() {
 
   if (loading) return (
     <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <IconFlash size={36} color="#e8ff47" />
+      <IconFlash size={36} color="#ffb800" />
     </main>
   )
 
@@ -52,7 +52,7 @@ export default function PublicGalleryPage() {
     <main style={{ minHeight: '100dvh', background: '#0a0a0a' }}>
       {/* Header */}
       <div style={{ paddingTop: 'max(20px, env(safe-area-inset-top))', paddingBottom: 16, paddingLeft: 18, paddingRight: 18, borderBottom: '1px solid #161616', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{ width: 30, height: 30, background: '#e8ff47', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 30, height: 30, background: '#ffb800', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconFlash size={16} color="#0a0a0a" />
         </div>
         <div>

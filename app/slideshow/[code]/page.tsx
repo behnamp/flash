@@ -70,7 +70,7 @@ export default function SlideshowPage() {
 
   if (loading) return (
     <div style={{ height: '100dvh', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: 2, height: 40, background: '#e8ff47', animation: 'blink 1s infinite' }} />
+      <div style={{ width: 2, height: 40, background: '#ffb800', animation: 'blink 1s infinite' }} />
       <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}`}</style>
     </div>
   )
@@ -132,7 +132,7 @@ export default function SlideshowPage() {
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 'max(28px, calc(env(safe-area-inset-top) + 16px))', paddingBottom: 28, paddingLeft: 40, paddingRight: 76 }}>
         {/* Flash logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 36, height: 36, background: '#e8ff47', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 36, height: 36, background: '#ffb800', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
           </div>
           <span style={{ fontSize: 16, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>Flash</span>
@@ -147,7 +147,7 @@ export default function SlideshowPage() {
         {/* Join code */}
         <div style={{ textAlign: 'right' }}>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginBottom: 4, letterSpacing: 1, textTransform: 'uppercase' }}>Join at flashcam.app</div>
-          <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 20, fontWeight: 700, color: '#e8ff47', letterSpacing: 4 }}>{code}</div>
+          <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 20, fontWeight: 700, color: '#ffb800', letterSpacing: 4 }}>{code}</div>
         </div>
       </div>
 
@@ -170,7 +170,7 @@ export default function SlideshowPage() {
           <div style={{ display: 'flex', gap: 6 }}>
             {Array.from({ length: Math.min(total, 12) }).map((_, i) => (
               <div key={i} onClick={() => setCurrent(i)}
-                style={{ width: i === current % 12 ? 20 : 6, height: 6, borderRadius: 3, background: i === current % 12 ? '#e8ff47' : 'rgba(255,255,255,0.2)', transition: 'all .3s', cursor: 'pointer' }} />
+                style={{ width: i === current % 12 ? 20 : 6, height: 6, borderRadius: 3, background: i === current % 12 ? '#ffb800' : 'rgba(255,255,255,0.2)', transition: 'all .3s', cursor: 'pointer' }} />
             ))}
           </div>
           <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>
@@ -181,7 +181,7 @@ export default function SlideshowPage() {
 
       {/* NEW PHOTO FLASH */}
       {newPhoto && (
-        <div style={{ position: 'absolute', top: 'max(20px, calc(env(safe-area-inset-top) + 8px))', left: '50%', transform: 'translateX(-50%)', background: 'rgba(232,255,71,0.95)', borderRadius: 100, padding: '8px 20px', display: 'flex', alignItems: 'center', gap: 8, animation: 'slideDown .3s ease' }}>
+        <div style={{ position: 'absolute', top: 'max(20px, calc(env(safe-area-inset-top) + 8px))', left: '50%', transform: 'translateX(-50%)', background: 'rgba(255,184,0,0.95)', borderRadius: 100, padding: '8px 20px', display: 'flex', alignItems: 'center', gap: 8, animation: 'slideDown .3s ease' }}>
           <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#0a0a0a', animation: 'pulse 1s infinite' }} />
           <span style={{ fontSize: 13, fontWeight: 700, color: '#0a0a0a' }}>New photo!</span>
         </div>
@@ -190,7 +190,7 @@ export default function SlideshowPage() {
       {/* Progress bar */}
       {total > 1 && (
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 3, background: 'rgba(255,255,255,0.08)' }}>
-          <div style={{ height: '100%', background: '#e8ff47', animation: 'progress 4s linear infinite', transformOrigin: 'left' }} />
+          <div style={{ height: '100%', background: '#ffb800', animation: 'progress 4s linear infinite', transformOrigin: 'left' }} />
         </div>
       )}
 

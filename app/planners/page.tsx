@@ -82,7 +82,7 @@ const DEFAULT_PLANS = [
 const WHO = [
   {
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e8ff47" strokeWidth="1.4" strokeLinecap="round">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffb800" strokeWidth="1.4" strokeLinecap="round">
         <circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/>
         <path d="M8 6.8A5 5 0 0 1 17 10h1a2 2 0 0 1 0 4h-1a5 5 0 0 1-5 4.9"/>
       </svg>
@@ -92,7 +92,7 @@ const WHO = [
   },
   {
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e8ff47" strokeWidth="1.4" strokeLinecap="round">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffb800" strokeWidth="1.4" strokeLinecap="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
         <polyline points="9 22 9 12 15 12 15 22"/>
       </svg>
@@ -102,7 +102,7 @@ const WHO = [
   },
   {
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e8ff47" strokeWidth="1.4" strokeLinecap="round">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffb800" strokeWidth="1.4" strokeLinecap="round">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
       </svg>
     ),
@@ -243,7 +243,7 @@ export default function PlannersPage() {
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', height: 60, gap: 16 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginRight: 'auto' }}>
-            <div style={{ width: 28, height: 28, background: '#e8ff47', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <div style={{ width: 28, height: 28, background: '#ffb800', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
             </div>
             <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 14, fontWeight: 700, color: '#f0f0f0', letterSpacing: -0.5 }}>Flash</span>
@@ -255,7 +255,7 @@ export default function PlannersPage() {
             Dashboard
           </Link>
           <Link href="#plans"
-            style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 9, padding: '8px 18px', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
+            style={{ background: '#ffb800', color: '#0a0a0a', borderRadius: 9, padding: '8px 18px', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
             Get started
           </Link>
         </div>
@@ -263,12 +263,12 @@ export default function PlannersPage() {
 
       {/* ── HERO ── */}
       <section style={{ padding: '100px 24px 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%,-50%)', width: 800, height: 500, background: 'radial-gradient(ellipse, rgba(232,255,71,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%,-50%)', width: 800, height: 500, background: 'radial-gradient(ellipse, rgba(255,184,0,0.06) 0%, transparent 65%)', pointerEvents: 'none' }} />
 
         <motion.div variants={f} initial="hidden" animate="visible"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(232,255,71,0.08)', border: '1px solid rgba(232,255,71,0.2)', borderRadius: 20, padding: '6px 14px', marginBottom: 32 }}>
-          <div style={{ width: 6, height: 6, background: '#e8ff47', borderRadius: '50%' }} />
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#e8ff47' }}>Flash for Professionals</span>
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,184,0,0.08)', border: '1px solid rgba(255,184,0,0.2)', borderRadius: 20, padding: '6px 14px', marginBottom: 32 }}>
+          <div style={{ width: 6, height: 6, background: '#ffb800', borderRadius: '50%' }} />
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#ffb800' }}>Flash for Professionals</span>
         </motion.div>
 
         <motion.h1
@@ -277,7 +277,7 @@ export default function PlannersPage() {
           transition={{ duration: 0.6, ease: E, delay: 0.1 }}
           style={{ fontSize: 'clamp(40px, 7vw, 82px)', fontWeight: 700, lineHeight: 1.0, letterSpacing: -2.5, margin: '0 auto 28px', maxWidth: 820 }}>
           Built for the people<br />
-          <span style={{ color: '#e8ff47' }}>who run the night.</span>
+          <span style={{ color: '#ffb800' }}>who run the night.</span>
         </motion.h1>
 
         <motion.p
@@ -294,7 +294,7 @@ export default function PlannersPage() {
           transition={{ duration: 0.45, ease: E, delay: 0.38 }}
           style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
           <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
-            <a href="#plans" style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 14, padding: '16px 36px', fontSize: 16, fontWeight: 700, textDecoration: 'none', display: 'block' }}>
+            <a href="#plans" style={{ background: '#ffb800', color: '#0a0a0a', borderRadius: 14, padding: '16px 36px', fontSize: 16, fontWeight: 700, textDecoration: 'none', display: 'block' }}>
               View plans →
             </a>
           </motion.div>
@@ -322,7 +322,7 @@ export default function PlannersPage() {
             {WHO.map((w, i) => (
               <motion.div key={i} variants={c}
                 style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 20, padding: '28px 24px' }}>
-                <div style={{ width: 52, height: 52, background: 'rgba(232,255,71,0.08)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+                <div style={{ width: 52, height: 52, background: 'rgba(255,184,0,0.08)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
                   {w.icon}
                 </div>
                 <div style={{ fontSize: 18, fontWeight: 700, color: '#f0f0f0', marginBottom: 10, letterSpacing: -0.4 }}>{w.label}</div>
@@ -344,7 +344,7 @@ export default function PlannersPage() {
           ].map((s, i) => (
             <motion.div key={i} variants={f} initial="hidden" whileInView="visible" viewport={VP}
               style={{ textAlign: 'center', padding: '32px 24px', borderRight: i < 3 ? '1px solid #1a1a1a' : 'none' }}>
-              <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 700, color: '#e8ff47', marginBottom: 6 }}>{s.n}</div>
+              <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 700, color: '#ffb800', marginBottom: 6 }}>{s.n}</div>
               <div style={{ fontSize: 14, fontWeight: 600, color: '#ccc', marginBottom: 4 }}>{s.label}</div>
               <div style={{ fontSize: 11, color: '#444' }}>{s.sub}</div>
             </motion.div>
@@ -373,20 +373,20 @@ export default function PlannersPage() {
             {PLANS.map((plan) => (
               <motion.div key={plan.id} variants={c}
                 style={{
-                  background: plan.highlight ? 'rgba(232,255,71,0.04)' : '#111',
-                  border: `1px solid ${plan.highlight ? 'rgba(232,255,71,0.3)' : '#1a1a1a'}`,
+                  background: plan.highlight ? 'rgba(255,184,0,0.04)' : '#111',
+                  border: `1px solid ${plan.highlight ? 'rgba(255,184,0,0.3)' : '#1a1a1a'}`,
                   borderRadius: 22,
                   padding: '32px 28px',
                   position: 'relative',
                   overflow: 'hidden',
                 }}>
                 {plan.badge && (
-                  <div style={{ position: 'absolute', top: 20, right: 20, background: '#e8ff47', color: '#0a0a0a', fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', borderRadius: 7, padding: '4px 10px' }}>
+                  <div style={{ position: 'absolute', top: 20, right: 20, background: '#ffb800', color: '#0a0a0a', fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', borderRadius: 7, padding: '4px 10px' }}>
                     {plan.badge}
                   </div>
                 )}
 
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: plan.highlight ? '#e8ff47' : '#555', marginBottom: 8 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: plan.highlight ? '#ffb800' : '#555', marginBottom: 8 }}>
                   {plan.name}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 6 }}>
@@ -399,8 +399,8 @@ export default function PlannersPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28, padding: '16px', background: plan.highlight ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.25)', borderRadius: 12 }}>
                   {[plan.events, plan.guests].map((l, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'rgba(232,255,71,0.12)', border: '1px solid rgba(232,255,71,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#e8ff47" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'rgba(255,184,0,0.12)', border: '1px solid rgba(255,184,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffb800" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
                       </div>
                       <span style={{ fontSize: 13, fontWeight: 600, color: '#ccc' }}>{l}</span>
                     </div>
@@ -410,7 +410,7 @@ export default function PlannersPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32 }}>
                   {plan.features.map((feat, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={plan.highlight ? '#e8ff47' : '#555'} strokeWidth="2.5" strokeLinecap="round" style={{ marginTop: 2, flexShrink: 0 }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={plan.highlight ? '#ffb800' : '#555'} strokeWidth="2.5" strokeLinecap="round" style={{ marginTop: 2, flexShrink: 0 }}>
                         <polyline points="20 6 9 17 4 12"/>
                       </svg>
                       <span style={{ fontSize: 13, color: '#666', lineHeight: 1.5 }}>{feat}</span>
@@ -427,7 +427,7 @@ export default function PlannersPage() {
                     style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       width: '100%', textAlign: 'center',
-                      background: loadingPlan === plan.id ? '#222' : plan.highlight ? '#e8ff47' : '#1e1e1e',
+                      background: loadingPlan === plan.id ? '#222' : plan.highlight ? '#ffb800' : '#1e1e1e',
                       color: loadingPlan === plan.id ? '#555' : plan.highlight ? '#0a0a0a' : '#ccc',
                       border: plan.highlight ? 'none' : '1px solid #333',
                       borderRadius: 12, padding: '15px 20px',
@@ -435,7 +435,7 @@ export default function PlannersPage() {
                       fontFamily: 'inherit', height: 52,
                     }}>
                     {loadingPlan === plan.id
-                      ? <div style={{ width: 18, height: 18, border: '2px solid #444', borderTop: `2px solid ${plan.highlight ? '#e8ff47' : '#888'}`, borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
+                      ? <div style={{ width: 18, height: 18, border: '2px solid #444', borderTop: `2px solid ${plan.highlight ? '#ffb800' : '#888'}`, borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
                       : 'Get started →'}
                   </motion.button>
                 ) : (
@@ -443,8 +443,8 @@ export default function PlannersPage() {
                     href="mailto:hello@flashcam.app?subject=Agency Plan Inquiry"
                     style={{
                       display: 'block', textAlign: 'center',
-                      background: '#1a1a1a', color: '#e8ff47',
-                      border: '1px solid rgba(232,255,71,0.2)',
+                      background: '#1a1a1a', color: '#ffb800',
+                      border: '1px solid rgba(255,184,0,0.2)',
                       borderRadius: 12, padding: '15px 20px',
                       fontSize: 14, fontWeight: 700, textDecoration: 'none',
                     }}>
@@ -486,7 +486,7 @@ export default function PlannersPage() {
                 style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 20, padding: '28px 24px' }}>
                 <div style={{ display: 'flex', gap: 2, marginBottom: 18 }}>
                   {[...Array(5)].map((_, j) => (
-                    <svg key={j} width="13" height="13" viewBox="0 0 24 24" fill="#e8ff47" stroke="none">
+                    <svg key={j} width="13" height="13" viewBox="0 0 24 24" fill="#ffb800" stroke="none">
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
                   ))}
@@ -547,7 +547,7 @@ export default function PlannersPage() {
 
       {/* ── FINAL CTA ── */}
       <section style={{ padding: '80px 24px 100px', textAlign: 'center', borderTop: '1px solid #111', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 400, background: 'radial-gradient(ellipse, rgba(232,255,71,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 400, background: 'radial-gradient(ellipse, rgba(255,184,0,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <motion.p variants={f} initial="hidden" whileInView="visible" viewport={VP}
           style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#333', marginBottom: 24 }}>
           Ready to scale?
@@ -555,12 +555,12 @@ export default function PlannersPage() {
         <motion.h2 variants={f} initial="hidden" whileInView="visible" viewport={VP}
           style={{ fontSize: 'clamp(32px, 6vw, 68px)', fontWeight: 700, letterSpacing: -2, marginBottom: 40, lineHeight: 1.0, color: '#f0f0f0' }}>
           Your next event.<br />
-          <span style={{ color: '#e8ff47' }}>Already covered.</span>
+          <span style={{ color: '#ffb800' }}>Already covered.</span>
         </motion.h2>
         <motion.div variants={f} initial="hidden" whileInView="visible" viewport={VP}
           style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
           <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
-            <a href="#plans" style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 14, padding: '16px 40px', fontSize: 16, fontWeight: 700, textDecoration: 'none', display: 'block' }}>
+            <a href="#plans" style={{ background: '#ffb800', color: '#0a0a0a', borderRadius: 14, padding: '16px 40px', fontSize: 16, fontWeight: 700, textDecoration: 'none', display: 'block' }}>
               Choose a plan →
             </a>
           </motion.div>
@@ -574,7 +574,7 @@ export default function PlannersPage() {
       <footer style={{ borderTop: '1px solid #161616', padding: '40px 24px 32px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ width: 24, height: 24, background: '#e8ff47', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 24, height: 24, background: '#ffb800', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
             </div>
             <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, fontWeight: 700, color: '#f0f0f0' }}>Flash</span>

@@ -69,7 +69,7 @@ export default function JoinPage() {
 
   if (loading) return (
     <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: 36, height: 36, background: '#e8ff47', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: 36, height: 36, background: '#ffb800', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <IconFlash size={20} color="#0a0a0a" />
       </div>
     </main>
@@ -88,7 +88,7 @@ export default function JoinPage() {
     <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 20px' }}>
       {/* Flash logo */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 40 }}>
-        <div style={{ width: 40, height: 40, background: '#e8ff47', borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 40, height: 40, background: '#ffb800', borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconFlash size={22} color="#0a0a0a" />
         </div>
         <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 20, fontWeight: 700, color: '#f0f0f0' }}>Flash</span>
@@ -130,7 +130,7 @@ export default function JoinPage() {
         <button
           onClick={handleJoin}
           disabled={!nickname.trim() || joining}
-          style={{ background: nickname.trim() && !joining ? '#e8ff47' : '#161616', color: nickname.trim() && !joining ? '#0a0a0a' : '#333', border: 'none', borderRadius: 13, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: nickname.trim() && !joining ? 'pointer' : 'not-allowed', width: '100%', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'all .15s' }}>
+          style={{ background: nickname.trim() && !joining ? '#ffb800' : '#161616', color: nickname.trim() && !joining ? '#0a0a0a' : '#333', border: 'none', borderRadius: 13, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: nickname.trim() && !joining ? 'pointer' : 'not-allowed', width: '100%', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'all .15s' }}>
           <IconShutter size={18} color={nickname.trim() && !joining ? '#0a0a0a' : '#333'} />
           {joining ? 'Joining...' : 'Open Camera'}
         </button>

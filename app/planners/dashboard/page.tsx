@@ -26,7 +26,7 @@ const PLAN_LIMITS: Record<string, { events: number | null; guests: number }> = {
 }
 
 const PLAN_LABELS: Record<string, { name: string; color: string }> = {
-  dj:     { name: 'DJ & Promoter', color: '#e8ff47' },
+  dj:     { name: 'DJ & Promoter', color: '#ffb800' },
   venue:  { name: 'Venue',         color: '#60a5fa' },
   agency: { name: 'Agency',        color: '#c084fc' },
 }
@@ -38,7 +38,7 @@ function UsageBar({ used, max }: { used: number; max: number | null }) {
     <div style={{ width: '100%', height: 4, background: '#1a1a1a', borderRadius: 2, overflow: 'hidden' }}>
       <div style={{
         height: '100%', borderRadius: 2,
-        background: max === null ? '#2ed573' : warn ? '#ff4757' : '#e8ff47',
+        background: max === null ? '#2ed573' : warn ? '#ff4757' : '#ffb800',
         width: max === null ? '100%' : `${pct}%`,
         transition: 'width .6s ease',
       }} />
@@ -109,7 +109,7 @@ function PlannerDashboardInner() {
   if (loading) {
     return (
       <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: 2, height: 36, background: '#e8ff47', animation: 'blink 1s ease-in-out infinite' }} />
+        <div style={{ width: 2, height: 36, background: '#ffb800', animation: 'blink 1s ease-in-out infinite' }} />
         <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}`}</style>
       </main>
     )
@@ -122,20 +122,20 @@ function PlannerDashboardInner() {
       <nav style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', padding: '0 20px' }}>
         <div style={{ maxWidth: 1060, margin: '0 auto', display: 'flex', alignItems: 'center', height: 58, gap: 14 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginRight: 'auto' }}>
-            <div style={{ width: 26, height: 26, background: '#e8ff47', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 26, height: 26, background: '#ffb800', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
             </div>
             <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, fontWeight: 700, color: '#f0f0f0' }}>Flash</span>
           </Link>
 
           {planInfo && (
-            <div style={{ background: 'rgba(232,255,71,0.08)', border: '1px solid rgba(232,255,71,0.2)', borderRadius: 8, padding: '4px 10px', fontSize: 11, fontWeight: 700, color: planInfo.color, letterSpacing: 1, textTransform: 'uppercase' }}>
+            <div style={{ background: 'rgba(255,184,0,0.08)', border: '1px solid rgba(255,184,0,0.2)', borderRadius: 8, padding: '4px 10px', fontSize: 11, fontWeight: 700, color: planInfo.color, letterSpacing: 1, textTransform: 'uppercase' }}>
               {planInfo.name}
             </div>
           )}
 
           <Link href="/host" style={{ fontSize: 13, fontWeight: 600, color: '#555', textDecoration: 'none' }}>All Events</Link>
-          <Link href="/create" style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 9, padding: '8px 16px', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
+          <Link href="/create" style={{ background: '#ffb800', color: '#0a0a0a', borderRadius: 9, padding: '8px 16px', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
             + New Event
           </Link>
         </div>
@@ -154,15 +154,15 @@ function PlannerDashboardInner() {
         </div>
 
         {!planTier && (
-          <div style={{ background: 'rgba(232,255,71,0.05)', border: '1px solid rgba(232,255,71,0.2)', borderRadius: 18, padding: '32px 28px', marginBottom: 28, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20 }}>
+          <div style={{ background: 'rgba(255,184,0,0.05)', border: '1px solid rgba(255,184,0,0.2)', borderRadius: 18, padding: '32px 28px', marginBottom: 28, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20 }}>
             <div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#e8ff47', marginBottom: 6 }}>No active plan</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#ffb800', marginBottom: 6 }}>No active plan</div>
               <div style={{ fontSize: 14, color: '#555', maxWidth: 420, lineHeight: 1.6 }}>
                 Subscribe to a professional plan to unlock unlimited events, white-labeling, and the analytics dashboard.
               </div>
             </div>
             <Link href="/planners#plans"
-              style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 12, padding: '13px 28px', fontSize: 14, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+              style={{ background: '#ffb800', color: '#0a0a0a', borderRadius: 12, padding: '13px 28px', fontSize: 14, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>
               Choose a plan →
             </Link>
           </div>
@@ -173,7 +173,7 @@ function PlannerDashboardInner() {
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
               <div>
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#555', marginBottom: 8 }}>Active Plan</div>
-                <div style={{ fontSize: 20, fontWeight: 700, color: planInfo?.color || '#e8ff47', letterSpacing: -0.5 }}>{planInfo?.name}</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: planInfo?.color || '#ffb800', letterSpacing: -0.5 }}>{planInfo?.name}</div>
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
                 <Link href="/planners#plans" style={{ fontSize: 13, fontWeight: 600, color: '#555', textDecoration: 'none', background: '#161616', border: '1px solid #222', borderRadius: 9, padding: '8px 14px' }}>
@@ -229,7 +229,7 @@ function PlannerDashboardInner() {
         <div style={{ marginBottom: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, letterSpacing: -0.5 }}>Your Events</h2>
-            <Link href="/create" style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 10, padding: '9px 18px', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
+            <Link href="/create" style={{ background: '#ffb800', color: '#0a0a0a', borderRadius: 10, padding: '9px 18px', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
               + Create Event
             </Link>
           </div>
@@ -243,7 +243,7 @@ function PlannerDashboardInner() {
               </div>
               <div style={{ fontSize: 16, fontWeight: 600, color: '#444', marginBottom: 8 }}>No events yet</div>
               <div style={{ fontSize: 13, color: '#333', marginBottom: 24 }}>Create your first event to start capturing memories.</div>
-              <Link href="/create" style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 11, padding: '13px 28px', fontSize: 14, fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
+              <Link href="/create" style={{ background: '#ffb800', color: '#0a0a0a', borderRadius: 11, padding: '13px 28px', fontSize: 14, fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
                 Create event →
               </Link>
             </div>
@@ -254,7 +254,7 @@ function PlannerDashboardInner() {
                   <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 14, padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer', transition: 'border .15s' }}
                     onMouseEnter={e => (e.currentTarget.style.borderColor = '#2a2a2a')}
                     onMouseLeave={e => (e.currentTarget.style.borderColor = '#1a1a1a')}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: ev.is_active ? '#2ed573' : ev.revealed ? '#e8ff47' : '#333', flexShrink: 0 }} />
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: ev.is_active ? '#2ed573' : ev.revealed ? '#ffb800' : '#333', flexShrink: 0 }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: '#f0f0f0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ev.name}</div>
                       <div style={{ fontSize: 11, color: '#444', marginTop: 2 }}>
@@ -265,9 +265,9 @@ function PlannerDashboardInner() {
                     <div style={{
                       fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase',
                       borderRadius: 6, padding: '3px 8px', flexShrink: 0,
-                      background: ev.is_active ? 'rgba(46,213,115,0.12)' : ev.revealed ? 'rgba(232,255,71,0.1)' : 'rgba(255,255,255,0.05)',
-                      color: ev.is_active ? '#2ed573' : ev.revealed ? '#e8ff47' : '#444',
-                      border: ev.is_active ? '1px solid rgba(46,213,115,0.3)' : ev.revealed ? '1px solid rgba(232,255,71,0.2)' : '1px solid #1a1a1a',
+                      background: ev.is_active ? 'rgba(46,213,115,0.12)' : ev.revealed ? 'rgba(255,184,0,0.1)' : 'rgba(255,255,255,0.05)',
+                      color: ev.is_active ? '#2ed573' : ev.revealed ? '#ffb800' : '#444',
+                      border: ev.is_active ? '1px solid rgba(46,213,115,0.3)' : ev.revealed ? '1px solid rgba(255,184,0,0.2)' : '1px solid #1a1a1a',
                     }}>
                       {ev.is_active ? 'Live' : ev.revealed ? 'Revealed' : 'Draft'}
                     </div>

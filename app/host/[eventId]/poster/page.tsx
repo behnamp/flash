@@ -63,7 +63,7 @@ export default function PosterPage() {
     const ctx = canvas.getContext('2d')!
     ctx.scale(S, S)
 
-    const accent = event.brand_color || '#e8ff47'
+    const accent = event.brand_color || '#ffb800'
     const dark = tpl === 'light' ? '#ffffff' : '#0a0a0a'
     const ink = tpl === 'light' ? '#0a0a0a' : '#f0f0f0'
     const dim = tpl === 'light' ? '#888' : '#666'
@@ -198,7 +198,7 @@ export default function PosterPage() {
 
   if (loading) return (
     <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: 2, height: 32, background: '#e8ff47', animation: 'blink 1s ease-in-out infinite' }} />
+      <div style={{ width: 2, height: 32, background: '#ffb800', animation: 'blink 1s ease-in-out infinite' }} />
       <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}`}</style>
     </main>
   )
@@ -223,8 +223,8 @@ export default function PosterPage() {
         <div style={{ display: 'flex', gap: 8, marginTop: 18, width: '100%', maxWidth: 360 }}>
           {TEMPLATES.map(t => (
             <button key={t.id} onClick={() => setTemplate(t.id)}
-              style={{ flex: 1, background: template === t.id ? 'rgba(232,255,71,0.1)' : '#141414', border: `1px solid ${template === t.id ? '#e8ff47' : '#222'}`, borderRadius: 12, padding: '12px 6px', cursor: 'pointer', fontFamily: 'inherit' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: template === t.id ? '#e8ff47' : '#f0f0f0' }}>{t.label}</div>
+              style={{ flex: 1, background: template === t.id ? 'rgba(255,184,0,0.1)' : '#141414', border: `1px solid ${template === t.id ? '#ffb800' : '#222'}`, borderRadius: 12, padding: '12px 6px', cursor: 'pointer', fontFamily: 'inherit' }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: template === t.id ? '#ffb800' : '#f0f0f0' }}>{t.label}</div>
               <div style={{ fontSize: 10, color: '#555', marginTop: 2 }}>{t.sub}</div>
             </button>
           ))}
@@ -239,7 +239,7 @@ export default function PosterPage() {
           Print
         </button>
         <button onClick={download} disabled={downloading}
-          style={{ flex: 2, background: '#e8ff47', color: '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px', fontSize: 15, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          style={{ flex: 2, background: '#ffb800', color: '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px', fontSize: 15, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
           {downloading ? 'Saving...' : 'Download PNG'}
         </button>

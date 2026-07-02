@@ -77,7 +77,7 @@ export default function EditEvent() {
         <div style={{ fontSize: 14, fontWeight: 500, color: '#e0e0e0' }}>{label}</div>
         {sub && <div style={{ fontSize: 12, color: '#444', marginTop: 2 }}>{sub}</div>}
       </div>
-      <div onClick={() => set(k, !(form as any)[k])} style={{ width: 44, height: 26, borderRadius: 13, background: (form as any)[k] ? '#e8ff47' : '#1e1e1e', position: 'relative', cursor: 'pointer', transition: 'background .2s', flexShrink: 0 }}>
+      <div onClick={() => set(k, !(form as any)[k])} style={{ width: 44, height: 26, borderRadius: 13, background: (form as any)[k] ? '#ffb800' : '#1e1e1e', position: 'relative', cursor: 'pointer', transition: 'background .2s', flexShrink: 0 }}>
         <div style={{ position: 'absolute', width: 20, height: 20, borderRadius: '50%', background: (form as any)[k] ? '#0a0a0a' : '#333', top: 3, left: (form as any)[k] ? 21 : 3, transition: 'left .18s' }} />
       </div>
     </div>
@@ -89,7 +89,7 @@ export default function EditEvent() {
 
   if (loading) return (
     <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ color: '#e8ff47', fontSize: 14 }}>Loading...</div>
+      <div style={{ color: '#ffb800', fontSize: 14 }}>Loading...</div>
     </main>
   )
 
@@ -100,7 +100,7 @@ export default function EditEvent() {
           <IconBack size={18} />
         </button>
         <span style={{ fontSize: 15, fontWeight: 600, flex: 1, letterSpacing: -0.3 }}>Edit Event</span>
-        <button onClick={handleSave} disabled={saving} style={{ background: saving ? '#161616' : '#e8ff47', color: '#0a0a0a', border: 'none', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button onClick={handleSave} disabled={saving} style={{ background: saving ? '#161616' : '#ffb800', color: '#0a0a0a', border: 'none', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
           {saving ? 'Saving...' : 'Save'}
         </button>
       </div>
@@ -121,7 +121,7 @@ export default function EditEvent() {
         <div style={{ marginBottom: 28 }}>
           <Label>Shots per Guest</Label>
           <div style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 14, padding: '18px' }}>
-            <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 44, fontWeight: 700, color: '#e8ff47', lineHeight: 1, marginBottom: 14 }}>{form.shot_limit}</div>
+            <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 44, fontWeight: 700, color: '#ffb800', lineHeight: 1, marginBottom: 14 }}>{form.shot_limit}</div>
             <input type="range" min={3} max={36} value={form.shot_limit} onChange={e => set('shot_limit', +e.target.value)} />
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 10, color: '#333', fontFamily: 'Space Mono, monospace' }}>
               <span>3</span><span>36</span>
@@ -136,12 +136,12 @@ export default function EditEvent() {
             {([...REVEAL_MODES] as any[]).map((r: any) => {
               const sel = form.reveal_mode === r.id
               return (
-                <div key={r.id} onClick={() => set('reveal_mode', r.id)} style={{ background: sel ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${sel ? '#e8ff47' : '#1e1e1e'}`, borderRadius: 12, padding: '13px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, transition: 'all .15s' }}>
-                  <div style={{ width: 32, height: 32, background: sel ? 'rgba(232,255,71,0.1)' : '#1a1a1a', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {(() => { const Icon = REVEAL_ICONS[r.icon] || IconReveal; return <Icon size={16} color={sel ? '#e8ff47' : '#555'} /> })()}
+                <div key={r.id} onClick={() => set('reveal_mode', r.id)} style={{ background: sel ? 'rgba(255,184,0,0.06)' : '#111', border: `1px solid ${sel ? '#ffb800' : '#1e1e1e'}`, borderRadius: 12, padding: '13px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, transition: 'all .15s' }}>
+                  <div style={{ width: 32, height: 32, background: sel ? 'rgba(255,184,0,0.1)' : '#1a1a1a', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {(() => { const Icon = REVEAL_ICONS[r.icon] || IconReveal; return <Icon size={16} color={sel ? '#ffb800' : '#555'} /> })()}
                   </div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: sel ? '#e8ff47' : '#ccc' }}>{r.name}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: sel ? '#ffb800' : '#ccc' }}>{r.name}</div>
                     <div style={{ fontSize: 11, color: '#444', marginTop: 1 }}>{r.desc}</div>
                   </div>
                 </div>
@@ -180,7 +180,7 @@ export default function EditEvent() {
       </div>
 
       {/* Toast */}
-      <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: `translateX(-50%) translateY(${toast ? 0 : 12}px)`, background: '#161616', border: '1px solid #222', borderRadius: 24, padding: '11px 20px', fontSize: 13, fontWeight: 600, color: '#e8ff47', zIndex: 999, opacity: toast ? 1 : 0, transition: 'all .25s', pointerEvents: 'none', whiteSpace: 'nowrap' }}>
+      <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: `translateX(-50%) translateY(${toast ? 0 : 12}px)`, background: '#161616', border: '1px solid #222', borderRadius: 24, padding: '11px 20px', fontSize: 13, fontWeight: 600, color: '#ffb800', zIndex: 999, opacity: toast ? 1 : 0, transition: 'all .25s', pointerEvents: 'none', whiteSpace: 'nowrap' }}>
         {toast}
       </div>
     </main>

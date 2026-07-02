@@ -17,7 +17,7 @@ export default function PrivacyPolicy() {
           <IconBack size={18} />
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 28, height: 28, background: '#e8ff47', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 28, height: 28, background: '#ffb800', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <IconFlash size={15} color="#0a0a0a" />
           </div>
           <span style={{ fontSize: 15, fontWeight: 600 }}>Privacy Policy</span>
@@ -99,7 +99,7 @@ export default function PrivacyPolicy() {
           <Li>Delete your account and all associated data</Li>
           <Li>Export your event photos before deleting</Li>
           <Li>Withdraw consent at any time</Li>
-          <P style={{ marginTop: 12 }}>To exercise any of these rights, email us at <a href={`mailto:${EMAIL}`} style={{ color: '#e8ff47' }}>{EMAIL}</a></P>
+          <P style={{ marginTop: 12 }}>To exercise any of these rights, email us at <a href={`mailto:${EMAIL}`} style={{ color: '#ffb800' }}>{EMAIL}</a></P>
         </Section>
 
         <Section title="8. Children's Privacy">
@@ -124,14 +124,14 @@ export default function PrivacyPolicy() {
 
         <Section title="12. Contact Us">
           <P>For privacy questions or data requests:</P>
-          <Li>Email: <a href={`mailto:${EMAIL}`} style={{ color: '#e8ff47' }}>{EMAIL}</a></Li>
-          <Li>Website: <a href={APP_URL} style={{ color: '#e8ff47' }}>{APP_URL}</a></Li>
+          <Li>Email: <a href={`mailto:${EMAIL}`} style={{ color: '#ffb800' }}>{EMAIL}</a></Li>
+          <Li>Website: <a href={APP_URL} style={{ color: '#ffb800' }}>{APP_URL}</a></Li>
         </Section>
 
         <div style={{ marginTop: 40, padding: '20px', background: '#111', borderRadius: 14, border: '1px solid #1e1e1e', textAlign: 'center' }}>
           <div style={{ fontSize: 13, color: '#555', lineHeight: 1.7 }}>
             By using Flash, you agree to this Privacy Policy.<br />
-            <a href="/legal/terms" style={{ color: '#e8ff47', textDecoration: 'none' }}>View Terms of Service →</a>
+            <a href="/legal/terms" style={{ color: '#ffb800', textDecoration: 'none' }}>View Terms of Service →</a>
           </div>
         </div>
       </div>

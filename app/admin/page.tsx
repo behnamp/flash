@@ -137,7 +137,7 @@ export default function AdminPage() {
     <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingTop: 'max(14px, env(safe-area-inset-top))', paddingBottom: '14px', paddingLeft: 18, paddingRight: 18, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', position: 'sticky', top: 0, zIndex: 20 }}>
-        <div style={{ width: 32, height: 32, background: '#e8ff47', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 32, height: 32, background: '#ffb800', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconFlash size={18} color="#0a0a0a" />
         </div>
         <div style={{ flex: 1 }}>
@@ -158,7 +158,7 @@ export default function AdminPage() {
         ].map(({ label, value, Icon }) => (
           <div key={label} style={{ background: '#0a0a0a', padding: '14px 12px', textAlign: 'center' }}>
             <Icon size={14} color="#333" style={{ marginBottom: 4 }} />
-            <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 22, fontWeight: 700, color: '#e8ff47' }}>{value}</div>
+            <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 22, fontWeight: 700, color: '#ffb800' }}>{value}</div>
             <div style={{ fontSize: 9, color: '#333', textTransform: 'uppercase', letterSpacing: 1, marginTop: 2 }}>{label}</div>
           </div>
         ))}
@@ -168,7 +168,7 @@ export default function AdminPage() {
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
           <div style={{ fontSize: 15, fontWeight: 700 }}>Promo Codes</div>
-          <button onClick={() => setShowCreate(true)} style={{ background: '#e8ff47', color: '#0a0a0a', border: 'none', borderRadius: 10, padding: '9px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button onClick={() => setShowCreate(true)} style={{ background: '#ffb800', color: '#0a0a0a', border: 'none', borderRadius: 10, padding: '9px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}>
             <IconPlus size={14} color="#0a0a0a" weight="bold" /> New Code
           </button>
         </div>
@@ -185,10 +185,10 @@ export default function AdminPage() {
               <div key={p.id} style={{ background: '#111', border: `1px solid ${p.is_active ? '#1e1e1e' : '#141414'}`, borderRadius: 14, padding: '14px 16px', opacity: p.is_active ? 1 : 0.45 }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                    <button onClick={() => copyCode(p.code)} style={{ fontFamily: 'Space Mono, monospace', fontSize: 15, fontWeight: 700, color: '#e8ff47', background: 'rgba(232,255,71,0.07)', border: '1px solid rgba(232,255,71,0.15)', borderRadius: 8, padding: '4px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                      {p.code} <IconCopy size={11} color="#e8ff47" />
+                    <button onClick={() => copyCode(p.code)} style={{ fontFamily: 'Space Mono, monospace', fontSize: 15, fontWeight: 700, color: '#ffb800', background: 'rgba(255,184,0,0.07)', border: '1px solid rgba(255,184,0,0.15)', borderRadius: 8, padding: '4px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      {p.code} <IconCopy size={11} color="#ffb800" />
                     </button>
-                    <div style={{ background: p.type === 'free' ? 'rgba(46,213,115,0.1)' : 'rgba(232,255,71,0.08)', border: `1px solid ${p.type === 'free' ? 'rgba(46,213,115,0.25)' : 'rgba(232,255,71,0.15)'}`, borderRadius: 6, padding: '3px 9px', fontSize: 11, fontWeight: 800, color: p.type === 'free' ? '#2ed573' : '#e8ff47', fontFamily: 'Space Mono, monospace' }}>
+                    <div style={{ background: p.type === 'free' ? 'rgba(46,213,115,0.1)' : 'rgba(255,184,0,0.08)', border: `1px solid ${p.type === 'free' ? 'rgba(46,213,115,0.25)' : 'rgba(255,184,0,0.15)'}`, borderRadius: 6, padding: '3px 9px', fontSize: 11, fontWeight: 800, color: p.type === 'free' ? '#2ed573' : '#ffb800', fontFamily: 'Space Mono, monospace' }}>
                       {p.type === 'free' ? 'FREE' : `${p.discount_percent}% OFF`}
                     </div>
                   </div>
@@ -255,8 +255,8 @@ export default function AdminPage() {
             <Label>Type</Label>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
               {(['free', 'percent'] as const).map(t => (
-                <div key={t} onClick={() => set('type', t)} style={{ background: form.type === t ? 'rgba(232,255,71,0.06)' : '#111', border: `1px solid ${form.type === t ? '#e8ff47' : '#222'}`, borderRadius: 10, padding: '14px', cursor: 'pointer', textAlign: 'center', transition: 'all .15s' }}>
-                  <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 20, fontWeight: 900, color: form.type === t ? (t === 'free' ? '#2ed573' : '#e8ff47') : '#444', marginBottom: 4 }}>
+                <div key={t} onClick={() => set('type', t)} style={{ background: form.type === t ? 'rgba(255,184,0,0.06)' : '#111', border: `1px solid ${form.type === t ? '#ffb800' : '#222'}`, borderRadius: 10, padding: '14px', cursor: 'pointer', textAlign: 'center', transition: 'all .15s' }}>
+                  <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 20, fontWeight: 900, color: form.type === t ? (t === 'free' ? '#2ed573' : '#ffb800') : '#444', marginBottom: 4 }}>
                     {t === 'free' ? 'FREE' : '%'}
                   </div>
                   <div style={{ fontSize: 12, fontWeight: 600, color: form.type === t ? '#ccc' : '#555' }}>
@@ -271,7 +271,7 @@ export default function AdminPage() {
               <>
                 <Label>Discount</Label>
                 <div style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 12, padding: '16px', marginBottom: 14 }}>
-                  <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 36, fontWeight: 700, color: '#e8ff47', marginBottom: 10 }}>{form.discount_percent}%</div>
+                  <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 36, fontWeight: 700, color: '#ffb800', marginBottom: 10 }}>{form.discount_percent}%</div>
                   <input type="range" min={5} max={95} step={5} value={form.discount_percent} onChange={e => set('discount_percent', +e.target.value)} style={{ width: '100%' }} />
                 </div>
               </>
@@ -281,7 +281,7 @@ export default function AdminPage() {
             <Label>Applies To</Label>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
               {TIERS.map(t => (
-                <div key={t} onClick={() => set('applies_to', t)} style={{ background: form.applies_to === t ? 'rgba(232,255,71,0.08)' : '#111', border: `1px solid ${form.applies_to === t ? '#e8ff47' : '#222'}`, borderRadius: 8, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: form.applies_to === t ? '#e8ff47' : '#555', cursor: 'pointer', transition: 'all .15s' }}>
+                <div key={t} onClick={() => set('applies_to', t)} style={{ background: form.applies_to === t ? 'rgba(255,184,0,0.08)' : '#111', border: `1px solid ${form.applies_to === t ? '#ffb800' : '#222'}`, borderRadius: 8, padding: '6px 12px', fontSize: 11, fontWeight: 600, color: form.applies_to === t ? '#ffb800' : '#555', cursor: 'pointer', transition: 'all .15s' }}>
                   {t === 'all' ? 'All Tiers' : TIER_LABELS[t].split(' ')[0]}
                 </div>
               ))}
@@ -291,7 +291,7 @@ export default function AdminPage() {
             <Label>Max Uses</Label>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
               {[1, 2, 5, 10, 25, 50, 100].map(n => (
-                <div key={n} onClick={() => set('max_uses', n)} style={{ background: form.max_uses === n ? 'rgba(232,255,71,0.08)' : '#111', border: `1px solid ${form.max_uses === n ? '#e8ff47' : '#222'}`, borderRadius: 8, padding: '6px 14px', fontSize: 13, fontFamily: 'Space Mono, monospace', fontWeight: 700, color: form.max_uses === n ? '#e8ff47' : '#555', cursor: 'pointer', transition: 'all .15s' }}>
+                <div key={n} onClick={() => set('max_uses', n)} style={{ background: form.max_uses === n ? 'rgba(255,184,0,0.08)' : '#111', border: `1px solid ${form.max_uses === n ? '#ffb800' : '#222'}`, borderRadius: 8, padding: '6px 14px', fontSize: 13, fontFamily: 'Space Mono, monospace', fontWeight: 700, color: form.max_uses === n ? '#ffb800' : '#555', cursor: 'pointer', transition: 'all .15s' }}>
                   {n}
                 </div>
               ))}
@@ -309,7 +309,7 @@ export default function AdminPage() {
             <Label>Internal Notes (optional)</Label>
             <input value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="e.g. Promoter at 777 Game Club" style={{ ...inp, marginBottom: 22 }} />
 
-            <button onClick={handleCreate} style={{ width: '100%', background: '#e8ff47', color: '#0a0a0a', border: 'none', borderRadius: 13, padding: '15px 20px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <button onClick={handleCreate} style={{ width: '100%', background: '#ffb800', color: '#0a0a0a', border: 'none', borderRadius: 13, padding: '15px 20px', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
               Create Promo Code
             </button>
           </div>

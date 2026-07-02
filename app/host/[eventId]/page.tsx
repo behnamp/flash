@@ -130,7 +130,7 @@ export default function EventDashboard() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', background: 'rgba(10,10,10,0.96)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10 }}>
         <button onClick={() => router.push('/host')} style={{ width: 36, height: 36, background: 'var(--surface2)', border: 'none', borderRadius: 10, color: 'var(--text)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconBack size={18} /></button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1, minWidth: 0 }}>
-          {event?.event_type && (() => { const Icon = EVENT_TYPE_ICONS[event.event_type] || IconQuestion; return <div style={{ width: 30, height: 30, background: 'var(--surface3)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Icon size={16} color="#e8ff47" /></div> })()}
+          {event?.event_type && (() => { const Icon = EVENT_TYPE_ICONS[event.event_type] || IconQuestion; return <div style={{ width: 30, height: 30, background: 'var(--surface3)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Icon size={16} color="#ffb800" /></div> })()}
           <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 14, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{event?.name}</div>
           <div style={{ fontSize: 10, color: event?.is_active ? 'var(--accent)' : 'var(--muted)', fontWeight: 600 }}>
@@ -138,7 +138,7 @@ export default function EventDashboard() {
           </div>
           </div>
         </div>
-        <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, color: 'var(--accent)', background: 'var(--accent-dim)', border: '1px solid rgba(232,255,71,0.3)', borderRadius: 7, padding: '4px 9px' }}>{event?.join_code}</div>
+        <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, color: 'var(--accent)', background: 'var(--accent-dim)', border: '1px solid rgba(255,184,0,0.3)', borderRadius: 7, padding: '4px 9px' }}>{event?.join_code}</div>
       </div>
 
       {/* Tabs */}
@@ -185,7 +185,7 @@ export default function EventDashboard() {
                 const w = window.open(url, '_blank')
                 if (!w) router.push(url) // popup blocked → open in-app
               }}
-              style={{ width: '100%', maxWidth: 300, background: 'rgba(232,255,71,0.08)', color: 'var(--accent)', border: '1px solid rgba(232,255,71,0.25)', borderRadius: 13, padding: '13px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              style={{ width: '100%', maxWidth: 300, background: 'rgba(255,184,0,0.08)', color: 'var(--accent)', border: '1px solid rgba(255,184,0,0.25)', borderRadius: 13, padding: '13px 20px', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
               </svg>
@@ -270,7 +270,7 @@ export default function EventDashboard() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
                   <span style={{ fontSize: 14, fontWeight: 700 }}>AI Highlight Reel</span>
-                  <span style={{ fontSize: 9, background: 'rgba(232,255,71,0.1)', color: 'var(--accent)', border: '1px solid rgba(232,255,71,0.2)', borderRadius: 5, padding: '2px 6px', fontWeight: 700, letterSpacing: 1 }}>BETA</span>
+                  <span style={{ fontSize: 9, background: 'rgba(255,184,0,0.1)', color: 'var(--accent)', border: '1px solid rgba(255,184,0,0.2)', borderRadius: 5, padding: '2px 6px', fontWeight: 700, letterSpacing: 1 }}>BETA</span>
                 </div>
                 <div style={{ fontSize: 12, color: '#555', marginBottom: 12 }}>Cinematic 15-sec video from your best shots using Seedance 2.0.</div>
 
@@ -296,7 +296,7 @@ export default function EventDashboard() {
                   </div>
                 ) : (
                   <button onClick={generateReel}
-                    style={{ width: '100%', background: 'rgba(232,255,71,0.07)', color: 'var(--accent)', border: '1px solid rgba(232,255,71,0.2)', borderRadius: 10, padding: '12px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                    style={{ width: '100%', background: 'rgba(255,184,0,0.07)', color: 'var(--accent)', border: '1px solid rgba(255,184,0,0.2)', borderRadius: 10, padding: '12px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     Generate AI Reel
                   </button>

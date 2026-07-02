@@ -284,7 +284,7 @@ export default function CameraPage() {
         {/* Loading */}
         {!cameraReady && !cameraError && (
           <div style={{ position: 'absolute', inset: 0, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ width: 2, height: 36, background: '#e8ff47', animation: 'blink 1s ease-in-out infinite' }} />
+            <div style={{ width: 2, height: 36, background: '#ffb800', animation: 'blink 1s ease-in-out infinite' }} />
           </div>
         )}
 
@@ -292,7 +292,7 @@ export default function CameraPage() {
         {cameraError && (
           <div style={{ position: 'absolute', inset: 0, background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32, gap: 16, textAlign: 'center' }}>
             <div style={{ fontSize: 13, color: '#555', lineHeight: 1.7 }}>{cameraError}</div>
-            <button onClick={() => startCamera(facingMode)} style={{ background: '#e8ff47', color: '#000', border: 'none', borderRadius: 10, padding: '11px 24px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Try Again</button>
+            <button onClick={() => startCamera(facingMode)} style={{ background: '#ffb800', color: '#000', border: 'none', borderRadius: 10, padding: '11px 24px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Try Again</button>
           </div>
         )}
 
@@ -303,7 +303,7 @@ export default function CameraPage() {
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 'max(14px, calc(env(safe-area-inset-top) + 4px))', paddingBottom: 14, paddingLeft: 14, paddingRight: 14, zIndex: 10 }}>
           {/* Flash bolt — tap to go back */}
           <button onClick={() => router.push(`/join/${code}`)} aria-label="Back" style={{ width: 38, height: 38, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer', padding: 0 }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="#e8ff47">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffb800">
               <path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/>
             </svg>
           </button>
@@ -358,7 +358,7 @@ export default function CameraPage() {
               return (
                 <button key={m.id} onClick={() => setModeIndex(i)}
                   style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', padding: '0 10px' }}>
-                  <div style={{ width: 52, height: 36, borderRadius: 6, background: gradients[m.id] || '#222', border: selected ? '2px solid #e8ff47' : '2px solid transparent', transition: 'border .15s', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
+                  <div style={{ width: 52, height: 36, borderRadius: 6, background: gradients[m.id] || '#222', border: selected ? '2px solid #ffb800' : '2px solid transparent', transition: 'border .15s', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
                     <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 6, background: 'rgba(0,0,0,0.4)', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', padding: '2px 1px' }}>
                       {[0,1,2].map(j => <div key={j} style={{ width: 4, height: 3, background: 'rgba(0,0,0,0.6)', borderRadius: 1 }} />)}
                     </div>
@@ -366,7 +366,7 @@ export default function CameraPage() {
                       {[0,1,2].map(j => <div key={j} style={{ width: 4, height: 3, background: 'rgba(0,0,0,0.6)', borderRadius: 1 }} />)}
                     </div>
                   </div>
-                  <span style={{ fontSize: 8, fontWeight: 800, color: selected ? '#e8ff47' : '#444', textTransform: 'uppercase', letterSpacing: 1, fontFamily: 'Space Mono, monospace', whiteSpace: 'nowrap' }}>
+                  <span style={{ fontSize: 8, fontWeight: 800, color: selected ? '#ffb800' : '#444', textTransform: 'uppercase', letterSpacing: 1, fontFamily: 'Space Mono, monospace', whiteSpace: 'nowrap' }}>
                     {m.id === 'kodak' ? 'KODAK' : m.id === 'ilford' ? 'B&W' : m.id === 'portra' ? 'PORTRA' : m.id === 'polaroid' ? 'POLAR' : 'GOLD'}
                   </span>
                 </button>
@@ -381,7 +381,7 @@ export default function CameraPage() {
             {ZOOM_LEVELS.map(z => {
               const active = zoom === z.value
               return (
-                <button key={z.value} onClick={() => applyZoom(z.value)} style={{ minWidth: 46, height: 30, borderRadius: 18, border: 'none', background: active ? '#e8ff47' : 'transparent', cursor: 'pointer', fontFamily: 'Space Mono, monospace', fontSize: 12, fontWeight: 700, color: active ? '#0a0a0a' : 'rgba(255,255,255,0.5)', transition: 'all .15s', letterSpacing: -0.3, padding: '0 10px' }}>
+                <button key={z.value} onClick={() => applyZoom(z.value)} style={{ minWidth: 46, height: 30, borderRadius: 18, border: 'none', background: active ? '#ffb800' : 'transparent', cursor: 'pointer', fontFamily: 'Space Mono, monospace', fontSize: 12, fontWeight: 700, color: active ? '#0a0a0a' : 'rgba(255,255,255,0.5)', transition: 'all .15s', letterSpacing: -0.3, padding: '0 10px' }}>
                   {z.label}
                 </button>
               )
@@ -396,7 +396,7 @@ export default function CameraPage() {
           <button onClick={toggleTorch}
             style={{ width: 50, height: 50, background: 'transparent', border: 'none', borderRadius: 14, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, opacity: torchSupported ? 1 : 0.3, transition: 'all .2s' }}>
             {torchOn ? (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#e8ff47">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffb800">
                 <path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/>
               </svg>
             ) : (
@@ -404,7 +404,7 @@ export default function CameraPage() {
                 <path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/>
               </svg>
             )}
-            <span style={{ fontSize: 9, color: torchOn ? '#e8ff47' : 'rgba(255,255,255,0.4)', fontFamily: 'Space Mono, monospace', fontWeight: 700, letterSpacing: 0.5 }}>
+            <span style={{ fontSize: 9, color: torchOn ? '#ffb800' : 'rgba(255,255,255,0.4)', fontFamily: 'Space Mono, monospace', fontWeight: 700, letterSpacing: 0.5 }}>
               {torchOn ? 'ON' : 'FLASH'}
             </span>
           </button>
@@ -428,7 +428,7 @@ export default function CameraPage() {
               <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: `3px solid ${outOfShots ? '#2a2a2a' : 'white'}`, transition: 'border-color .2s', opacity: 0.8 }} />
               {/* Inner disc */}
               <div style={{ width: 62, height: 62, borderRadius: '50%', background: outOfShots ? '#1a1a1a' : uploading ? '#222' : 'white', transition: 'background .2s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {uploading && <div style={{ width: 22, height: 22, border: '2.5px solid #333', borderTop: '2.5px solid #e8ff47', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />}
+                {uploading && <div style={{ width: 22, height: 22, border: '2.5px solid #333', borderTop: '2.5px solid #ffb800', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />}
               </div>
             </button>
           </div>

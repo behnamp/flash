@@ -33,7 +33,7 @@ export default function JoinPage() {
           style={{ background:'#111', border:`1px solid ${error ? '#ff4757' : '#1e1e1e'}`, borderRadius:12, padding:'16px', color:'#f0f0f0', fontSize:20, width:'100%', outline:'none', textAlign:'center', fontFamily:'Space Mono,monospace', letterSpacing:4, marginBottom:10 }}
         />
         {error && <p style={{ color:'#ff4757', fontSize:12, marginBottom:10, textAlign:'center' }}>{error}</p>}
-        <button onClick={handleJoin} style={{ background:'#e8ff47', color:'#0a0a0a', border:'none', borderRadius:12, padding:'14px 20px', fontSize:14, fontWeight:700, cursor:'pointer', width:'100%', fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
+        <button onClick={handleJoin} style={{ background:'#ffb800', color:'#0a0a0a', border:'none', borderRadius:12, padding:'14px 20px', fontSize:14, fontWeight:700, cursor:'pointer', width:'100%', fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
           Join Event <IconArrowRight size={18} color="#0a0a0a" weight="bold" />
         </button>
       </div>

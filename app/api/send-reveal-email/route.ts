@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     <!-- Logo -->
     <div style="text-align:center;margin-bottom:36px;">
-      <div style="display:inline-block;background:#e8ff47;width:52px;height:52px;border-radius:14px;line-height:52px;font-size:26px;font-weight:900;color:#0a0a0a;">⚡</div>
+      <div style="display:inline-block;background:#ffb800;width:52px;height:52px;border-radius:14px;line-height:52px;font-size:26px;font-weight:900;color:#0a0a0a;">⚡</div>
       <div style="margin-top:10px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#555;">Flash</div>
     </div>
 
@@ -69,16 +69,16 @@ export async function POST(req: NextRequest) {
       </p>
 
       <!-- Expiry warning -->
-      <div style="background:rgba(232,255,71,0.06);border:1px solid rgba(232,255,71,0.2);border-radius:12px;padding:18px;margin-bottom:24px;">
-        <div style="font-size:13px;font-weight:700;color:#e8ff47;margin-bottom:6px;">⏳ Download within 14 days</div>
+      <div style="background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.2);border-radius:12px;padding:18px;margin-bottom:24px;">
+        <div style="font-size:13px;font-weight:700;color:#ffb800;margin-bottom:6px;">⏳ Download within 14 days</div>
         <div style="font-size:13px;color:#888;line-height:1.6;">
           Your photos will be <strong style="color:#ccc;">permanently deleted</strong> from Flash servers on<br>
-          <strong style="color:#e8ff47;">${expiryFormatted}</strong>
+          <strong style="color:#ffb800;">${expiryFormatted}</strong>
         </div>
       </div>
 
       <!-- CTA buttons -->
-      <a href="${downloadUrl}" style="display:block;background:#e8ff47;color:#0a0a0a;text-decoration:none;text-align:center;border-radius:12px;padding:15px 20px;font-size:15px;font-weight:700;margin-bottom:10px;">
+      <a href="${downloadUrl}" style="display:block;background:#ffb800;color:#0a0a0a;text-decoration:none;text-align:center;border-radius:12px;padding:15px 20px;font-size:15px;font-weight:700;margin-bottom:10px;">
         ⬇ Download All Photos
       </a>
       <a href="${galleryUrl}" style="display:block;background:transparent;color:#e0e0e0;text-decoration:none;text-align:center;border-radius:12px;padding:13px 20px;font-size:14px;font-weight:600;border:1px solid #222;">
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
         'Create a highlight album or slideshow',
       ].map(tip => `
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:13px;color:#666;">
-        <span style="color:#e8ff47;flex-shrink:0;font-weight:700;">✓</span>${tip}
+        <span style="color:#ffb800;flex-shrink:0;font-weight:700;">✓</span>${tip}
       </div>`).join('')}
     </div>
 
