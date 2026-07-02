@@ -53,6 +53,18 @@ export default function JoinPage() {
         router.push(`/join/${code}/camera`)
         return
       }
+      // Enforce the event's guest cap before adding a new guest
+      if (event.guest_cap) {
+        const { count } = await supabase
+          .from('guests')
+          .select('*', { count: 'exact', head: true })
+          .eq('event_id', event.id)
+        if ((count || 0) >= event.guest_cap) {
+          setError('This event is full — the guest limit has been reached.')
+          setJoining(false)
+          return
+        }
+      }
       const { data: guest, error: err } = await supabase
         .from('guests')
         .insert({ event_id: event.id, nickname: nickname.trim(), language: 'en' })

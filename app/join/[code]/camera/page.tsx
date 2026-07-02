@@ -29,6 +29,8 @@ export default function CameraPage() {
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment')
   const [uploading, setUploading] = useState(false)
   const [zoom, setZoom] = useState(1)
+  const [cssZoom, setCssZoom] = useState(1)
+  const nativeZoomRef = useRef(false)
   const [torchOn, setTorchOn] = useState(false)
   const [torchSupported, setTorchSupported] = useState(false)
   const [modeIndex, setModeIndex] = useState(0)
@@ -112,7 +114,9 @@ export default function CameraPage() {
         if (videoRef.current) {
           videoRef.current.srcObject = stream
           await new Promise<void>(resolve => {
-            videoRef.current!.onloadedmetadata = () => resolve()
+            const v = videoRef.current!
+            if (v.readyState >= 1) { resolve(); return }
+            v.onloadedmetadata = () => resolve()
           })
           videoRef.current.play().catch(() => {})
           setCameraReady(true)
@@ -121,6 +125,7 @@ export default function CameraPage() {
           const caps = track.getCapabilities?.() as any
           setTorchSupported(!!(caps?.torch))
           setTorchOn(false) // reset on camera switch
+          setZoom(1); setCssZoom(1); nativeZoomRef.current = !!(caps?.zoom)
         }
         return // success
       } catch (e) {
@@ -149,14 +154,18 @@ export default function CameraPage() {
   const applyZoom = async (level: number) => {
     setZoom(level)
     const track = streamRef.current?.getVideoTracks()[0]
-    if (!track) return
-    const caps = track.getCapabilities?.() as any
-    if (caps?.zoom) {
+    const caps = track?.getCapabilities?.() as any
+    if (track && caps?.zoom) {
+      nativeZoomRef.current = true
+      setCssZoom(1)
       const clamped = Math.max(caps.zoom.min, Math.min(level, caps.zoom.max))
       track.applyConstraints({ advanced: [{ zoom: clamped }] } as any).catch(() => {})
-    } else if (videoRef.current) {
-      videoRef.current.style.transform = `scale(${level})`
-      videoRef.current.style.transformOrigin = 'center center'
+    } else {
+      // No hardware zoom: zoom the preview via CSS and crop the same
+      // region at capture time so the photo matches what the guest saw.
+      // Can't zoom out below 1× without an ultrawide lens.
+      nativeZoomRef.current = false
+      setCssZoom(Math.max(level, 1))
     }
   }
 
@@ -186,13 +195,19 @@ export default function CameraPage() {
     // Cap at 2048px to keep file sizes reasonable while keeping detail
     const MAX = 2048
     const vw = video.videoWidth || 1920; const vh = video.videoHeight || 1080
-    const scale = (vw > MAX || vh > MAX) ? Math.min(MAX / vw, MAX / vh) : 1
-    canvas.width = Math.round(vw * scale); canvas.height = Math.round(vh * scale)
+    // When zoom is CSS-only (no hardware zoom), crop the center region so
+    // the captured photo matches the zoomed preview
+    const z = nativeZoomRef.current ? 1 : Math.max(cssZoom, 1)
+    const sw = vw / z; const sh = vh / z
+    const sx = (vw - sw) / 2; const sy = (vh - sh) / 2
+    const scale = (sw > MAX || sh > MAX) ? Math.min(MAX / sw, MAX / sh) : 1
+    canvas.width = Math.round(sw * scale); canvas.height = Math.round(sh * scale)
     const ctx = canvas.getContext('2d')!
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-    const blob = await applyFilterToCanvas(canvas, filter.id, 0.88)
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height)
+    const isFree = event?.payment_tier === 'free'
+    const blob = await applyFilterToCanvas(canvas, filter.id, 0.88, isFree)
     await uploadBlob(blob)
-  }, [shotsUsed, shotLimit, uploading, cameraReady, filter, event, guest])
+  }, [shotsUsed, shotLimit, uploading, cameraReady, filter, event, guest, cssZoom])
 
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return
@@ -279,7 +294,7 @@ export default function CameraPage() {
       {/* ── VIEWFINDER ── full frame, rounded corners, top bar overlaid inside */}
       <div style={{ flex: 1, position: 'relative', overflow: 'hidden', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 8px', borderRadius: 24 }}>
         <video ref={videoRef} autoPlay playsInline muted
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none', filter: cssFilter, transition: 'filter .25s' }} />
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: cameraReady ? 'block' : 'none', filter: cssFilter, transition: 'filter .25s, transform .2s', transform: `${facingMode === 'user' ? 'scaleX(-1) ' : ''}scale(${cssZoom})`, transformOrigin: 'center center' }} />
 
         {/* Loading */}
         {!cameraReady && !cameraError && (

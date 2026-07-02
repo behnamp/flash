@@ -18,6 +18,7 @@ export default function RevealPage() {
   const [revealedCount, setRevealedCount] = useState(0)
   const [skipReady, setSkipReady] = useState(false)
   const timers = useRef<ReturnType<typeof setTimeout>[]>([])
+  const channelCleanupRef = useRef<(() => void) | undefined>(undefined)
 
   const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = [] }
   const after = (ms: number, fn: () => void) => { timers.current.push(setTimeout(fn, ms)) }
@@ -39,14 +40,15 @@ export default function RevealPage() {
       if (!ev.revealed) {
         const channel = supabase.channel(`reveal-wait-${ev.id}`)
           .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'events', filter: `id=eq.${ev.id}` },
-            (payload: any) => { if (payload.new?.revealed) { supabase.removeChannel(channel); fetchAndStart(ev) } })
+            (payload: any) => { if (payload.new?.revealed) { supabase.removeChannel(channel); channelCleanupRef.current = undefined; fetchAndStart(ev) } })
           .subscribe()
+        channelCleanupRef.current = () => { supabase.removeChannel(channel) }
         return
       }
       fetchAndStart(ev)
     }
     load()
-    return () => { cancelled = true; clearTimers() }
+    return () => { cancelled = true; clearTimers(); channelCleanupRef.current?.() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code])
 
@@ -83,6 +85,12 @@ export default function RevealPage() {
     const revealDuration = Math.min(count, 20) * 50 + 1400
     after(6400 + revealDuration, () => setStage('finale'))
   }
+
+  // Mark the reveal as watched once the finale is reached, so guests who
+  // navigate back on their own aren't pulled into the reveal again
+  useEffect(() => {
+    if (stage === 'finale' && event?.id) localStorage.setItem(`flash_reveal_seen_${event.id}`, '1')
+  }, [stage, event?.id])
 
   const goGallery = () => {
     if (event?.id) localStorage.setItem(`flash_reveal_seen_${event.id}`, '1')

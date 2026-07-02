@@ -30,6 +30,8 @@ export default function EventDashboard() {
   const [selectedShot, setSelectedShot] = useState<any>(null)
   const [toast, setToast] = useState('')
   const toastRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const channelCleanupRef = useRef<(() => void) | undefined>(undefined)
+  const reelPollRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
 
   const showToast = (msg: string) => {
     setToast(msg)
@@ -61,9 +63,13 @@ export default function EventDashboard() {
           () => supabase.from('shot_gallery').select('*').eq('event_id', eventId).order('taken_at', { ascending: false }).then(({ data }) => { if (data) setShots(data) }))
         .subscribe()
 
-      return () => { supabase.removeChannel(channel) }
+      channelCleanupRef.current = () => { supabase.removeChannel(channel) }
     }
     load()
+    return () => {
+      channelCleanupRef.current?.()
+      clearInterval(reelPollRef.current)
+    }
   }, [eventId])
 
   const handleDeleteShot = async (shotId: string, storagePath?: string) => {
@@ -90,11 +96,12 @@ export default function EventDashboard() {
       const res = await fetch('/api/reel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ eventId }) })
       const data = await res.json()
       if (data.error) { showToast(data.error); setReelGenerating(false); setReelStatus('none'); return }
-      const poll = setInterval(async () => {
+      clearInterval(reelPollRef.current)
+      reelPollRef.current = setInterval(async () => {
         const r = await fetch(`/api/reel?jobId=${data.jobId}&eventId=${eventId}`)
         const s = await r.json()
-        if (s.status === 'done' && s.url) { setReelUrl(s.url); setReelStatus('done'); setReelGenerating(false); clearInterval(poll); showToast('AI Reel ready!') }
-        else if (s.status === 'failed') { setReelStatus('failed'); setReelGenerating(false); clearInterval(poll); showToast('Reel failed') }
+        if (s.status === 'done' && s.url) { setReelUrl(s.url); setReelStatus('done'); setReelGenerating(false); clearInterval(reelPollRef.current); showToast('AI Reel ready!') }
+        else if (s.status === 'failed') { setReelStatus('failed'); setReelGenerating(false); clearInterval(reelPollRef.current); showToast('Reel failed') }
       }, 10000)
     } catch { showToast('Failed to start reel'); setReelGenerating(false); setReelStatus('none') }
   }
