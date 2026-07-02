@@ -16,6 +16,7 @@ export default function SlideshowPage() {
   const [newPhoto, setNewPhoto] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
   const prevCountRef = useRef(0)
+  const channelCleanupRef = useRef<(() => void) | undefined>(undefined)
 
   useEffect(() => {
     async function load() {
@@ -54,9 +55,10 @@ export default function SlideshowPage() {
         })
         .subscribe()
 
-      return () => { supabase.removeChannel(channel) }
+      channelCleanupRef.current = () => { supabase.removeChannel(channel) }
     }
     load()
+    return () => { channelCleanupRef.current?.() }
   }, [code])
 
   // Auto-advance slideshow

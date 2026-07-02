@@ -45,6 +45,9 @@ export default function ScanPage() {
     }
   }
 
+  const jsqrRef = useRef<any>(null)
+  const frameCountRef = useRef(0)
+
   const scanLoop = async () => {
     if (!scanningRef.current) return
     const video = videoRef.current
@@ -53,9 +56,14 @@ export default function ScanPage() {
       rafRef.current = requestAnimationFrame(scanLoop)
       return
     }
-    canvas.width = video.videoWidth
-    canvas.height = video.videoHeight
-    canvas.getContext('2d')!.drawImage(video, 0, 0)
+
+    // Downscale for detection — full-res decode is wasted work
+    const targetW = 480
+    const scale = Math.min(1, targetW / (video.videoWidth || targetW))
+    canvas.width = Math.round((video.videoWidth || targetW) * scale)
+    canvas.height = Math.round((video.videoHeight || targetW) * scale)
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })!
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
 
     if ('BarcodeDetector' in window) {
       try {
@@ -63,6 +71,19 @@ export default function ScanPage() {
         const codes = await detector.detect(canvas)
         if (codes.length > 0) { handleResult(codes[0].rawValue); return }
       } catch {}
+    } else {
+      // iOS Safari has no BarcodeDetector — decode with jsQR (every 6th frame)
+      frameCountRef.current++
+      if (frameCountRef.current % 6 === 0) {
+        if (!jsqrRef.current) {
+          try { jsqrRef.current = (await import('jsqr')).default } catch { jsqrRef.current = null }
+        }
+        if (jsqrRef.current) {
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+          const found = jsqrRef.current(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' })
+          if (found?.data) { handleResult(found.data); return }
+        }
+      }
     }
     rafRef.current = requestAnimationFrame(scanLoop)
   }

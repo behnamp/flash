@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     // Free via promo
     if (finalPrice === 0 && promoData && eventId) {
       await fetch(`${supabaseUrl}/rest/v1/promo_codes?id=eq.${promoData.id}`, { method: 'PATCH', headers: svcHeaders, body: JSON.stringify({ uses_count: (promoData.uses_count || 0) + 1 }) })
-      await fetch(`${supabaseUrl}/rest/v1/events?id=eq.${eventId}`, { method: 'PATCH', headers: svcHeaders, body: JSON.stringify({ paid: true, is_active: true, payment_tier: tier, guest_cap: t.guests, paid_at: new Date().toISOString() }) })
+      await fetch(`${supabaseUrl}/rest/v1/events?id=eq.${eventId}&host_id=eq.${userId}`, { method: 'PATCH', headers: svcHeaders, body: JSON.stringify({ paid: true, is_active: true, payment_tier: tier, guest_cap: t.guests, paid_at: new Date().toISOString() }) })
       return NextResponse.json({ free: true, eventId, redirectUrl: `/host/${eventId}?payment=success` })
     }
 

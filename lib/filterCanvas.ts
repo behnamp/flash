@@ -148,8 +148,8 @@ export async function applyFilterToCanvas(
     ctx.filter = preset.filter
   }
 
-  // Draw source image with filter applied
-  ctx.drawImage(sourceCanvas, 0, 0)
+  // Draw source image with filter applied (scaled to fit the capped output size)
+  ctx.drawImage(sourceCanvas, 0, 0, w, h)
 
   // Reset filter before post-fx
   ctx.filter = 'none'
