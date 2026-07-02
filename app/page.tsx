@@ -163,36 +163,36 @@ export default function LandingPage() {
       <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
       {/* ── NAV ── */}
-      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, transition: 'background .3s, border .3s', background: scrolled ? 'rgba(10,10,10,0.92)' : 'transparent', backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: scrolled ? '1px solid #161616' : '1px solid transparent' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', height: 64 }}>
+      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderBottom: '1px solid #1e1e1e', boxShadow: scrolled ? '0 8px 24px rgba(0,0,0,0.45)' : 'none', transition: 'box-shadow .3s' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px', display: 'flex', alignItems: 'center', height: 64 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', marginRight: 'auto' }}>
-            <div style={{ width: 32, height: 32, background: '#e8ff47', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <div style={{ width: 34, height: 34, background: '#e8ff47', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
             </div>
-            <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 16, fontWeight: 700, color: '#f0f0f0', letterSpacing: -0.5 }}>Flash</span>
+            <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 17, fontWeight: 700, color: '#fff', letterSpacing: -0.5 }}>Flash</span>
           </Link>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 32 }} className="desktop-nav">
             {NAV_LINKS.map(l => (
               <Link key={l.label} href={l.href}
-                style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: '#555', textDecoration: 'none', textTransform: 'uppercase', transition: 'color .15s' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#f0f0f0')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#555')}>
+                style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: '#999', textDecoration: 'none', textTransform: 'uppercase', transition: 'color .15s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#999')}>
                 {l.label}
               </Link>
             ))}
           </div>
 
-          <Link href="/login"
-            style={{ marginLeft: 32, background: '#e8ff47', color: '#0a0a0a', borderRadius: 10, padding: '9px 20px', fontSize: 13, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap', transition: 'opacity .15s' }}
+          <Link href="/login" className="nav-cta"
+            style={{ background: '#e8ff47', color: '#0a0a0a', borderRadius: 10, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap', transition: 'opacity .15s' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
             Create Event
           </Link>
 
-          <button onClick={() => setMenuOpen(!menuOpen)} className="mobile-menu-btn"
-            style={{ marginLeft: 16, background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: '#f0f0f0' }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="mobile-menu-btn" aria-label="Menu"
+            style={{ marginLeft: 12, background: '#161616', border: '1px solid #2a2a2a', borderRadius: 10, cursor: 'pointer', padding: 9, color: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               {menuOpen
                 ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
                 : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>}
@@ -205,13 +205,18 @@ export default function LandingPage() {
             <motion.div
               initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.18, ease: E }}
-              style={{ background: '#0a0a0a', borderTop: '1px solid #161616', padding: '16px 24px 24px' }}>
+              style={{ background: '#0c0c0c', borderTop: '1px solid #1e1e1e', padding: '8px 20px 24px', boxShadow: '0 24px 48px rgba(0,0,0,0.6)' }}>
               {NAV_LINKS.map(l => (
                 <Link key={l.label} href={l.href} onClick={() => setMenuOpen(false)}
-                  style={{ display: 'block', padding: '12px 0', fontSize: 13, fontWeight: 700, letterSpacing: 1.5, color: '#555', textDecoration: 'none', textTransform: 'uppercase', borderBottom: '1px solid #161616' }}>
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 0', fontSize: 15, fontWeight: 700, letterSpacing: 1.2, color: '#f0f0f0', textDecoration: 'none', textTransform: 'uppercase', borderBottom: '1px solid #1a1a1a' }}>
                   {l.label}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
                 </Link>
               ))}
+              <Link href="/login" onClick={() => setMenuOpen(false)}
+                style={{ display: 'block', marginTop: 20, background: '#e8ff47', color: '#0a0a0a', textAlign: 'center', borderRadius: 12, padding: '15px 0', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
+                Create Event
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>
@@ -271,7 +276,7 @@ export default function LandingPage() {
               <img src={IMAGES.hero} alt="Flash camera UI" style={{ width: 220, height: 'auto', display: 'block' }} />
             </div>
             {/* Annotation */}
-            <motion.div
+            <motion.div className="hero-annotation"
               initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.1, duration: 0.4, ease: E }}
               style={{ position: 'absolute', top: 20, right: -88, background: '#161616', border: '1px solid #222', borderRadius: 10, padding: '6px 10px', whiteSpace: 'nowrap' }}>
@@ -291,7 +296,7 @@ export default function LandingPage() {
           <motion.div variants={hi}
             style={{ display: 'flex', gap: 0, border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden', background: '#111' }}>
             {STATS.map((s, i) => (
-              <div key={s.label} style={{ padding: '20px 32px', textAlign: 'center', borderRight: i < STATS.length - 1 ? '1px solid #1a1a1a' : 'none' }}>
+              <div key={s.label} className="stat-cell" style={{ textAlign: 'center', borderRight: i < STATS.length - 1 ? '1px solid #1a1a1a' : 'none' }}>
                 <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 28, fontWeight: 700, color: '#e8ff47', lineHeight: 1 }}>{s.value}</div>
                 <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444', marginTop: 6 }}>{s.label}</div>
               </div>
@@ -366,8 +371,8 @@ export default function LandingPage() {
             ))}
           </motion.div>
 
-          <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, maxWidth: 780, margin: '0 auto' }}>
+          <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP} className="usecase-grid"
+            style={{ display: 'grid', gap: 16, maxWidth: 780, margin: '0 auto' }}>
             <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', maxHeight: 480, boxShadow: '0 24px 48px rgba(0,0,0,0.5)' }}>
               <AnimatePresence mode="wait">
                 <motion.img
@@ -402,9 +407,9 @@ export default function LandingPage() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
           {STEPS.map((step, i) => (
-            <motion.div key={step.num}
+            <motion.div key={step.num} className="step-row"
               variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-              style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: 32, paddingBottom: 60, borderLeft: i < STEPS.length - 1 ? '1px solid #161616' : 'none', marginLeft: 39, paddingLeft: 40, position: 'relative' }}>
+              style={{ paddingBottom: 60, borderLeft: i < STEPS.length - 1 ? '1px solid #161616' : 'none', position: 'relative' }}>
               <div style={{ position: 'absolute', left: -8, top: 4, width: 16, height: 16, borderRadius: '50%', background: '#e8ff47', border: '3px solid #0a0a0a' }} />
               <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, fontWeight: 700, color: '#e8ff47', letterSpacing: 2, paddingTop: 2 }}>{step.num}</div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 32, flexWrap: 'wrap' }}>
@@ -623,64 +628,86 @@ export default function LandingPage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ borderTop: '1px solid #161616', padding: '60px 24px 40px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 40 }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-              <div style={{ width: 28, height: 28, background: '#e8ff47', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
+      <footer style={{ borderTop: '1px solid #1e1e1e', background: '#0c0c0c', padding: '56px 20px 36px' }}>
+        <div className="footer-grid" style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div className="footer-brand">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+              <div style={{ width: 32, height: 32, background: '#e8ff47', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
               </div>
-              <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 14, fontWeight: 700, color: '#f0f0f0' }}>Flash</span>
+              <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 16, fontWeight: 700, color: '#fff' }}>Flash</span>
             </div>
-            <p style={{ fontSize: 13, color: '#333', lineHeight: 1.7, maxWidth: 240 }}>A disposable camera for events. Shoot together, reveal together.</p>
+            <p style={{ fontSize: 14, color: '#777', lineHeight: 1.7, maxWidth: 280 }}>A disposable camera for events. Shoot together, reveal together.</p>
           </div>
 
           <div>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#333', marginBottom: 16 }}>Product</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 18 }}>Product</div>
             {[{ l: 'How it works', h: '#how' }, { l: 'Pricing', h: '/pricing' }, { l: 'For Planners', h: '/planners' }, { l: 'FAQ', h: '#faq' }].map(({ l, h }) => (
-              <Link key={l} href={h} style={{ display: 'block', fontSize: 13, color: '#444', textDecoration: 'none', marginBottom: 10, transition: 'color .15s' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#f0f0f0')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#444')}>
+              <Link key={l} href={h} style={{ display: 'block', fontSize: 14, color: '#999', textDecoration: 'none', marginBottom: 12, transition: 'color .15s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#999')}>
                 {l}
               </Link>
             ))}
           </div>
 
           <div>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#333', marginBottom: 16 }}>Events</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 18 }}>Events</div>
             {['Wedding', 'Birthday', 'Party', 'Corporate', 'Trip'].map(l => (
-              <div key={l} style={{ fontSize: 13, color: '#444', marginBottom: 10 }}>{l}</div>
+              <div key={l} style={{ fontSize: 14, color: '#999', marginBottom: 12 }}>{l}</div>
             ))}
           </div>
 
           <div>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#333', marginBottom: 16 }}>Legal</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 18 }}>Legal</div>
             {[{ l: 'Privacy', h: '/legal/privacy' }, { l: 'Terms', h: '/legal/terms' }].map(({ l, h }) => (
-              <Link key={l} href={h} style={{ display: 'block', fontSize: 13, color: '#444', textDecoration: 'none', marginBottom: 10, transition: 'color .15s' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#f0f0f0')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#444')}>
+              <Link key={l} href={h} style={{ display: 'block', fontSize: 14, color: '#999', textDecoration: 'none', marginBottom: 12, transition: 'color .15s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#999')}>
                 {l}
               </Link>
             ))}
-            <a href="mailto:hello@flashcam.app" style={{ display: 'block', fontSize: 13, color: '#444', textDecoration: 'none', marginBottom: 10, transition: 'color .15s' }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#f0f0f0')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#444')}>
+            <a href="mailto:hello@flashcam.app" style={{ display: 'block', fontSize: 14, color: '#999', textDecoration: 'none', marginBottom: 12, transition: 'color .15s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#999')}>
               Contact
             </a>
           </div>
         </div>
 
-        <div style={{ maxWidth: 1100, margin: '48px auto 0', paddingTop: 24, borderTop: '1px solid #111', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-          <div style={{ fontSize: 12, color: '#2a2a2a' }}>© 2026 Flash. All rights reserved.</div>
-          <div style={{ fontSize: 12, color: '#2a2a2a' }}>flashcam.app</div>
+        <div style={{ maxWidth: 1100, margin: '44px auto 0', paddingTop: 24, borderTop: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ fontSize: 13, color: '#555' }}>© 2026 Flash. All rights reserved.</div>
+          <div style={{ fontSize: 13, color: '#555' }}>flashcam.app</div>
         </div>
       </footer>
 
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes ticker { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+
+        /* ── Mobile-first defaults ── */
         .desktop-nav { display: none; }
-        @media (min-width: 768px) { .desktop-nav { display: flex; } .mobile-menu-btn { display: none; } }
+        .nav-cta { margin-left: 10px; padding: 8px 14px; font-size: 12px; }
+        .hero-annotation { display: none; }
+        .stat-cell { padding: 16px 18px; }
+        .usecase-grid { grid-template-columns: 1fr; }
+        .step-row { display: grid; grid-template-columns: 40px 1fr; gap: 12px; margin-left: 10px; padding-left: 22px; }
+        .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 24px; }
+        .footer-brand { grid-column: 1 / -1; }
+
+        /* ── Tablet / desktop ── */
+        @media (min-width: 768px) {
+          .desktop-nav { display: flex; }
+          .mobile-menu-btn { display: none !important; }
+          .nav-cta { margin-left: 32px; padding: 9px 20px; font-size: 13px; }
+          .hero-annotation { display: block; }
+          .stat-cell { padding: 20px 32px; }
+          .usecase-grid { grid-template-columns: 1fr 1fr; }
+          .step-row { grid-template-columns: 80px 1fr; gap: 32px; margin-left: 39px; padding-left: 40px; }
+          .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+          .footer-brand { grid-column: auto; }
+        }
+
         @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; } .ticker { animation: none !important; } }
       `}</style>
     </div>
