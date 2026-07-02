@@ -1,7 +1,17 @@
 'use client'
-import { VisualEditing } from '@sanity/visual-editing'
+import { useEffect } from 'react'
+import { enableVisualEditing } from '@sanity/visual-editing'
+
+function inIframe() {
+  try { return window.self !== window.top } catch { return true }
+}
 
 export function SanityVisualEditing() {
-  if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) return null
-  return <VisualEditing zIndex={999} />
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) return
+    if (!inIframe()) return
+    const disable = enableVisualEditing({ zIndex: 999 })
+    return () => disable()
+  }, [])
+  return null
 }
