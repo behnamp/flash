@@ -172,7 +172,7 @@ export default function LandingPage() {
             <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 17, fontWeight: 700, color: '#fff', letterSpacing: -0.5 }}>Flash</span>
           </Link>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 32 }} className="desktop-nav">
+          <div className="desktop-nav">
             {NAV_LINKS.map(l => (
               <Link key={l.label} href={l.href}
                 style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: '#999', textDecoration: 'none', textTransform: 'uppercase', transition: 'color .15s' }}
@@ -686,7 +686,7 @@ export default function LandingPage() {
         @keyframes ticker { from { transform: translateX(0) } to { transform: translateX(-50%) } }
 
         /* ── Mobile-first defaults ── */
-        .desktop-nav { display: none; }
+        .desktop-nav { display: none !important; align-items: center; gap: 32px; }
         .nav-cta { margin-left: 10px; padding: 8px 14px; font-size: 12px; }
         .hero-annotation { display: none; }
         .stat-cell { padding: 16px 18px; }
@@ -697,7 +697,7 @@ export default function LandingPage() {
 
         /* ── Tablet / desktop ── */
         @media (min-width: 768px) {
-          .desktop-nav { display: flex; }
+          .desktop-nav { display: flex !important; }
           .mobile-menu-btn { display: none !important; }
           .nav-cta { margin-left: 32px; padding: 9px 20px; font-size: 13px; }
           .hero-annotation { display: block; }
