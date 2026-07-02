@@ -1,6 +1,6 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
-import { presentationTool } from '@sanity/presentation'
+import { presentationTool } from 'sanity/presentation'
 import { schemaTypes } from './sanity/schemas'
 
 export default defineConfig({
@@ -14,9 +14,7 @@ export default defineConfig({
     presentationTool({
       previewUrl: {
         origin: 'https://flashcam.app',
-        draftMode: {
-          enable: '/api/draft-mode/enable',
-        },
+        preview: '/',
       },
     }),
   ],
