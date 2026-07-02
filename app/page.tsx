@@ -63,7 +63,7 @@ const USE_CASES = [
   { label: 'Birthday', color: '#c87828' },
   { label: 'Party', color: '#ffb800' },
   { label: 'Trip', color: '#4a8c6a' },
-  { label: 'Corporate', color: '#555' },
+  { label: 'Corporate', color: '#8a8a8a' },
 ]
 
 const REVIEWS = [
@@ -210,7 +210,7 @@ export default function LandingPage() {
                 <Link key={l.label} href={l.href} onClick={() => setMenuOpen(false)}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 0', fontSize: 15, fontWeight: 700, letterSpacing: 1.2, color: '#f0f0f0', textDecoration: 'none', textTransform: 'uppercase', borderBottom: '1px solid #1a1a1a' }}>
                   {l.label}
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#858585" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
                 </Link>
               ))}
               <Link href="/login" onClick={() => setMenuOpen(false)}
@@ -249,7 +249,7 @@ export default function LandingPage() {
 
           {/* Sub */}
           <motion.p variants={hi}
-            style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: '#555', lineHeight: 1.7, maxWidth: 520, margin: '0 0 44px' }}>
+            style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: '#8a8a8a', lineHeight: 1.7, maxWidth: 520, margin: '0 0 44px' }}>
             {cms?.heroSub || 'Flash is a disposable camera for events. Guests join by QR, shoot with film modes, and the gallery unlocks when you say so.'}
           </motion.p>
 
@@ -280,7 +280,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.1, duration: 0.4, ease: E }}
               style={{ position: 'absolute', top: 20, right: -88, background: '#161616', border: '1px solid #222', borderRadius: 10, padding: '6px 10px', whiteSpace: 'nowrap' }}>
-              <span style={{ fontSize: 10, color: '#666', fontFamily: 'Space Mono, monospace' }}>← your guests use this</span>
+              <span style={{ fontSize: 10, color: '#909090', fontFamily: 'Space Mono, monospace' }}>← your guests use this</span>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
@@ -298,7 +298,7 @@ export default function LandingPage() {
             {STATS.map((s, i) => (
               <div key={s.label} className="stat-cell" style={{ textAlign: 'center', borderRight: i < STATS.length - 1 ? '1px solid #1a1a1a' : 'none' }}>
                 <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 28, fontWeight: 700, color: '#ffb800', lineHeight: 1 }}>{s.value}</div>
-                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444', marginTop: 6 }}>{s.label}</div>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#858585', marginTop: 6 }}>{s.label}</div>
               </div>
             ))}
           </motion.div>
@@ -309,7 +309,7 @@ export default function LandingPage() {
       <div style={{ borderTop: '1px solid #161616', borderBottom: '1px solid #161616', overflow: 'hidden', background: '#080808', padding: '14px 0' }}>
         <div style={{ display: 'flex', gap: 32, animation: 'ticker 28s linear infinite', whiteSpace: 'nowrap', width: 'max-content' }}>
           {[...TICKER, ...TICKER].map((t, i) => (
-            <span key={i} style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: t === '·' ? '#ffb800' : '#2a2a2a' }}>{t}</span>
+            <span key={i} style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: t === '·' ? '#ffb800' : '#909090' }}>{t}</span>
           ))}
         </div>
       </div>
@@ -317,13 +317,13 @@ export default function LandingPage() {
       {/* ── REVIEWS ── */}
       <section style={{ padding: '100px 24px', maxWidth: 1100, margin: '0 auto' }}>
         <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-          style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 12, textAlign: 'center' }}>
+          style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 12, textAlign: 'center' }}>
           What hosts say
         </motion.div>
         <motion.p variants={fu} initial="hidden" whileInView="visible" viewport={VP}
           style={{ fontSize: 'clamp(22px, 4vw, 36px)', fontWeight: 700, letterSpacing: -1, textAlign: 'center', marginBottom: 56, lineHeight: 1.2, color: '#f0f0f0', maxWidth: 600, margin: '0 auto 56px' }}>
           Real people. Real events.<br />
-          <span style={{ color: '#555' }}>Real happy.</span>
+          <span style={{ color: '#8a8a8a' }}>Real happy.</span>
         </motion.p>
         <motion.div variants={staggerGrid} initial="hidden" whileInView="visible" viewport={VP}
           style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
@@ -339,8 +339,8 @@ export default function LandingPage() {
                 ))}
               </div>
               <div style={{ fontSize: 15, fontWeight: 700, color: '#f0f0f0', marginBottom: 12, lineHeight: 1.35 }}>{r.title}</div>
-              <p style={{ fontSize: 14, color: '#555', lineHeight: 1.75, margin: '0 0 20px' }}>{r.body}</p>
-              <div style={{ fontSize: 11, color: '#2e2e2e', fontFamily: 'Space Mono, monospace' }}>{r.author} · {r.date}</div>
+              <p style={{ fontSize: 14, color: '#8a8a8a', lineHeight: 1.75, margin: '0 0 20px' }}>{r.body}</p>
+              <div style={{ fontSize: 11, color: '#8a8a8a', fontFamily: 'Space Mono, monospace' }}>{r.author} · {r.date}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -350,7 +350,7 @@ export default function LandingPage() {
       <section style={{ padding: '80px 24px', background: '#0d0d0d' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 16, textAlign: 'center' }}>
             Use cases
           </motion.div>
           <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
@@ -365,7 +365,7 @@ export default function LandingPage() {
               <motion.button key={uc.label} variants={ci}
                 onClick={() => setActiveUseCase(i)}
                 whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-                style={{ background: activeUseCase === i ? 'rgba(255,184,0,0.08)' : 'transparent', border: `1px solid ${activeUseCase === i ? '#ffb800' : '#222'}`, borderRadius: 20, padding: '8px 20px', fontSize: 13, fontWeight: 600, color: activeUseCase === i ? '#ffb800' : '#555', cursor: 'pointer', transition: 'color .2s, background .2s, border-color .2s', fontFamily: 'inherit' }}>
+                style={{ background: activeUseCase === i ? 'rgba(255,184,0,0.08)' : 'transparent', border: `1px solid ${activeUseCase === i ? '#ffb800' : '#222'}`, borderRadius: 20, padding: '8px 20px', fontSize: 13, fontWeight: 600, color: activeUseCase === i ? '#ffb800' : '#8a8a8a', cursor: 'pointer', transition: 'color .2s, background .2s, border-color .2s', fontFamily: 'inherit' }}>
                 {uc.label}
               </motion.button>
             ))}
@@ -397,7 +397,7 @@ export default function LandingPage() {
       {/* ── HOW IT WORKS ── */}
       <section id="how" style={{ padding: '100px 24px', maxWidth: 1100, margin: '0 auto' }}>
         <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-          style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+          style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 16, textAlign: 'center' }}>
           How it works
         </motion.div>
         <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
@@ -415,8 +415,8 @@ export default function LandingPage() {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 32, flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: 240 }}>
                   <h3 style={{ fontSize: 22, fontWeight: 700, color: '#f0f0f0', marginBottom: 12, letterSpacing: -0.5 }}>{step.title}</h3>
-                  <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7, marginBottom: 10 }}>{step.body}</p>
-                  <div style={{ fontSize: 12, color: '#333', fontStyle: 'italic' }}>{step.accent}</div>
+                  <p style={{ fontSize: 15, color: '#8a8a8a', lineHeight: 1.7, marginBottom: 10 }}>{step.body}</p>
+                  <div style={{ fontSize: 12, color: '#787878', fontStyle: 'italic' }}>{step.accent}</div>
                 </div>
                 {step.img && (
                   <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.25 }}
@@ -439,7 +439,7 @@ export default function LandingPage() {
             <span style={{ color: '#ffb800' }}>Don't let it fade.</span>
           </motion.h2>
           <motion.p variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ fontSize: 16, color: '#555', marginBottom: 40, lineHeight: 1.6 }}>
+            style={{ fontSize: 16, color: '#8a8a8a', marginBottom: 40, lineHeight: 1.6 }}>
             Start free. Your first 10 guests are on us.
           </motion.p>
           <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
@@ -459,13 +459,13 @@ export default function LandingPage() {
       {/* ── FAQ ── */}
       <section id="faq" style={{ padding: '100px 24px', maxWidth: 780, margin: '0 auto' }}>
         <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-          style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+          style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 16, textAlign: 'center' }}>
           FAQ
         </motion.div>
         <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
           style={{ fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 60, lineHeight: 1.1 }}>
           Got questions?<br />
-          <span style={{ color: '#444' }}>We've got answers.</span>
+          <span style={{ color: '#858585' }}>We've got answers.</span>
         </motion.h2>
 
         <motion.div variants={staggerGrid} initial="hidden" whileInView="visible" viewport={VP}
@@ -479,7 +479,7 @@ export default function LandingPage() {
                   animate={{ rotate: openFaq === i ? 45 : 0 }}
                   transition={{ duration: 0.2, ease: E }}
                   style={{ width: 28, height: 28, background: '#161616', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8a8a8a" strokeWidth="2.5" strokeLinecap="round">
                     <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                   </svg>
                 </motion.div>
@@ -493,7 +493,7 @@ export default function LandingPage() {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.28, ease: E }}
                     style={{ overflow: 'hidden' }}>
-                    <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7, margin: '0 0 22px', paddingRight: 44 }}>{faq.a}</p>
+                    <p style={{ fontSize: 15, color: '#8a8a8a', lineHeight: 1.7, margin: '0 0 22px', paddingRight: 44 }}>{faq.a}</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -514,7 +514,7 @@ export default function LandingPage() {
         </motion.div>
 
         <motion.p variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-          style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#333', marginBottom: 24 }}>
+          style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#787878', marginBottom: 24 }}>
           A single day becomes timeless
         </motion.p>
         <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
@@ -537,7 +537,7 @@ export default function LandingPage() {
 
           {/* Header */}
           <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 16, textAlign: 'center' }}>
             Flash for Professionals
           </motion.div>
           <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
@@ -546,7 +546,7 @@ export default function LandingPage() {
             <span style={{ color: '#ffb800' }}>who run the night.</span>
           </motion.h2>
           <motion.p variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ fontSize: 16, color: '#555', textAlign: 'center', lineHeight: 1.7, maxWidth: 480, margin: '0 auto 72px' }}>
+            style={{ fontSize: 16, color: '#8a8a8a', textAlign: 'center', lineHeight: 1.7, maxWidth: 480, margin: '0 auto 72px' }}>
             DJs, venues, and promoters run Flash every weekend. One flat monthly rate — no per-event fees, no surprise charges.
           </motion.p>
 
@@ -576,7 +576,7 @@ export default function LandingPage() {
                   {w.icon}
                 </div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#f0f0f0', marginBottom: 10, letterSpacing: -0.3 }}>{w.label}</div>
-                <div style={{ fontSize: 13, color: '#555', lineHeight: 1.7 }}>{w.body}</div>
+                <div style={{ fontSize: 13, color: '#8a8a8a', lineHeight: 1.7 }}>{w.body}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -602,11 +602,11 @@ export default function LandingPage() {
                 }}>
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 700, color: plan.color, marginBottom: 4, letterSpacing: 0.3 }}>{plan.name}</div>
-                  <div style={{ fontSize: 11, color: '#444', lineHeight: 1.5 }}>{plan.desc}</div>
+                  <div style={{ fontSize: 11, color: '#858585', lineHeight: 1.5 }}>{plan.desc}</div>
                 </div>
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 18, fontWeight: 700, color: plan.highlight ? '#ffb800' : '#f0f0f0' }}>{plan.price}</span>
-                  <span style={{ fontSize: 11, color: '#444' }}>{plan.period} CAD</span>
+                  <span style={{ fontSize: 11, color: '#858585' }}>{plan.period} CAD</span>
                 </div>
               </motion.div>
             ))}
@@ -621,7 +621,7 @@ export default function LandingPage() {
                 See professional plans →
               </Link>
             </motion.div>
-            <div style={{ fontSize: 12, color: '#333', marginTop: 14 }}>Monthly billing · Cancel anytime · No setup fees</div>
+            <div style={{ fontSize: 12, color: '#787878', marginTop: 14 }}>Monthly billing · Cancel anytime · No setup fees</div>
           </motion.div>
 
         </div>
@@ -637,11 +637,11 @@ export default function LandingPage() {
               </div>
               <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 16, fontWeight: 700, color: '#fff' }}>Flash</span>
             </div>
-            <p style={{ fontSize: 13, color: '#777', lineHeight: 1.6, maxWidth: 280 }}>A disposable camera for events. Shoot together, reveal together.</p>
+            <p style={{ fontSize: 13, color: '#9a9a9a', lineHeight: 1.6, maxWidth: 280 }}>A disposable camera for events. Shoot together, reveal together.</p>
           </div>
 
           <div>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 14 }}>Product</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#909090', marginBottom: 14 }}>Product</div>
             {[{ l: 'How it works', h: '#how' }, { l: 'Pricing', h: '/pricing' }, { l: 'For Planners', h: '/planners' }, { l: 'FAQ', h: '#faq' }].map(({ l, h }) => (
               <Link key={l} href={h} style={{ display: 'block', fontSize: 14, color: '#999', textDecoration: 'none', marginBottom: 10, transition: 'color .15s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
@@ -652,14 +652,14 @@ export default function LandingPage() {
           </div>
 
           <div className="footer-events">
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 14 }}>Events</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#909090', marginBottom: 14 }}>Events</div>
             {['Wedding', 'Birthday', 'Party', 'Corporate', 'Trip'].map(l => (
               <div key={l} style={{ fontSize: 14, color: '#999', marginBottom: 10 }}>{l}</div>
             ))}
           </div>
 
           <div>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 14 }}>Legal</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#909090', marginBottom: 14 }}>Legal</div>
             {[{ l: 'Privacy', h: '/legal/privacy' }, { l: 'Terms', h: '/legal/terms' }].map(({ l, h }) => (
               <Link key={l} href={h} style={{ display: 'block', fontSize: 14, color: '#999', textDecoration: 'none', marginBottom: 10, transition: 'color .15s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
@@ -676,8 +676,8 @@ export default function LandingPage() {
         </div>
 
         <div className="footer-bottom" style={{ maxWidth: 1100, margin: '0 auto', paddingTop: 20, borderTop: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-          <div style={{ fontSize: 13, color: '#555' }}>© 2026 Flash. All rights reserved.</div>
-          <div style={{ fontSize: 13, color: '#555' }}>flashcam.app</div>
+          <div style={{ fontSize: 13, color: '#8a8a8a' }}>© 2026 Flash. All rights reserved.</div>
+          <div style={{ fontSize: 13, color: '#8a8a8a' }}>flashcam.app</div>
         </div>
       </footer>
 

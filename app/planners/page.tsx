@@ -249,9 +249,9 @@ export default function PlannersPage() {
             <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 14, fontWeight: 700, color: '#f0f0f0', letterSpacing: -0.5 }}>Flash</span>
           </Link>
           <Link href="/planners/dashboard"
-            style={{ fontSize: 12, fontWeight: 700, color: '#555', textDecoration: 'none', letterSpacing: 0.5 }}
+            style={{ fontSize: 12, fontWeight: 700, color: '#8a8a8a', textDecoration: 'none', letterSpacing: 0.5 }}
             onMouseEnter={e => (e.currentTarget.style.color = '#f0f0f0')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#555')}>
+            onMouseLeave={e => (e.currentTarget.style.color = '#8a8a8a')}>
             Dashboard
           </Link>
           <Link href="#plans"
@@ -284,7 +284,7 @@ export default function PlannersPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: E, delay: 0.25 }}
-          style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: '#555', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 48px' }}>
+          style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: '#8a8a8a', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 48px' }}>
           {cms?.heroSub || 'DJs, venues, and promoters use Flash to capture every event — no photographer, no app, no friction. Just a QR code and film.'}
         </motion.p>
 
@@ -308,13 +308,13 @@ export default function PlannersPage() {
       <section id="how" style={{ padding: '80px 24px', borderTop: '1px solid #111' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <motion.div variants={f} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 16, textAlign: 'center' }}>
             Who it's for
           </motion.div>
           <motion.h2 variants={f} initial="hidden" whileInView="visible" viewport={VP}
             style={{ fontSize: 'clamp(26px, 4vw, 48px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 56, lineHeight: 1.1 }}>
             Your events. Documented.<br />
-            <span style={{ color: '#444' }}>Without lifting a camera.</span>
+            <span style={{ color: '#858585' }}>Without lifting a camera.</span>
           </motion.h2>
 
           <motion.div variants={sg} initial="hidden" whileInView="visible" viewport={VP}
@@ -326,7 +326,7 @@ export default function PlannersPage() {
                   {w.icon}
                 </div>
                 <div style={{ fontSize: 18, fontWeight: 700, color: '#f0f0f0', marginBottom: 10, letterSpacing: -0.4 }}>{w.label}</div>
-                <div style={{ fontSize: 14, color: '#555', lineHeight: 1.7 }}>{w.body}</div>
+                <div style={{ fontSize: 14, color: '#8a8a8a', lineHeight: 1.7 }}>{w.body}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -346,7 +346,7 @@ export default function PlannersPage() {
               style={{ textAlign: 'center', padding: '32px 24px', borderRight: i < 3 ? '1px solid #1a1a1a' : 'none' }}>
               <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 700, color: '#ffb800', marginBottom: 6 }}>{s.n}</div>
               <div style={{ fontSize: 14, fontWeight: 600, color: '#ccc', marginBottom: 4 }}>{s.label}</div>
-              <div style={{ fontSize: 11, color: '#444' }}>{s.sub}</div>
+              <div style={{ fontSize: 11, color: '#858585' }}>{s.sub}</div>
             </motion.div>
           ))}
         </div>
@@ -356,7 +356,7 @@ export default function PlannersPage() {
       <section id="plans" style={{ padding: '100px 24px' }}>
         <div style={{ maxWidth: 1060, margin: '0 auto' }}>
           <motion.div variants={f} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 16, textAlign: 'center' }}>
             Professional Plans
           </motion.div>
           <motion.h2 variants={f} initial="hidden" whileInView="visible" viewport={VP}
@@ -364,7 +364,7 @@ export default function PlannersPage() {
             One flat rate.<br />Every event covered.
           </motion.h2>
           <motion.p variants={f} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ fontSize: 15, color: '#555', textAlign: 'center', marginBottom: 60 }}>
+            style={{ fontSize: 15, color: '#8a8a8a', textAlign: 'center', marginBottom: 60 }}>
             No per-event fees. No surprise charges. Cancel anytime.
           </motion.p>
 
@@ -386,15 +386,15 @@ export default function PlannersPage() {
                   </div>
                 )}
 
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: plan.highlight ? '#ffb800' : '#555', marginBottom: 8 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: plan.highlight ? '#ffb800' : '#8a8a8a', marginBottom: 8 }}>
                   {plan.name}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 6 }}>
                   <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 44, fontWeight: 700, color: '#f0f0f0', lineHeight: 1 }}>{plan.price}</span>
-                  <span style={{ fontSize: 14, color: '#444' }}>{plan.period}</span>
-                  <span style={{ fontSize: 11, color: '#333', marginLeft: 2 }}>CAD</span>
+                  <span style={{ fontSize: 14, color: '#858585' }}>{plan.period}</span>
+                  <span style={{ fontSize: 11, color: '#787878', marginLeft: 2 }}>CAD</span>
                 </div>
-                <div style={{ fontSize: 13, color: '#555', marginBottom: 24, lineHeight: 1.5 }}>{plan.tagline}</div>
+                <div style={{ fontSize: 13, color: '#8a8a8a', marginBottom: 24, lineHeight: 1.5 }}>{plan.tagline}</div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28, padding: '16px', background: plan.highlight ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.25)', borderRadius: 12 }}>
                   {[plan.events, plan.guests].map((l, i) => (
@@ -410,10 +410,10 @@ export default function PlannersPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32 }}>
                   {plan.features.map((feat, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={plan.highlight ? '#ffb800' : '#555'} strokeWidth="2.5" strokeLinecap="round" style={{ marginTop: 2, flexShrink: 0 }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={plan.highlight ? '#ffb800' : '#8a8a8a'} strokeWidth="2.5" strokeLinecap="round" style={{ marginTop: 2, flexShrink: 0 }}>
                         <polyline points="20 6 9 17 4 12"/>
                       </svg>
-                      <span style={{ fontSize: 13, color: '#666', lineHeight: 1.5 }}>{feat}</span>
+                      <span style={{ fontSize: 13, color: '#909090', lineHeight: 1.5 }}>{feat}</span>
                     </div>
                   ))}
                 </div>
@@ -428,7 +428,7 @@ export default function PlannersPage() {
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       width: '100%', textAlign: 'center',
                       background: loadingPlan === plan.id ? '#222' : plan.highlight ? '#ffb800' : '#1e1e1e',
-                      color: loadingPlan === plan.id ? '#555' : plan.highlight ? '#0a0a0a' : '#ccc',
+                      color: loadingPlan === plan.id ? '#8a8a8a' : plan.highlight ? '#0a0a0a' : '#ccc',
                       border: plan.highlight ? 'none' : '1px solid #333',
                       borderRadius: 12, padding: '15px 20px',
                       fontSize: 14, fontWeight: 700, cursor: loadingPlan ? 'default' : 'pointer',
@@ -457,9 +457,9 @@ export default function PlannersPage() {
 
           <motion.div variants={f} initial="hidden" whileInView="visible" viewport={VP}
             style={{ marginTop: 24, textAlign: 'center', padding: '20px 24px', background: '#0e0e0e', border: '1px solid #1a1a1a', borderRadius: 14 }}>
-            <span style={{ fontSize: 13, color: '#444' }}>
+            <span style={{ fontSize: 13, color: '#858585' }}>
               Not sure yet? Start with a{' '}
-              <Link href="/pricing" style={{ color: '#666', textDecoration: 'none', borderBottom: '1px solid #333' }}>per-event plan</Link>
+              <Link href="/pricing" style={{ color: '#909090', textDecoration: 'none', borderBottom: '1px solid #333' }}>per-event plan</Link>
               {' '}— from $1.99 per event. Upgrade anytime.
             </span>
           </motion.div>
@@ -470,7 +470,7 @@ export default function PlannersPage() {
       <section style={{ padding: '80px 24px', background: '#0d0d0d', borderTop: '1px solid #111', borderBottom: '1px solid #111' }}>
         <div style={{ maxWidth: 1060, margin: '0 auto' }}>
           <motion.div variants={f} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+            style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 16, textAlign: 'center' }}>
             From the pros
           </motion.div>
           <motion.h2 variants={f} initial="hidden" whileInView="visible" viewport={VP}
@@ -493,7 +493,7 @@ export default function PlannersPage() {
                 </div>
                 <p style={{ fontSize: 14, color: '#888', lineHeight: 1.75, marginBottom: 20, fontStyle: 'italic' }}>"{t.quote}"</p>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#ccc' }}>{t.author}</div>
-                <div style={{ fontSize: 11, color: '#444', marginTop: 3 }}>{t.role}</div>
+                <div style={{ fontSize: 11, color: '#858585', marginTop: 3 }}>{t.role}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -503,7 +503,7 @@ export default function PlannersPage() {
       {/* ── FAQ ── */}
       <section style={{ padding: '100px 24px', maxWidth: 780, margin: '0 auto' }}>
         <motion.div variants={f} initial="hidden" whileInView="visible" viewport={VP}
-          style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, textAlign: 'center' }}>
+          style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 16, textAlign: 'center' }}>
           FAQ
         </motion.div>
         <motion.h2 variants={f} initial="hidden" whileInView="visible" viewport={VP}
@@ -521,7 +521,7 @@ export default function PlannersPage() {
                   animate={{ rotate: openFaq === i ? 45 : 0 }}
                   transition={{ duration: 0.2, ease: E }}
                   style={{ width: 28, height: 28, background: '#161616', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8a8a8a" strokeWidth="2.5" strokeLinecap="round">
                     <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                   </svg>
                 </motion.div>
@@ -535,7 +535,7 @@ export default function PlannersPage() {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.28, ease: E }}
                     style={{ overflow: 'hidden' }}>
-                    <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7, margin: '0 0 22px', paddingRight: 44 }}>{faq.a}</p>
+                    <p style={{ fontSize: 15, color: '#8a8a8a', lineHeight: 1.7, margin: '0 0 22px', paddingRight: 44 }}>{faq.a}</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -549,7 +549,7 @@ export default function PlannersPage() {
       <section style={{ padding: '80px 24px 100px', textAlign: 'center', borderTop: '1px solid #111', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 400, background: 'radial-gradient(ellipse, rgba(255,184,0,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <motion.p variants={f} initial="hidden" whileInView="visible" viewport={VP}
-          style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#333', marginBottom: 24 }}>
+          style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#787878', marginBottom: 24 }}>
           Ready to scale?
         </motion.p>
         <motion.h2 variants={f} initial="hidden" whileInView="visible" viewport={VP}
@@ -581,10 +581,10 @@ export default function PlannersPage() {
             <span style={{ fontSize: 12, color: '#2a2a2a', marginLeft: 12 }}>© 2026</span>
           </div>
           <div style={{ display: 'flex', gap: 24 }}>
-            <Link href="/" style={{ fontSize: 12, color: '#444', textDecoration: 'none' }}>Home</Link>
-            <Link href="/pricing" style={{ fontSize: 12, color: '#444', textDecoration: 'none' }}>Pricing</Link>
-            <a href="mailto:hello@flashcam.app" style={{ fontSize: 12, color: '#444', textDecoration: 'none' }}>Contact</a>
-            <Link href="/legal/privacy" style={{ fontSize: 12, color: '#444', textDecoration: 'none' }}>Privacy</Link>
+            <Link href="/" style={{ fontSize: 12, color: '#858585', textDecoration: 'none' }}>Home</Link>
+            <Link href="/pricing" style={{ fontSize: 12, color: '#858585', textDecoration: 'none' }}>Pricing</Link>
+            <a href="mailto:hello@flashcam.app" style={{ fontSize: 12, color: '#858585', textDecoration: 'none' }}>Contact</a>
+            <Link href="/legal/privacy" style={{ fontSize: 12, color: '#858585', textDecoration: 'none' }}>Privacy</Link>
           </div>
         </div>
       </footer>
