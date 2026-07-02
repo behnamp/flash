@@ -116,16 +116,24 @@ const heroItem = {
   visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.55, ease: E } },
 }
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: E } },
+  hidden: { opacity: 0, y: 28, filter: 'blur(6px)' },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.6, ease: E } },
 }
 const staggerGrid = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
+  visible: { transition: { staggerChildren: 0.09 } },
 }
 const cardItem = {
-  hidden: { opacity: 0, y: 18 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: E } },
+  hidden: { opacity: 0, y: 24, scale: 0.96 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: E } },
+}
+const popIn = {
+  hidden: { opacity: 0, scale: 0 },
+  visible: { opacity: 1, scale: 1, transition: { type: 'spring' as const, stiffness: 320, damping: 18 } },
+}
+const slideIn = {
+  hidden: { opacity: 0, x: 32 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.55, ease: E } },
 }
 
 // viewport config reused across sections
@@ -157,6 +165,12 @@ export default function LandingPage() {
   const ci = reduced
     ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
     : cardItem
+  const pp = reduced
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
+    : popIn
+  const si = reduced
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } } }
+    : slideIn
 
   return (
     <div style={{ background: '#0a0a0a', color: '#f0f0f0', fontFamily: "'Space Grotesk', sans-serif", minHeight: '100dvh', overflowX: 'hidden' }}>
@@ -223,15 +237,18 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px 24px 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '108px 20px 56px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
         {/* Background glow */}
-        <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,-50%)', width: 700, height: 700, background: 'radial-gradient(circle, rgba(255,184,0,0.07) 0%, transparent 65%)', pointerEvents: 'none' }} />
+        <motion.div
+          animate={reduced ? undefined : { opacity: [0.6, 1, 0.6], scale: [1, 1.08, 1] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,-50%)', width: 700, height: 700, background: 'radial-gradient(circle, rgba(255,184,0,0.07) 0%, transparent 65%)', pointerEvents: 'none' }} />
 
         <motion.div variants={heroContainer} initial="hidden" animate="visible"
           style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
 
           {/* Badge */}
-          <motion.div variants={hi} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,184,0,0.08)', border: '1px solid rgba(255,184,0,0.2)', borderRadius: 20, padding: '6px 14px', marginBottom: 32 }}>
+          <motion.div variants={hi} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,184,0,0.08)', border: '1px solid rgba(255,184,0,0.2)', borderRadius: 20, padding: '6px 14px', marginBottom: 24 }}>
             <motion.div
               animate={{ scale: [1, 1.4, 1] }}
               transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
@@ -249,12 +266,12 @@ export default function LandingPage() {
 
           {/* Sub */}
           <motion.p variants={hi}
-            style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: '#8a8a8a', lineHeight: 1.7, maxWidth: 520, margin: '0 0 44px' }}>
+            style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: '#8a8a8a', lineHeight: 1.7, maxWidth: 520, margin: '0 0 36px' }}>
             {cms?.heroSub || 'Flash is a disposable camera for events. Guests join by QR, shoot with film modes, and the gallery unlocks when you say so.'}
           </motion.p>
 
           {/* CTAs */}
-          <motion.div variants={hi} style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 72 }}>
+          <motion.div variants={hi} style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 48 }}>
             <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
               <Link href="/login"
                 style={{ background: '#ffb800', color: '#0a0a0a', borderRadius: 14, padding: '16px 32px', fontSize: 16, fontWeight: 700, textDecoration: 'none', display: 'block' }}>
@@ -270,11 +287,14 @@ export default function LandingPage() {
           </motion.div>
 
           {/* Phone mockup */}
-          <motion.div variants={hi} style={{ position: 'relative', marginBottom: 56, width: 220 }}
+          <motion.div variants={hi} style={{ position: 'relative', marginBottom: 40, width: 220 }}
             whileHover={{ y: -4 }} transition={{ duration: 0.3, ease: E }}>
-            <div style={{ borderRadius: 28, overflow: 'hidden', border: '1px solid #1e1e1e', boxShadow: '0 40px 80px rgba(0,0,0,0.6)' }}>
+            <motion.div
+              animate={reduced ? undefined : { y: [0, -10, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ borderRadius: 28, overflow: 'hidden', border: '1px solid #1e1e1e', boxShadow: '0 40px 80px rgba(0,0,0,0.6)' }}>
               <img src={IMAGES.hero} alt="Flash camera UI" style={{ width: 220, height: 'auto', display: 'block' }} />
-            </div>
+            </motion.div>
             {/* Annotation */}
             <motion.div className="hero-annotation"
               initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
@@ -296,10 +316,11 @@ export default function LandingPage() {
           <motion.div variants={hi}
             style={{ display: 'flex', gap: 0, border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden', background: '#111' }}>
             {STATS.map((s, i) => (
-              <div key={s.label} className="stat-cell" style={{ textAlign: 'center', borderRight: i < STATS.length - 1 ? '1px solid #1a1a1a' : 'none' }}>
+              <motion.div key={s.label} className="stat-cell" whileHover={{ y: -3, background: 'rgba(255,184,0,0.04)' }} transition={{ duration: 0.2 }}
+                style={{ textAlign: 'center', borderRight: i < STATS.length - 1 ? '1px solid #1a1a1a' : 'none' }}>
                 <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 28, fontWeight: 700, color: '#ffb800', lineHeight: 1 }}>{s.value}</div>
                 <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#858585', marginTop: 6 }}>{s.label}</div>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
         </motion.div>
@@ -307,7 +328,7 @@ export default function LandingPage() {
 
       {/* ── TICKER STRIP ── */}
       <div style={{ borderTop: '1px solid #161616', borderBottom: '1px solid #161616', overflow: 'hidden', background: '#080808', padding: '14px 0' }}>
-        <div style={{ display: 'flex', gap: 32, animation: 'ticker 28s linear infinite', whiteSpace: 'nowrap', width: 'max-content' }}>
+        <div style={{ display: 'flex', gap: 32, animation: 'ticker 22s linear infinite', whiteSpace: 'nowrap', width: 'max-content' }}>
           {[...TICKER, ...TICKER].map((t, i) => (
             <span key={i} style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: t === '·' ? '#ffb800' : '#909090' }}>{t}</span>
           ))}
@@ -315,13 +336,13 @@ export default function LandingPage() {
       </div>
 
       {/* ── REVIEWS ── */}
-      <section style={{ padding: '100px 24px', maxWidth: 1100, margin: '0 auto' }}>
+      <section style={{ padding: '64px 20px', maxWidth: 1100, margin: '0 auto' }}>
         <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
           style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 12, textAlign: 'center' }}>
           What hosts say
         </motion.div>
         <motion.p variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-          style={{ fontSize: 'clamp(22px, 4vw, 36px)', fontWeight: 700, letterSpacing: -1, textAlign: 'center', marginBottom: 56, lineHeight: 1.2, color: '#f0f0f0', maxWidth: 600, margin: '0 auto 56px' }}>
+          style={{ fontSize: 'clamp(22px, 4vw, 36px)', fontWeight: 700, letterSpacing: -1, textAlign: 'center', marginBottom: 56, lineHeight: 1.2, color: '#f0f0f0', maxWidth: 600, margin: '0 auto 40px' }}>
           Real people. Real events.<br />
           <span style={{ color: '#8a8a8a' }}>Real happy.</span>
         </motion.p>
@@ -347,20 +368,20 @@ export default function LandingPage() {
       </section>
 
       {/* ── USE CASES ── */}
-      <section style={{ padding: '80px 24px', background: '#0d0d0d' }}>
+      <section style={{ padding: '56px 20px', background: '#0d0d0d' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
             style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 16, textAlign: 'center' }}>
             Use cases
           </motion.div>
           <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 48, lineHeight: 1.1 }}>
+            style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 36, lineHeight: 1.1 }}>
             "Your guests captured<br />
             <span style={{ color: '#ffb800' }}>moments you never saw."</span>
           </motion.h2>
 
           <motion.div variants={staggerGrid} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 48 }}>
+            style={{ display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 36 }}>
             {USE_CASES.map((uc, i) => (
               <motion.button key={uc.label} variants={ci}
                 onClick={() => setActiveUseCase(i)}
@@ -373,35 +394,37 @@ export default function LandingPage() {
 
           <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP} className="usecase-grid"
             style={{ display: 'grid', gap: 16, maxWidth: 780, margin: '0 auto' }}>
-            <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', maxHeight: 480, boxShadow: '0 24px 48px rgba(0,0,0,0.5)' }}>
+            <motion.div whileHover={{ scale: 1.015 }} transition={{ duration: 0.25, ease: E }}
+              style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', maxHeight: 480, boxShadow: '0 24px 48px rgba(0,0,0,0.5)' }}>
               <AnimatePresence mode="wait">
                 <motion.img
                   key={activeUseCase}
                   src={activeUseCase === 0 ? IMAGES.wedding : IMAGES.party}
                   alt={USE_CASES[activeUseCase].label}
-                  initial={{ opacity: 0, scale: 1.03 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3, ease: E }}
+                  initial={{ opacity: 0, scale: 1.08, filter: 'blur(4px)' }}
+                  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.45, ease: E }}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 />
               </AnimatePresence>
-            </div>
-            <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', maxHeight: 480, boxShadow: '0 24px 48px rgba(0,0,0,0.5)' }}>
+            </motion.div>
+            <motion.div variants={si} whileHover={{ scale: 1.015 }} transition={{ duration: 0.25, ease: E }}
+              style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', maxHeight: 480, boxShadow: '0 24px 48px rgba(0,0,0,0.5)' }}>
               <img src={IMAGES.hero} alt="Flash camera" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section id="how" style={{ padding: '100px 24px', maxWidth: 1100, margin: '0 auto' }}>
+      <section id="how" style={{ padding: '64px 20px', maxWidth: 1100, margin: '0 auto' }}>
         <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
           style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 16, textAlign: 'center' }}>
           How it works
         </motion.div>
         <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-          style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 80, lineHeight: 1.1 }}>
+          style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 36, lineHeight: 1.1 }}>
           How a night becomes a film.
         </motion.h2>
 
@@ -409,8 +432,9 @@ export default function LandingPage() {
           {STEPS.map((step, i) => (
             <motion.div key={step.num} className="step-row"
               variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-              style={{ paddingBottom: 60, borderLeft: i < STEPS.length - 1 ? '1px solid #161616' : 'none', position: 'relative' }}>
-              <div style={{ position: 'absolute', left: -8, top: 4, width: 16, height: 16, borderRadius: '50%', background: '#ffb800', border: '3px solid #0a0a0a' }} />
+              style={{ paddingBottom: 44, borderLeft: i < STEPS.length - 1 ? '1px solid #161616' : 'none', position: 'relative' }}>
+              <motion.div variants={pp}
+                style={{ position: 'absolute', left: -8, top: 4, width: 16, height: 16, borderRadius: '50%', background: '#ffb800', border: '3px solid #0a0a0a' }} />
               <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, fontWeight: 700, color: '#ffb800', letterSpacing: 2, paddingTop: 2 }}>{step.num}</div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 32, flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: 240 }}>
@@ -419,7 +443,7 @@ export default function LandingPage() {
                   <div style={{ fontSize: 12, color: '#787878', fontStyle: 'italic' }}>{step.accent}</div>
                 </div>
                 {step.img && (
-                  <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.25 }}
+                  <motion.div variants={si} whileHover={{ y: -4, rotate: -1.5 }} transition={{ duration: 0.25 }}
                     style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid #1e1e1e', flexShrink: 0, width: 140, boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
                     <img src={IMAGES[step.img]} alt={step.title} style={{ width: '100%', display: 'block' }} />
                   </motion.div>
@@ -431,8 +455,12 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA BANNER ── */}
-      <section style={{ padding: '80px 24px', background: '#0d0d0d', textAlign: 'center' }}>
-        <div style={{ maxWidth: 640, margin: '0 auto' }}>
+      <section style={{ padding: '56px 20px', background: '#0d0d0d', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <motion.div
+          animate={reduced ? undefined : { opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 320, background: 'radial-gradient(ellipse, rgba(255,184,0,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: 640, margin: '0 auto', position: 'relative' }}>
           <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
             style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, letterSpacing: -1.5, marginBottom: 16, lineHeight: 1.1 }}>
             Life happens once.<br />
@@ -457,13 +485,13 @@ export default function LandingPage() {
       </section>
 
       {/* ── FAQ ── */}
-      <section id="faq" style={{ padding: '100px 24px', maxWidth: 780, margin: '0 auto' }}>
+      <section id="faq" style={{ padding: '64px 20px', maxWidth: 780, margin: '0 auto' }}>
         <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
           style={{ fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: '#858585', marginBottom: 16, textAlign: 'center' }}>
           FAQ
         </motion.div>
         <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-          style={{ fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 60, lineHeight: 1.1 }}>
+          style={{ fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 700, letterSpacing: -1.5, textAlign: 'center', marginBottom: 40, lineHeight: 1.1 }}>
           Got questions?<br />
           <span style={{ color: '#858585' }}>We've got answers.</span>
         </motion.h2>
@@ -504,11 +532,14 @@ export default function LandingPage() {
       </section>
 
       {/* ── FINAL CTA ── */}
-      <section style={{ padding: '100px 24px 60px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 700, height: 400, background: 'radial-gradient(ellipse, rgba(255,184,0,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
+      <section style={{ padding: '64px 20px 48px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <motion.div
+          animate={reduced ? undefined : { opacity: [0.5, 1, 0.5], scale: [1, 1.06, 1] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 700, height: 400, background: 'radial-gradient(ellipse, rgba(255,184,0,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
         <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-          style={{ marginBottom: 48, borderRadius: 20, overflow: 'hidden', border: '1px solid #1a1a1a', maxWidth: 680, margin: '0 auto 48px', boxShadow: '0 32px 64px rgba(0,0,0,0.6)' }}
+          style={{ marginBottom: 36, borderRadius: 20, overflow: 'hidden', border: '1px solid #1a1a1a', maxWidth: 680, margin: '0 auto 36px', boxShadow: '0 32px 64px rgba(0,0,0,0.6)' }}
           whileHover={{ scale: 1.01 }} transition={{ duration: 0.3, ease: E }}>
           <img src={IMAGES.cta} alt="Flash gallery reveal" style={{ width: '100%', display: 'block' }} />
         </motion.div>
@@ -518,7 +549,7 @@ export default function LandingPage() {
           A single day becomes timeless
         </motion.p>
         <motion.h2 variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-          style={{ fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 700, letterSpacing: -2, marginBottom: 48, lineHeight: 1.0, color: '#f0f0f0' }}>
+          style={{ fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 700, letterSpacing: -2, marginBottom: 36, lineHeight: 1.0, color: '#f0f0f0' }}>
           when remembered<br />together.
         </motion.h2>
         <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP}
@@ -532,7 +563,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── FOR PLANNERS ── */}
-      <section id="planners" style={{ padding: '100px 24px', background: '#0d0d0d', borderTop: '1px solid #111', borderBottom: '1px solid #111' }}>
+      <section id="planners" style={{ padding: '64px 20px', background: '#0d0d0d', borderTop: '1px solid #111', borderBottom: '1px solid #111' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
 
           {/* Header */}
@@ -546,13 +577,13 @@ export default function LandingPage() {
             <span style={{ color: '#ffb800' }}>who run the night.</span>
           </motion.h2>
           <motion.p variants={fu} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ fontSize: 16, color: '#8a8a8a', textAlign: 'center', lineHeight: 1.7, maxWidth: 480, margin: '0 auto 72px' }}>
+            style={{ fontSize: 16, color: '#8a8a8a', textAlign: 'center', lineHeight: 1.7, maxWidth: 480, margin: '0 auto 36px' }}>
             DJs, venues, and promoters run Flash every weekend. One flat monthly rate — no per-event fees, no surprise charges.
           </motion.p>
 
           {/* Audience cards */}
           <motion.div variants={staggerGrid} initial="hidden" whileInView="visible" viewport={VP}
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14, marginBottom: 56 }}>
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14, marginBottom: 40 }}>
             {[
               {
                 icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffb800" strokeWidth="1.6" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 6.8A5 5 0 0 1 17 10h1a2 2 0 0 1 0 4h-1a5 5 0 0 1-5 4.9"/><circle cx="9.5" cy="14.5" r="1"/></svg>,
