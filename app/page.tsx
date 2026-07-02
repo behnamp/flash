@@ -628,22 +628,22 @@ export default function LandingPage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ borderTop: '1px solid #1e1e1e', background: '#0c0c0c', padding: '56px 20px 36px' }}>
+      <footer className="site-footer" style={{ borderTop: '1px solid #1e1e1e', background: '#0c0c0c' }}>
         <div className="footer-grid" style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div className="footer-brand">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
               <div style={{ width: 32, height: 32, background: '#ffb800', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
               </div>
               <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 16, fontWeight: 700, color: '#fff' }}>Flash</span>
             </div>
-            <p style={{ fontSize: 14, color: '#777', lineHeight: 1.7, maxWidth: 280 }}>A disposable camera for events. Shoot together, reveal together.</p>
+            <p style={{ fontSize: 13, color: '#777', lineHeight: 1.6, maxWidth: 280 }}>A disposable camera for events. Shoot together, reveal together.</p>
           </div>
 
           <div>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 18 }}>Product</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 14 }}>Product</div>
             {[{ l: 'How it works', h: '#how' }, { l: 'Pricing', h: '/pricing' }, { l: 'For Planners', h: '/planners' }, { l: 'FAQ', h: '#faq' }].map(({ l, h }) => (
-              <Link key={l} href={h} style={{ display: 'block', fontSize: 14, color: '#999', textDecoration: 'none', marginBottom: 12, transition: 'color .15s' }}
+              <Link key={l} href={h} style={{ display: 'block', fontSize: 14, color: '#999', textDecoration: 'none', marginBottom: 10, transition: 'color .15s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#999')}>
                 {l}
@@ -651,23 +651,23 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <div>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 18 }}>Events</div>
+          <div className="footer-events">
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 14 }}>Events</div>
             {['Wedding', 'Birthday', 'Party', 'Corporate', 'Trip'].map(l => (
-              <div key={l} style={{ fontSize: 14, color: '#999', marginBottom: 12 }}>{l}</div>
+              <div key={l} style={{ fontSize: 14, color: '#999', marginBottom: 10 }}>{l}</div>
             ))}
           </div>
 
           <div>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 18 }}>Legal</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#666', marginBottom: 14 }}>Legal</div>
             {[{ l: 'Privacy', h: '/legal/privacy' }, { l: 'Terms', h: '/legal/terms' }].map(({ l, h }) => (
-              <Link key={l} href={h} style={{ display: 'block', fontSize: 14, color: '#999', textDecoration: 'none', marginBottom: 12, transition: 'color .15s' }}
+              <Link key={l} href={h} style={{ display: 'block', fontSize: 14, color: '#999', textDecoration: 'none', marginBottom: 10, transition: 'color .15s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#999')}>
                 {l}
               </Link>
             ))}
-            <a href="mailto:hello@flashcam.app" style={{ display: 'block', fontSize: 14, color: '#999', textDecoration: 'none', marginBottom: 12, transition: 'color .15s' }}
+            <a href="mailto:hello@flashcam.app" style={{ display: 'block', fontSize: 14, color: '#999', textDecoration: 'none', marginBottom: 10, transition: 'color .15s' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
               onMouseLeave={e => (e.currentTarget.style.color = '#999')}>
               Contact
@@ -675,7 +675,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <div style={{ maxWidth: 1100, margin: '44px auto 0', paddingTop: 24, borderTop: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+        <div className="footer-bottom" style={{ maxWidth: 1100, margin: '0 auto', paddingTop: 20, borderTop: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
           <div style={{ fontSize: 13, color: '#555' }}>© 2026 Flash. All rights reserved.</div>
           <div style={{ fontSize: 13, color: '#555' }}>flashcam.app</div>
         </div>
@@ -692,8 +692,11 @@ export default function LandingPage() {
         .stat-cell { padding: 16px 18px; }
         .usecase-grid { grid-template-columns: 1fr; }
         .step-row { display: grid; grid-template-columns: 40px 1fr; gap: 12px; margin-left: 10px; padding-left: 22px; }
-        .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 24px; }
+        .site-footer { padding: 36px 20px 24px; }
+        .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 20px; }
         .footer-brand { grid-column: 1 / -1; }
+        .footer-events { display: none; }
+        .footer-bottom { margin-top: 28px !important; }
 
         /* ── Tablet / desktop ── */
         @media (min-width: 768px) {
@@ -704,8 +707,11 @@ export default function LandingPage() {
           .stat-cell { padding: 20px 32px; }
           .usecase-grid { grid-template-columns: 1fr 1fr; }
           .step-row { grid-template-columns: 80px 1fr; gap: 32px; margin-left: 39px; padding-left: 40px; }
+          .site-footer { padding: 56px 24px 36px; }
           .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
           .footer-brand { grid-column: auto; }
+          .footer-events { display: block; }
+          .footer-bottom { margin-top: 44px !important; }
         }
 
         @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; } .ticker { animation: none !important; } }
