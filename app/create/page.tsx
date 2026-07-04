@@ -47,10 +47,10 @@ const REVEAL_ICONS: Record<string, any> = {
   milestone: Star,
 }
 
-const TOTAL = 7
+const TOTAL = 3
 
 const Label = ({ children }: { children: React.ReactNode }) => (
-  <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 2.5, textTransform: 'uppercase', color: '#444', marginBottom: 10 }}>{children}</div>
+  <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 2.5, textTransform: 'uppercase', color: '#8a8a8a', marginBottom: 10 }}>{children}</div>
 )
 
 const Inp = ({ label, ...props }: any) => (
@@ -64,7 +64,7 @@ const Toggle = ({ on, onChange, label, sub }: { on: boolean; onChange: (v: boole
   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 0', borderBottom: '1px solid #161616' }}>
     <div style={{ flex: 1, paddingRight: 20 }}>
       <div style={{ fontSize: 14, fontWeight: 500, color: '#ddd' }}>{label}</div>
-      {sub && <div style={{ fontSize: 12, color: '#444', marginTop: 3 }}>{sub}</div>}
+      {sub && <div style={{ fontSize: 12, color: '#8a8a8a', marginTop: 3 }}>{sub}</div>}
     </div>
     <div onClick={() => onChange(!on)} style={{ width: 46, height: 26, borderRadius: 13, background: on ? '#ffb800' : '#222', position: 'relative', cursor: 'pointer', transition: 'background .2s', flexShrink: 0 }}>
       <div style={{ position: 'absolute', width: 20, height: 20, borderRadius: '50%', background: on ? '#0a0a0a' : '#444', top: 3, left: on ? 23 : 3, transition: 'left .18s' }} />
@@ -149,11 +149,11 @@ export default function CreateEvent() {
   }
 
   const canContinue = () => {
-    if (step === 2) return form.eventName.trim().length > 0 && form.date.length > 0
+    if (step === 1) return form.eventName.trim().length > 0 && form.date.length > 0
     return true
   }
 
-  const TITLES = ["What's the occasion?", "Name your event", "Set the rules", "Photo modes", "When to reveal?", "Design your cover", "Final settings"]
+  const TITLES = ["What's the occasion?", "Guests & plan", "Ready to create"]
 
   return (
     <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
@@ -209,26 +209,21 @@ export default function CreateEvent() {
                 </div>
               )
             })}
+            <div style={{ marginTop: 24 }}>
+              <Inp label="Event Name *" placeholder="e.g. Sarah & Marco's Wedding" value={form.eventName} onChange={(e: any) => set('eventName', e.target.value)} />
+              <Inp label="Event Date *" type="date" value={form.date} style={{ colorScheme: 'dark', width: '100%', boxSizing: 'border-box' }} onChange={(e: any) => set('date', e.target.value)} />
+              <Inp label="Venue (optional)" placeholder="e.g. Grand Ballroom, Toronto" value={form.venue} onChange={(e: any) => set('venue', e.target.value)} />
+            </div>
           </div>
         )}
 
         {step === 2 && (
           <div>
-            <Inp label="Event Name *" placeholder="e.g. Sarah & Marco's Wedding" value={form.eventName} onChange={(e: any) => set('eventName', e.target.value)} />
-            {step === 2 && !form.eventName.trim() && <div style={{ fontSize: 11, color: '#ff4757', marginTop: -8, marginBottom: 8 }}>Required</div>}
-            <Inp label="Event Date *" type="date" value={form.date} style={{ colorScheme: 'dark', width: '100%', boxSizing: 'border-box' }} onChange={(e: any) => set('date', e.target.value)} />
-            {step === 2 && !form.date && <div style={{ fontSize: 11, color: '#ff4757', marginTop: -8, marginBottom: 8 }}>Required</div>}
-            <Inp label="Venue (optional)" placeholder="e.g. Grand Ballroom, Toronto" value={form.venue} onChange={(e: any) => set('venue', e.target.value)} />
-          </div>
-        )}
-
-        {step === 3 && (
-          <div>
             <div style={{ background: '#111', borderRadius: 16, padding: '20px 18px', marginBottom: 20, border: '1px solid #1e1e1e' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 18 }}>
                 <div>
                   <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 52, fontWeight: 700, color: '#ffb800', lineHeight: 1 }}>{form.shotLimit}</div>
-                  <div style={{ fontSize: 12, color: '#444', marginTop: 5 }}>shots per guest</div>
+                  <div style={{ fontSize: 12, color: '#8a8a8a', marginTop: 5 }}>photos per guest</div>
                 {form.guestCap === '5' && form.shotLimit >= 10 && (
                   <div style={{ fontSize: 10, color: '#2ed573', marginTop: 3 }}>Free plan max</div>
                 )}
@@ -241,13 +236,13 @@ export default function CreateEvent() {
                 <span style={{ color: form.guestCap === '5' ? '#2ed573' : '#333' }}>{form.guestCap === '5' ? '10 (free max)' : '40'}</span>
               </div>
             </div>
-            <Label>Guest Cap</Label>
+            <Label>Max Guests</Label>
             {/* Free tier callout */}
             <div onClick={() => { set('guestCap', '5'); if (form.shotLimit > 10) set('shotLimit', 10) }}
               style={{ background: form.guestCap === '5' ? 'rgba(46,213,115,0.08)' : '#111', border: `1px solid ${form.guestCap === '5' ? 'rgba(46,213,115,0.5)' : '#1e1e1e'}`, borderRadius: 12, paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, marginBottom: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 700, color: form.guestCap === '5' ? '#2ed573' : '#ccc', marginBottom: 3 }}>≤ 5 guests — Free</div>
-                <div style={{ fontSize: 12, color: '#444' }}>No payment needed · Perfect for testing</div>
+                <div style={{ fontSize: 12, color: '#8a8a8a' }}>No payment needed · Perfect for testing</div>
               </div>
               <div style={{ background: 'rgba(46,213,115,0.12)', border: '1px solid rgba(46,213,115,0.3)', borderRadius: 8, padding: '4px 10px', fontSize: 10, fontWeight: 800, color: '#2ed573', letterSpacing: 1, textTransform: 'uppercase' }}>
                 Free
@@ -258,207 +253,42 @@ export default function CreateEvent() {
                 <div key={n} onClick={() => set('guestCap', n)} style={{ background: form.guestCap === n ? 'rgba(255,184,0,0.08)' : '#111', border: `1px solid ${form.guestCap === n ? '#ffb800' : '#1e1e1e'}`, borderRadius: 10, padding: '8px 16px', fontSize: 13, fontFamily: 'Space Mono, monospace', color: form.guestCap === n ? '#ffb800' : '#444', cursor: 'pointer' }}>{n}</div>
               ))}
             </div>
-            <Toggle on={form.allowCaptions} onChange={v => set('allowCaptions', v)} label="Photo Captions" sub="Guests add text — auto-translated for all" />
-            <Toggle on={form.guestBook} onChange={v => set('guestBook', v)} label="Guest Book" sub="15-sec video messages from front camera" />
-            <Toggle on={form.liveSlideshow} onChange={v => set('liveSlideshow', v)} label="Live Slideshow" sub="Cast gallery to a TV or projector in real-time" />
-            <Toggle on={form.scavengerHunt} onChange={v => set('scavengerHunt', v)} label="Scavenger Hunt" sub="Give guests photo prompts to complete" />
-            {form.scavengerHunt && (
-              <div style={{ marginTop: 16 }}>
-                <Label>Prompts — {form.scavengerPrompts.length} selected</Label>
-                {SCAVENGER_PROMPTS.map(p => {
-                  const on = form.scavengerPrompts.includes(p)
-                  return (
-                    <div key={p} onClick={() => {
-                      const cur = form.scavengerPrompts
-                      set('scavengerPrompts', cur.includes(p) ? cur.filter((x: string) => x !== p) : [...cur, p])
-                    }} style={{ background: on ? 'rgba(255,184,0,0.06)' : '#111', border: `1px solid ${on ? '#ffb800' : '#1e1e1e'}`, borderRadius: 10, padding: '11px 14px', marginBottom: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <div style={{ width: 18, height: 18, borderRadius: '50%', border: `1.5px solid ${on ? '#ffb800' : '#333'}`, background: on ? '#ffb800' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        {on && <Check size={10} color="#000" weight="bold" />}
-                      </div>
-                      <span style={{ fontSize: 13, color: on ? '#ddd' : '#555' }}>{p}</span>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
           </div>
         )}
 
-        {step === 4 && (
+        {step === 3 && (
           <div>
-            <Label>Guest Mode Control</Label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 28 }}>
-              {MODE_CONTROLS.map(mc => {
-                const sel = form.modeControl === mc.id
-                return (
-                  <div key={mc.id} onClick={() => { set('modeControl', mc.id); if (mc.id === 'lock') { const first = form.selectedModes[0] || 'kodak'; set('selectedModes', [first]); set('lockedMode', first) } }} style={{ background: sel ? 'rgba(255,184,0,0.06)' : '#111', border: `1px solid ${sel ? '#ffb800' : '#1e1e1e'}`, borderRadius: 12, paddingBottom: '14px', paddingLeft: 16, paddingRight: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
-                    <div style={{ width: 20, height: 20, borderRadius: '50%', border: `1.5px solid ${sel ? '#ffb800' : '#333'}`, background: sel ? '#ffb800' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {sel && <Check size={10} color="#000" weight="bold" />}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: sel ? '#ffb800' : '#ccc' }}>{mc.label}</div>
-                      <div style={{ fontSize: 12, color: '#444', marginTop: 2 }}>{mc.desc}</div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-            {Object.entries(PHOTO_MODES).map(([cat, modes]) => (
-              <div key={cat} style={{ marginBottom: 24 }}>
-                <Label>{cat}</Label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
-                  {(modes as any[]).map((m: any) => {
-                    const sel = form.selectedModes.includes(m.id)
-                    return (
-                      <div key={m.id} onClick={() => toggleMode(m.id)} style={{ background: '#0e0e0e', border: `1px solid ${sel ? '#ffb800' : '#1a1a1a'}`, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', position: 'relative', transition: 'border .15s' }}>
-                        {sel && <div style={{ position: 'absolute', top: 7, right: 7, width: 17, height: 17, background: '#ffb800', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}><Check size={9} color="#000" weight="bold" /></div>}
-                        {/* CSS gradient preview — no external images, always loads */}
-                        <div style={{ height: 90, position: 'relative', overflow: 'hidden' }}>
-                          {/* Base gradient */}
-                          <div style={{
-                            position: 'absolute', inset: 0,
-                            background: MODE_PREVIEWS[m.id]?.bg || '#111',
-                            filter: MODE_PREVIEWS[m.id]?.filter || 'none',
-                          }} />
-                          {/* Overlay (neon glow, grain, light leak effects) */}
-                          {MODE_PREVIEWS[m.id]?.overlay && (
-                            <div style={{ position: 'absolute', inset: 0, background: MODE_PREVIEWS[m.id].overlay }} />
-                          )}
-                          {/* Vignette */}
-                          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%)', pointerEvents: 'none' }} />
-                          {/* Selected border */}
-                          {sel && <div style={{ position: 'absolute', inset: 0, border: '2px solid #ffb800', borderRadius: 14, pointerEvents: 'none' }} />}
-                        </div>
-                        <div style={{ padding: '7px 6px 9px', textAlign: 'center' }}>
-                          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', color: sel ? '#ffb800' : '#555' }}>{m.name}</div>
-                        </div>
-                      </div>
-                    )
-                  })}
+            <div style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 16, padding: '6px 18px', marginBottom: 16 }}>
+              {[
+                ['Occasion', EVENT_TYPES.find(t => t.id === form.eventType)?.label || 'Other'],
+                ['Name', form.eventName || '—'],
+                ['Date', form.date || '—'],
+                ...(form.venue ? [['Venue', form.venue]] : []),
+                ['Max guests', form.guestCap === '∞' ? 'Unlimited' : form.guestCap],
+                ['Photos per guest', String(form.shotLimit)],
+              ].map(([l, v]) => (
+                <div key={l as string} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '13px 0', borderBottom: '1px solid #1a1a1a' }}>
+                  <span style={{ fontSize: 12, color: '#999' }}>{l}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#f0f0f0', textAlign: 'right', maxWidth: '60%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v}</span>
                 </div>
+              ))}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '13px 0' }}>
+                <span style={{ fontSize: 12, color: '#999' }}>Plan</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: form.guestCap === '5' ? '#2ed573' : '#ffb800' }}>
+                  {form.guestCap === '5' ? 'Free' : 'Paid — choose on the next screen'}
+                </span>
               </div>
-            ))}
-          </div>
-        )}
-
-        {step === 5 && (
-          <div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28 }}>
-              {(REVEAL_MODES as unknown as any[]).map((r: any) => {
-                const sel = form.revealMode === r.id
-                const Icon = REVEAL_ICONS[r.id]
-                return (
-                  <div key={r.id} onClick={() => set('revealMode', r.id)} style={{ background: sel ? 'rgba(255,184,0,0.06)' : '#111', border: `1px solid ${sel ? '#ffb800' : '#1e1e1e'}`, borderRadius: 14, padding: '16px', cursor: 'pointer', display: 'flex', alignItems: 'flex-start', gap: 14 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, background: sel ? 'rgba(255,184,0,0.12)' : '#161616', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {Icon && <Icon size={18} color={sel ? '#ffb800' : '#555'} />}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: sel ? '#ffb800' : '#ccc', marginBottom: 4 }}>{r.name}</div>
-                      <div style={{ fontSize: 12, color: '#444', lineHeight: 1.5 }}>{r.desc}</div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        {step === 6 && (
-          <div>
-            {/* ── COVER CARD ── full width, 9:16 */}
-            <div style={{ borderRadius: 20, overflow: 'hidden', width: '100%', aspectRatio: '9/16', background: form.coverColor, position: 'relative', marginBottom: 14 }}>
-
-              {/* Background photo */}
-              {form.coverImageUrl && (
-                <img src={form.coverImageUrl} alt="cover" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-              )}
-
-              {/* Color overlay */}
-              {form.coverOverlay && form.coverOverlay !== 'none' && (
-                <div style={{ position: 'absolute', inset: 0, background: form.coverOverlay, mixBlendMode: 'multiply' }} />
-              )}
-
-              {/* Gradient — stronger at top and bottom */}
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.72) 100%)' }} />
-
-              {/* ── EMOJI: top-left, above the name section ── */}
-              {form.coverEmoji && (
-                <div style={{ position: 'absolute', top: 12, left: 16, fontSize: 32, lineHeight: 1, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.6))', pointerEvents: 'none', zIndex: 2 }}>
-                  {form.coverEmoji}
-                </div>
-              )}
-
-              {/* ── TOP: Event name + Upload button (below emoji) ── */}
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '56px 16px 0' }}>
-                {/* Event name */}
-                <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.45)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Event</div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: 'white', lineHeight: 1.2, marginBottom: 14 }}>
-                  {form.eventName || <span style={{ color: 'rgba(255,255,255,0.3)', fontWeight: 400, fontSize: 15 }}>Your event name</span>}
-                </div>
-                {/* Upload button */}
-                <button onClick={() => coverInputRef.current?.click()}
-                  style={{ width: '100%', background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 12, padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', color: 'white', fontSize: 13, fontWeight: 700, fontFamily: 'inherit' }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
-                    <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none"/><polyline points="21,15 16,10 5,21"/>
-                  </svg>
-                  {form.coverImageUrl ? 'Change Cover Photo' : 'Upload Your Photo'}
-                </button>
-                {/* Remove */}
-                {form.coverImageUrl && (
-                  <button onClick={() => { set('coverImageUrl', ''); set('coverImageFile', null) }}
-                    style={{ width: '100%', background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.35)', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit', marginTop: 6, paddingBottom: 0 }}>
-                    Remove photo
-                  </button>
-                )}
-              </div>
-
-              {/* ── BOTTOM: Overlays + Emojis ── */}
-              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 16px 18px' }}>
-                {/* Overlay colors */}
-                <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.45)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Overlay</div>
-                <div style={{ display: 'flex', gap: 7, marginBottom: 14 }}>
-                  {[
-                    { v: 'none',                    bg: 'transparent',  border: '1.5px solid rgba(255,255,255,0.4)' },
-                    { v: 'rgba(0,0,0,0.5)',         bg: '#000' },
-                    { v: 'rgba(180,80,0,0.5)',      bg: '#b45000' },
-                    { v: 'rgba(0,40,160,0.5)',      bg: '#0028a0' },
-                    { v: 'rgba(160,0,80,0.5)',      bg: '#a00050' },
-                    { v: 'rgba(0,80,40,0.5)',       bg: '#005028' },
-                    { v: 'rgba(160,120,0,0.5)',     bg: '#a07800' },
-                  ].map(ov => (
-                    <div key={ov.v} onClick={() => set('coverOverlay', ov.v)}
-                      style={{ width: 30, height: 30, borderRadius: 9, background: ov.bg || 'transparent', border: form.coverOverlay === ov.v ? '2.5px solid #ffb800' : (ov.border || '2px solid transparent'), cursor: 'pointer', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.5)', transition: 'border .15s' }} />
-                  ))}
-                </div>
-                {/* Emoji icons */}
-                <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.45)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Icon</div>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {['⚡','💍','🎂','🎉','✈️','🏆','🎵','📷','🌅','🎬','🌿','🔥','🎊','🥂','🎈','❤️'].map(em => (
-                    <div key={em} onClick={() => set('coverEmoji', em)}
-                      style={{ width: 34, height: 34, borderRadius: 9, background: form.coverEmoji === em ? 'rgba(255,184,0,0.25)' : 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', border: `1.5px solid ${form.coverEmoji === em ? '#ffb800' : 'rgba(255,255,255,0.15)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, cursor: 'pointer', transition: 'all .15s' }}>
-                      {em}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
             </div>
 
-            <input ref={coverInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
-              const file = e.target.files?.[0]; if (!file) return
-              set('coverImageUrl', URL.createObjectURL(file))
-              set('coverImageFile', file)
-              e.target.value = ''
-            }} />
-          </div>
-        )}
+            <div style={{ background: 'rgba(255,184,0,0.04)', border: '1px solid rgba(255,184,0,0.15)', borderRadius: 14, padding: '14px 16px', marginBottom: 16 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#ffb800', marginBottom: 6 }}>Smart defaults applied</div>
+              <div style={{ fontSize: 12, color: '#999', lineHeight: 1.7 }}>
+                Film: Kodak Gold (locked) · Reveal: End of event · Classic cover.
+                Customize film modes, reveal timing, cover and extras anytime from your event page.
+              </div>
+            </div>
 
-        {step === 7 && (
-          <div>
-            <Toggle on={form.aiReel} onChange={v => set('aiReel', v)} label="AI Highlight Reel" sub="Auto-generate a cinematic 30-sec video of the best shots" />
-            <Toggle on={form.printEnabled} onChange={v => set('printEnabled', v)} label="Print Integration" sub="Guests can order physical prints from the gallery" />
-            <Toggle on={form.statsCard} onChange={v => set('statsCard', v)} label="Event Stats Card" sub="Shareable recap card shown after the reveal" />
-            {error && <div style={{ color: '#ff4757', fontSize: 13, marginTop: 16, textAlign: 'center' }}>{error}</div>}
+            {error && <div style={{ color: '#ff4757', fontSize: 13, textAlign: 'center' }}>{error}</div>}
           </div>
         )}
 
@@ -469,10 +299,10 @@ export default function CreateEvent() {
           onClick={step < TOTAL ? () => { if (canContinue()) setStep(s => s + 1) } : handleCreate}
           disabled={saving || !canContinue()}
           style={{ width: '100%', background: saving || !canContinue() ? '#161616' : '#ffb800', color: saving || !canContinue() ? '#333' : '#0a0a0a', border: 'none', borderRadius: 14, padding: '16px 20px', fontSize: 15, fontWeight: 700, cursor: saving || !canContinue() ? 'not-allowed' : 'pointer', fontFamily: 'inherit', letterSpacing: -0.3, transition: 'all .2s' }}>
-          {saving ? 'Creating...' : step < TOTAL ? 'Continue →' : 'Continue to Payment →'}
+          {saving ? 'Creating...' : step < TOTAL ? 'Continue →' : form.guestCap === '5' ? 'Create Free Event →' : 'Create & Choose Plan →'}
         </button>
-        {step === 2 && (!form.eventName.trim() || !form.date) && (
-          <div style={{ textAlign: 'center', fontSize: 12, color: '#444', marginTop: 10 }}>
+        {step === 1 && (!form.eventName.trim() || !form.date) && (
+          <div style={{ textAlign: 'center', fontSize: 12, color: '#8a8a8a', marginTop: 10 }}>
             {!form.eventName.trim() && !form.date ? 'Event name and date required' : !form.eventName.trim() ? 'Event name required' : 'Event date required'}
           </div>
         )}
