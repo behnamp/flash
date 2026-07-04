@@ -32,10 +32,23 @@ function PricingPageInner() {
   const [error, setError] = useState('')
   const [promoCode, setPromoCode] = useState('')
   const [nativeIOS, setNativeIOS] = useState(false)
+  const [eventName, setEventName] = useState('')
 
   useEffect(() => {
     isNativeIOS().then(setNativeIOS)
   }, [])
+
+  // Show the event's name in the header — never the raw ID
+  useEffect(() => {
+    if (!eventId) return
+    ;(async () => {
+      try {
+        const { createClient } = await import('@/lib/supabase/client')
+        const { data } = await createClient().from('events').select('name').eq('id', eventId).single()
+        if (data?.name) setEventName(data.name)
+      } catch {}
+    })()
+  }, [eventId])
 
   const handleBuy = async (tierId: string) => {
     if (loading) return
@@ -129,7 +142,7 @@ function PricingPageInner() {
         </button>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 15, fontWeight: 700 }}>Choose a plan</div>
-          {eventId && <div style={{ fontSize: 11, color: '#444' }}>Event ID: {eventId.slice(0, 8)}...</div>}
+          {eventName && <div style={{ fontSize: 11, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 220 }}>For “{eventName}”</div>}
         </div>
         <div style={{ width: 32, height: 32, background: '#ffb800', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconFlash size={16} color="#0a0a0a" />
@@ -146,7 +159,7 @@ function PricingPageInner() {
         )}
 
         <h2 style={{ fontSize: 24, fontWeight: 700, letterSpacing: -0.5, marginBottom: 6 }}>Pay once, keep forever.</h2>
-        <p style={{ fontSize: 14, color: '#555', marginBottom: 28, lineHeight: 1.6 }}>No subscriptions. One payment per event.</p>
+        <p style={{ fontSize: 14, color: '#999', marginBottom: 28, lineHeight: 1.6 }}>No subscriptions. One payment per event.</p>
 
         {/* Error */}
         {error && (
@@ -159,24 +172,24 @@ function PricingPageInner() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28 }}>
           {TIERS.map(t => (
             <div key={t.id} style={{ background: t.popular ? 'rgba(255,184,0,0.04)' : '#111', border: `1px solid ${t.popular ? 'rgba(255,184,0,0.25)' : '#1e1e1e'}`, borderRadius: 16, padding: '16px 18px', position: 'relative', overflow: 'hidden' }}>
-              {t.popular && (
-                <div style={{ position: 'absolute', top: 12, right: 12, background: '#ffb800', color: '#0a0a0a', fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', borderRadius: 6, padding: '3px 8px' }}>
-                  Popular
-                </div>
-              )}
-              {(t as any).free && (
-                <div style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(46,213,115,0.15)', color: '#2ed573', fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', borderRadius: 6, padding: '3px 8px', border: '1px solid rgba(46,213,115,0.3)' }}>
-                  No card needed
-                </div>
-              )}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ flex: 1, paddingRight: 12 }}>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 3 }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 3, flexWrap: 'wrap' }}>
                     <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 22, fontWeight: 700, color: t.popular ? '#ffb800' : '#f0f0f0' }}>{t.price}</span>
-                    <span style={{ fontSize: 11, color: '#444' }}>CAD</span>
+                    <span style={{ fontSize: 11, color: '#888' }}>CAD</span>
+                    {t.popular && (
+                      <span style={{ background: '#ffb800', color: '#0a0a0a', fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', borderRadius: 6, padding: '3px 8px' }}>
+                        Popular
+                      </span>
+                    )}
+                    {(t as any).free && (
+                      <span style={{ background: 'rgba(46,213,115,0.15)', color: '#2ed573', fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', borderRadius: 6, padding: '3px 8px', border: '1px solid rgba(46,213,115,0.3)' }}>
+                        No card needed
+                      </span>
+                    )}
                   </div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: '#ccc', marginBottom: 2 }}>{t.guests}</div>
-                  <div style={{ fontSize: 12, color: '#444' }}>{t.desc}</div>
+                  <div style={{ fontSize: 12, color: '#8a8a8a' }}>{t.desc}</div>
                 </div>
                 <button
                   onClick={() => handleBuy(t.id)}
@@ -202,7 +215,7 @@ function PricingPageInner() {
 
         {/* Promo code */}
         <div style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 14, padding: '16px 18px', marginBottom: 28 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#444', marginBottom: 10 }}>Promo Code</div>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#8a8a8a', marginBottom: 10 }}>Promo Code</div>
           <div style={{ display: 'flex', gap: 8 }}>
             <input
               value={promoCode}
@@ -219,9 +232,9 @@ function PricingPageInner() {
         <a href="/planners" style={{ display: 'block', textDecoration: 'none', marginBottom: 20 }}>
           <div style={{ background: 'linear-gradient(135deg, #111 0%, #141410 100%)', border: '1px solid rgba(255,184,0,0.18)', borderRadius: 16, padding: '20px 18px', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', right: -20, top: -20, width: 140, height: 140, background: 'radial-gradient(circle, rgba(255,184,0,0.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#555', marginBottom: 10 }}>DJ · Venue · Promoter</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#999', marginBottom: 10 }}>DJ · Venue · Promoter</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: '#f0f0f0', marginBottom: 6, letterSpacing: -0.3 }}>Flash for Planners</div>
-            <div style={{ fontSize: 13, color: '#555', lineHeight: 1.6, marginBottom: 16 }}>Run multiple events per month? Flat monthly rate — no per-event fees, ever.</div>
+            <div style={{ fontSize: 13, color: '#999', lineHeight: 1.6, marginBottom: 16 }}>Run multiple events per month? Flat monthly rate — no per-event fees, ever.</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
               {[
                 { name: 'DJ & Promoter', price: '$39/mo', desc: '12 events · 250 guests each', color: '#888' },
@@ -231,7 +244,7 @@ function PricingPageInner() {
                 <div key={plan.name} style={{ background: '#0e0e0e', border: `1px solid ${plan.color === '#ffb800' ? 'rgba(255,184,0,0.15)' : plan.color === '#c084fc' ? 'rgba(192,132,252,0.15)' : '#1a1a1a'}`, borderRadius: 10, padding: '11px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: plan.color, marginBottom: 2 }}>{plan.name}</div>
-                    <div style={{ fontSize: 11, color: '#444' }}>{plan.desc}</div>
+                    <div style={{ fontSize: 11, color: '#8a8a8a' }}>{plan.desc}</div>
                   </div>
                   <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 12, fontWeight: 700, color: '#f0f0f0', flexShrink: 0, marginLeft: 12 }}>{plan.price}</div>
                 </div>
