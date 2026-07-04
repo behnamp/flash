@@ -306,7 +306,7 @@ export default function CameraPage() {
         {/* Error */}
         {cameraError && (
           <div style={{ position: 'absolute', inset: 0, background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 32, gap: 16, textAlign: 'center' }}>
-            <div style={{ fontSize: 13, color: '#555', lineHeight: 1.7 }}>{cameraError}</div>
+            <div style={{ fontSize: 13, color: '#999', lineHeight: 1.7 }}>{cameraError}</div>
             <button onClick={() => startCamera(facingMode)} style={{ background: '#ffb800', color: '#000', border: 'none', borderRadius: 10, padding: '11px 24px', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Try Again</button>
           </div>
         )}
@@ -358,6 +358,28 @@ export default function CameraPage() {
       {/* ── BOTTOM CONTROLS — matches Once layout exactly ── */}
       <div style={{ background: '#0a0a0a', paddingBottom: 'max(20px, env(safe-area-inset-bottom))', flexShrink: 0, touchAction: 'none' }}>
 
+        {outOfShots ? (
+          /* ── ROLL FULL — a moment, not an error ── */
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '26px 24px 10px', gap: 6 }}>
+            <div style={{ width: 54, height: 54, background: 'rgba(255,184,0,0.1)', border: '1px solid rgba(255,184,0,0.3)', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 6, boxShadow: '0 0 40px rgba(255,184,0,0.15)' }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="#ffb800"><path d="M13 2L4.5 13.5H11L10 22L20 10H13.5L13 2Z"/></svg>
+            </div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: '#f0f0f0', letterSpacing: -0.4 }}>Your roll is full</div>
+            <div style={{ fontSize: 13, color: '#999', lineHeight: 1.6, maxWidth: 270 }}>
+              All {shotLimit} of your photos are in.{' '}
+              {event?.reveal_mode === 'instant' ? 'They’re already in the event gallery.'
+                : event?.reveal_mode === 'morning' ? 'They’ll be revealed tomorrow morning.'
+                : event?.reveal_mode === 'rolling' ? 'They’re developing into the gallery now.'
+                : event?.reveal_mode === 'milestone' ? 'They’ll be revealed once every roll is used up.'
+                : 'They’ll be revealed when the host opens the gallery.'}
+            </div>
+            <button onClick={() => router.push(`/join/${code}/gallery`)}
+              style={{ marginTop: 12, background: '#ffb800', color: '#0a0a0a', border: 'none', borderRadius: 13, padding: '14px 32px', fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
+              View gallery →
+            </button>
+          </div>
+        ) : (
+        <>
         {/* FILM STRIP — only show if more than 1 mode available */}
         {availableModes.length > 1 && (
           <div style={{ display: 'flex', gap: 0, overflowX: 'auto', scrollbarWidth: 'none', paddingTop: 10, paddingBottom: 4, paddingLeft: 16, paddingRight: 16, touchAction: 'pan-x' }}>
@@ -459,6 +481,8 @@ export default function CameraPage() {
             <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontFamily: 'Space Mono, monospace', fontWeight: 700, letterSpacing: 0.5 }}>UPLOAD</span>
           </button>
         </div>
+        </>
+        )}
       </div>
 
       <canvas ref={canvasRef} style={{ display: 'none' }} />
