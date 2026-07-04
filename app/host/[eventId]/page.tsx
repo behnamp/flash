@@ -117,7 +117,7 @@ export default function EventDashboard() {
   }
 
   const handleEnd = async () => {
-    if (!confirm('End this event? Guests will no longer be able to join or take shots.')) return
+    if (!confirm('End this event? Guests will no longer be able to join or take photos.')) return
     await supabase.from('events').update({ is_active: false, ended_at: new Date().toISOString() }).eq('id', eventId)
     setEvent((e: any) => ({ ...e, is_active: false }))
     showToast('Event ended')
@@ -141,7 +141,7 @@ export default function EventDashboard() {
           <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 14, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{event?.name}</div>
           <div style={{ fontSize: 10, color: event?.is_active ? 'var(--accent)' : 'var(--muted)', fontWeight: 600 }}>
-            {event?.revealed ? 'Revealed' : event?.is_active ? 'Live' : 'Ended'} · {guests.length} guests · {shots.length} shots
+            {event?.revealed ? 'Revealed' : event?.is_active ? 'Live' : 'Ended'} · {guests.length} guests · {shots.length} photos
           </div>
           </div>
         </div>
@@ -170,7 +170,7 @@ export default function EventDashboard() {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 9, width: '100%', maxWidth: 300, marginBottom: 18 }}>
-              {[[guests.length, 'Guests'], [shots.length, 'Shots'], [event?.shot_limit, 'Limit']].map(([n, l]) => (
+              {[[guests.length, 'Guests'], [shots.length, 'Photos so far'], [event?.shot_limit, 'Photos per guest']].map(([n, l]) => (
                 <div key={l as string} style={{ background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 8px', textAlign: 'center' }}>
                   <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 20, fontWeight: 700, color: 'var(--accent)' }}>{n}</div>
                   <div style={{ fontSize: 9, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>{l}</div>
@@ -242,7 +242,7 @@ export default function EventDashboard() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 18 }}>
               {[
                 { n: guests.length, l: 'Guests', Icon: IconGuests },
-                { n: shots.length, l: 'Shots', Icon: IconShutter },
+                { n: shots.length, l: 'Photos so far', Icon: IconShutter },
                 { n: Math.round((shots.length / Math.max(1, guests.length * (event?.shot_limit||1))) * 100) + '%', l: 'Film Used', Icon: IconFilm },
                 { n: shots.filter((s: any) => s.revealed).length, l: 'Revealed', Icon: IconReveal },
               ].map(({ n, l, Icon }) => (
@@ -279,7 +279,7 @@ export default function EventDashboard() {
                   <span style={{ fontSize: 14, fontWeight: 700 }}>AI Highlight Reel</span>
                   <span style={{ fontSize: 9, background: 'rgba(255,184,0,0.1)', color: 'var(--accent)', border: '1px solid rgba(255,184,0,0.2)', borderRadius: 5, padding: '2px 6px', fontWeight: 700, letterSpacing: 1 }}>BETA</span>
                 </div>
-                <div style={{ fontSize: 12, color: '#555', marginBottom: 12 }}>Cinematic 15-sec video from your best shots using Seedance 2.0.</div>
+                <div style={{ fontSize: 12, color: '#999', marginBottom: 12 }}>Cinematic 15-sec video from your best shots using Seedance 2.0.</div>
 
                 {reelStatus === 'done' && reelUrl ? (
                   <div>
@@ -289,7 +289,7 @@ export default function EventDashboard() {
                         style={{ flex: 1, background: 'var(--accent)', color: '#0a0a0a', borderRadius: 10, padding: '12px', fontSize: 13, fontWeight: 700, textAlign: 'center', textDecoration: 'none', display: 'block' }}>
                         Download
                       </a>
-                      <button onClick={generateReel} style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 10, padding: '12px 14px', fontSize: 12, color: '#555', cursor: 'pointer', fontFamily: 'inherit' }}>
+                      <button onClick={generateReel} style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 10, padding: '12px 14px', fontSize: 12, color: '#999', cursor: 'pointer', fontFamily: 'inherit' }}>
                         Regenerate
                       </button>
                     </div>
@@ -299,7 +299,7 @@ export default function EventDashboard() {
                     <div style={{ display: 'flex', gap: 5, justifyContent: 'center', marginBottom: 8 }}>
                       {[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', animation: `bounce 1s ease ${i*0.15}s infinite` }} />)}
                     </div>
-                    <div style={{ fontSize: 12, color: '#555' }}>Generating reel... (~3 min)</div>
+                    <div style={{ fontSize: 12, color: '#999' }}>Generating reel... (~3 min)</div>
                   </div>
                 ) : (
                   <button onClick={generateReel}
@@ -380,7 +380,7 @@ export default function EventDashboard() {
               </button>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: '#f0f0f0' }}>{selectedShot.shooter_name}</div>
-                <div style={{ fontSize: 11, color: '#555' }}>{selectedShot.mode_name} · {new Date(selectedShot.taken_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                <div style={{ fontSize: 11, color: '#999' }}>{selectedShot.mode_name} · {new Date(selectedShot.taken_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
               </div>
               <button onClick={() => handleDeleteShot(selectedShot.id, selectedShot.storage_path)}
                 style={{ width: 36, height: 36, background: '#1a0a0a', border: '1px solid rgba(255,71,87,0.3)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
