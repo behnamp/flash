@@ -133,7 +133,7 @@ function DownloadPageInner() {
         </button>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 14, fontWeight: 700 }}>{event?.name}</div>
-          <div style={{ fontSize: 10, color: '#444', textTransform: 'uppercase', letterSpacing: 1 }}>Download & Share</div>
+          <div style={{ fontSize: 10, color: '#8a8a8a', textTransform: 'uppercase', letterSpacing: 1 }}>Download & Share</div>
         </div>
         <div style={{ width: 28, height: 28, background: '#ffb800', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconFlash size={14} color="#0a0a0a" />
@@ -144,7 +144,7 @@ function DownloadPageInner() {
 
         {/* Verifying state */}
         {verifying && (
-          <div style={{ background: '#111', border: '1px solid #222', borderRadius: 14, padding: '16px', marginBottom: 16, textAlign: 'center', fontSize: 13, color: '#666' }}>
+          <div style={{ background: '#111', border: '1px solid #222', borderRadius: 14, padding: '16px', marginBottom: 16, textAlign: 'center', fontSize: 13, color: '#9a9a9a' }}>
             Confirming payment...
           </div>
         )}
@@ -157,7 +157,7 @@ function DownloadPageInner() {
             </div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#2ed573' }}>Stored Forever</div>
-              <div style={{ fontSize: 12, color: '#555', marginTop: 2 }}>Your photos will never be deleted.</div>
+              <div style={{ fontSize: 12, color: '#999', marginTop: 2 }}>Your photos will never be deleted.</div>
             </div>
           </div>
         ) : daysLeft !== null && daysLeft > 0 ? (
@@ -165,14 +165,14 @@ function DownloadPageInner() {
             <div style={{ fontSize: 14, fontWeight: 700, color: urgencyColor, marginBottom: 4 }}>
               {daysLeft === 1 ? 'Last day to download!' : `${daysLeft} days until photos are deleted`}
             </div>
-            <div style={{ fontSize: 12, color: '#555', lineHeight: 1.6, marginBottom: 14 }}>
+            <div style={{ fontSize: 12, color: '#999', lineHeight: 1.6, marginBottom: 14 }}>
               Photos delete permanently on {new Date(event.photos_expire_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </div>
             {/* Keep Forever CTA */}
             <button onClick={handleKeepForever} disabled={keepLoading} style={{ width: '100%', background: '#1a1a1a', border: '1px solid #ffb800', borderRadius: 10, padding: '12px 16px', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ textAlign: 'left' }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#ffb800' }}>Keep Forever — $4.99 CAD</div>
-                <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>Never expire · Unlimited downloads</div>
+                <div style={{ fontSize: 11, color: '#999', marginTop: 2 }}>Never expire · Unlimited downloads</div>
               </div>
               <div style={{ fontSize: 12, color: '#ffb800', fontWeight: 700 }}>{keepLoading ? '...' : '→'}</div>
             </button>
@@ -180,7 +180,7 @@ function DownloadPageInner() {
         ) : daysLeft !== null && daysLeft <= 0 ? (
           <div style={{ background: 'rgba(255,71,87,0.07)', border: '1px solid rgba(255,71,87,0.2)', borderRadius: 14, padding: '16px 18px', marginBottom: 18 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#ff4757', marginBottom: 4 }}>Photos expired</div>
-            <div style={{ fontSize: 12, color: '#555' }}>These photos have been permanently deleted.</div>
+            <div style={{ fontSize: 12, color: '#999' }}>These photos have been permanently deleted.</div>
           </div>
         ) : null}
 
@@ -193,7 +193,7 @@ function DownloadPageInner() {
             <div key={label} style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 12, padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 8 }}>
                 <Icon size={14} color="#444" />
-                <span style={{ fontSize: 9, color: '#444', textTransform: 'uppercase', letterSpacing: 1 }}>{label}</span>
+                <span style={{ fontSize: 9, color: '#8a8a8a', textTransform: 'uppercase', letterSpacing: 1 }}>{label}</span>
               </div>
               <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 28, fontWeight: 700, color: '#f0f0f0' }}>{value}</div>
             </div>
@@ -223,12 +223,12 @@ function DownloadPageInner() {
 
         {/* Share section */}
         <div style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 14, padding: '18px', marginBottom: 14 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444', marginBottom: 14 }}>Share Gallery</div>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#8a8a8a', marginBottom: 14 }}>Share Gallery</div>
 
           {/* Share link */}
           <div style={{ background: '#0e0e0e', border: '1px solid #1a1a1a', borderRadius: 10, padding: '11px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, cursor: 'pointer' }}
             onClick={() => { navigator.clipboard?.writeText(shareUrl); showToast('Gallery link copied!') }}>
-            <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 10, color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{shareUrl}</span>
+            <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 10, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{shareUrl}</span>
             <IconCopy size={14} color="#ffb800" style={{ flexShrink: 0, marginLeft: 8 }} />
           </div>
 
@@ -245,19 +245,19 @@ function DownloadPageInner() {
           </div>
 
           {/* Embed option */}
-          <button onClick={() => setShowEmbed(!showEmbed)} style={{ width: '100%', background: 'transparent', border: '1px solid #1e1e1e', borderRadius: 10, padding: '10px 14px', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, fontWeight: 600, color: '#555', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <button onClick={() => setShowEmbed(!showEmbed)} style={{ width: '100%', background: 'transparent', border: '1px solid #1e1e1e', borderRadius: 10, padding: '10px 14px', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, fontWeight: 600, color: '#999', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span>Embed on your website</span>
-            <span style={{ color: '#444' }}>{showEmbed ? '↑' : '↓'}</span>
+            <span style={{ color: '#8a8a8a' }}>{showEmbed ? '↑' : '↓'}</span>
           </button>
 
           {showEmbed && (
             <div style={{ marginTop: 10 }}>
-              <div style={{ fontSize: 11, color: '#555', marginBottom: 8, lineHeight: 1.6 }}>
+              <div style={{ fontSize: 11, color: '#999', marginBottom: 8, lineHeight: 1.6 }}>
                 Add this code to your website or client's page to show the live gallery.
               </div>
               <div style={{ background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: 9, padding: '12px', cursor: 'pointer', position: 'relative' }}
                 onClick={() => { navigator.clipboard?.writeText(embedCode); showToast('Embed code copied!') }}>
-                <pre style={{ fontSize: 10, color: '#666', fontFamily: 'Space Mono, monospace', margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all', lineHeight: 1.5 }}>{embedCode}</pre>
+                <pre style={{ fontSize: 10, color: '#9a9a9a', fontFamily: 'Space Mono, monospace', margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all', lineHeight: 1.5 }}>{embedCode}</pre>
                 <div style={{ position: 'absolute', top: 8, right: 8 }}>
                   <IconCopy size={12} color="#444" />
                 </div>
@@ -286,7 +286,7 @@ function DownloadPageInner() {
 
         {/* Expiry notice */}
         {!event?.keep_forever && (
-          <div style={{ marginTop: 18, background: '#111', border: '1px solid #1a1a1a', borderRadius: 12, padding: '14px 16px', fontSize: 12, color: '#444', lineHeight: 1.7 }}>
+          <div style={{ marginTop: 18, background: '#111', border: '1px solid #1a1a1a', borderRadius: 12, padding: '14px 16px', fontSize: 12, color: '#8a8a8a', lineHeight: 1.7 }}>
             Photos are stored for 14 days after reveal, then permanently deleted. Upgrade to Keep Forever ($4.99) to never lose them.
           </div>
         )}

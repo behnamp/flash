@@ -90,7 +90,7 @@ export default function JoinPage() {
   if (error && !event) return (
     <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>
       <div>
-        <div style={{ fontSize: 16, fontWeight: 600, color: '#555', marginBottom: 8 }}>{error}</div>
+        <div style={{ fontSize: 16, fontWeight: 600, color: '#999', marginBottom: 8 }}>{error}</div>
         <div style={{ fontSize: 13, color: '#333' }}>Check the QR code and try again.</div>
       </div>
     </main>
@@ -109,13 +109,13 @@ export default function JoinPage() {
       <div style={{ width: '100%', maxWidth: 320 }}>
         {/* Event name */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ fontSize: 11, color: '#444', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>You're invited to</div>
+          <div style={{ fontSize: 11, color: '#8a8a8a', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>You're invited to</div>
           <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: -0.5, color: '#f0f0f0', lineHeight: 1.2 }}>{event?.name}</div>
         </div>
 
         {/* Name field */}
         <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444', marginBottom: 8 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#8a8a8a', marginBottom: 8 }}>
             Your Name <span style={{ color: '#ff4757' }}>*</span>
           </div>
           <input

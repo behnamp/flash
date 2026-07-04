@@ -225,7 +225,7 @@ export default function PosterPage() {
             <button key={t.id} onClick={() => setTemplate(t.id)}
               style={{ flex: 1, background: template === t.id ? 'rgba(255,184,0,0.1)' : '#141414', border: `1px solid ${template === t.id ? '#ffb800' : '#222'}`, borderRadius: 12, padding: '12px 6px', cursor: 'pointer', fontFamily: 'inherit' }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: template === t.id ? '#ffb800' : '#f0f0f0' }}>{t.label}</div>
-              <div style={{ fontSize: 10, color: '#555', marginTop: 2 }}>{t.sub}</div>
+              <div style={{ fontSize: 10, color: '#999', marginTop: 2 }}>{t.sub}</div>
             </button>
           ))}
         </div>

@@ -77,7 +77,7 @@ function LoginPageInner() {
           <IconFlash size={36} color="#0a0a0a" />
         </div>
         <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 26, fontWeight: 700, color: '#f0f0f0', marginBottom: 6 }}>Flash</span>
-        <span style={{ fontSize: 13, color: '#444' }}>Disposable camera for events</span>
+        <span style={{ fontSize: 13, color: '#8a8a8a' }}>Disposable camera for events</span>
       </Link>
 
       {/* Join as guest — scan QR */}
@@ -118,22 +118,22 @@ function LoginPageInner() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {mode === 'signup' && (
             <div>
-              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444', marginBottom: 7 }}>Your Name</div>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#8a8a8a', marginBottom: 7 }}>Your Name</div>
               <input value={name} onChange={e => setName(e.target.value)} placeholder="Sarah Chen" style={inp} />
             </div>
           )}
           <div>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444', marginBottom: 7 }}>Email</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#8a8a8a', marginBottom: 7 }}>Email</div>
             <input type="email" onFocus={scrollToForm} value={email} onChange={e => setEmail(e.target.value)}
               placeholder="you@example.com" onKeyDown={e => e.key === 'Enter' && handleSubmit()} style={inp} />
           </div>
           {mode !== 'forgot' && (
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#444' }}>Password</div>
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#8a8a8a' }}>Password</div>
                 {mode === 'login' && (
                   <button onClick={() => { setMode('forgot'); setError(''); setSuccess('') }}
-                    style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', padding: 0 }}>
+                    style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', padding: 0 }}>
                     Forgot password?
                   </button>
                 )}
@@ -145,7 +145,7 @@ function LoginPageInner() {
         </div>
 
         {mode === 'forgot' && (
-          <p style={{ fontSize: 13, color: '#555', lineHeight: 1.6, marginTop: 12 }}>
+          <p style={{ fontSize: 13, color: '#999', lineHeight: 1.6, marginTop: 12 }}>
             Enter your email and we'll send you a link to reset your password.
           </p>
         )}
@@ -166,7 +166,7 @@ function LoginPageInner() {
               ← Back to log in
             </button>
           ) : (
-            <p style={{ fontSize: 13, color: '#444' }}>
+            <p style={{ fontSize: 13, color: '#8a8a8a' }}>
               {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
               <button onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); setSuccess('') }}
                 style={{ background: 'none', border: 'none', color: '#ffb800', cursor: 'pointer', fontWeight: 600, fontSize: 13, fontFamily: 'inherit' }}>

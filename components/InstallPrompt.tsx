@@ -74,10 +74,10 @@ export default function InstallPrompt() {
           </div>
           <div>
             <div style={{ fontSize: 15, fontWeight: 700, color: '#f0f0f0' }}>Add Flash to Home Screen</div>
-            <div style={{ fontSize: 12, color: '#555', marginTop: 2 }}>Install for the best camera experience</div>
+            <div style={{ fontSize: 12, color: '#999', marginTop: 2 }}>Install for the best camera experience</div>
           </div>
         </div>
-        <button onClick={dismiss} style={{ background: 'none', border: 'none', color: '#444', cursor: 'pointer', padding: 4, fontSize: 20, lineHeight: 1 }}>×</button>
+        <button onClick={dismiss} style={{ background: 'none', border: 'none', color: '#8a8a8a', cursor: 'pointer', padding: 4, fontSize: 20, lineHeight: 1 }}>×</button>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -92,7 +92,7 @@ export default function InstallPrompt() {
             </div>
             <div>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#e0e0e0' }}>{s.text}</div>
-              <div style={{ fontSize: 11, color: '#444' }}>{s.sub}</div>
+              <div style={{ fontSize: 11, color: '#8a8a8a' }}>{s.sub}</div>
             </div>
           </div>
         ))}
@@ -117,10 +117,10 @@ export default function InstallPrompt() {
       </div>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: 14, fontWeight: 700, color: '#f0f0f0' }}>Install Flash</div>
-        <div style={{ fontSize: 12, color: '#555' }}>Add to home screen for quick access</div>
+        <div style={{ fontSize: 12, color: '#999' }}>Add to home screen for quick access</div>
       </div>
       <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-        <button onClick={dismiss} style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 10, padding: '8px 14px', color: '#555', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button onClick={dismiss} style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 10, padding: '8px 14px', color: '#999', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
           Not now
         </button>
         <button onClick={install} style={{ background: '#ffb800', border: 'none', borderRadius: 10, padding: '8px 16px', color: '#0a0a0a', fontSize: 12, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>

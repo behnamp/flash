@@ -162,7 +162,7 @@ export default function GuestGalleryPage() {
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
-            <div style={{ fontSize: 12, color: '#555' }}>{selected.mode_name}</div>
+            <div style={{ fontSize: 12, color: '#999' }}>{selected.mode_name}</div>
             {/* Delete — only own photos */}
             {selected.guest_id === guestId ? (
               <button onClick={() => deleteShot(selected)} disabled={deleting}
@@ -184,7 +184,7 @@ export default function GuestGalleryPage() {
 
           {/* Photo info */}
           <div style={{ padding: '16px', paddingBottom: 'max(16px, env(safe-area-inset-bottom))', textAlign: 'center', flexShrink: 0 }}>
-            <div style={{ fontSize: 12, color: '#444' }}>
+            <div style={{ fontSize: 12, color: '#8a8a8a' }}>
               {selected.guest_id === guestId ? 'Your photo' : 'Guest photo'} · {new Date(selected.taken_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </div>
           </div>

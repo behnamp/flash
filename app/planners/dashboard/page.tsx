@@ -134,7 +134,7 @@ function PlannerDashboardInner() {
             </div>
           )}
 
-          <Link href="/host" style={{ fontSize: 13, fontWeight: 600, color: '#555', textDecoration: 'none' }}>All Events</Link>
+          <Link href="/host" style={{ fontSize: 13, fontWeight: 600, color: '#999', textDecoration: 'none' }}>All Events</Link>
           <Link href="/create" style={{ background: '#ffb800', color: '#0a0a0a', borderRadius: 9, padding: '8px 16px', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
             + New Event
           </Link>
@@ -144,20 +144,20 @@ function PlannerDashboardInner() {
       <div style={{ maxWidth: 1060, margin: '0 auto', padding: '32px 20px 80px' }}>
 
         <div style={{ marginBottom: 32 }}>
-          <div style={{ fontSize: 11, color: '#444', fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>
+          <div style={{ fontSize: 11, color: '#8a8a8a', fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>
             {new Date().toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric' })}
           </div>
           <h1 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 700, letterSpacing: -1, lineHeight: 1.1, marginBottom: 6 }}>
             {planInfo ? `${planInfo.name} Dashboard` : 'Pro Dashboard'}
           </h1>
-          <div style={{ fontSize: 14, color: '#555' }}>{user?.email}</div>
+          <div style={{ fontSize: 14, color: '#999' }}>{user?.email}</div>
         </div>
 
         {!planTier && (
           <div style={{ background: 'rgba(255,184,0,0.05)', border: '1px solid rgba(255,184,0,0.2)', borderRadius: 18, padding: '32px 28px', marginBottom: 28, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20 }}>
             <div>
               <div style={{ fontSize: 16, fontWeight: 700, color: '#ffb800', marginBottom: 6 }}>No active plan</div>
-              <div style={{ fontSize: 14, color: '#555', maxWidth: 420, lineHeight: 1.6 }}>
+              <div style={{ fontSize: 14, color: '#999', maxWidth: 420, lineHeight: 1.6 }}>
                 Subscribe to a professional plan to unlock unlimited events, white-labeling, and the analytics dashboard.
               </div>
             </div>
@@ -172,14 +172,14 @@ function PlannerDashboardInner() {
           <div style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 18, padding: '24px 24px 20px', marginBottom: 24 }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#555', marginBottom: 8 }}>Active Plan</div>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#999', marginBottom: 8 }}>Active Plan</div>
                 <div style={{ fontSize: 20, fontWeight: 700, color: planInfo?.color || '#ffb800', letterSpacing: -0.5 }}>{planInfo?.name}</div>
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
-                <Link href="/planners#plans" style={{ fontSize: 13, fontWeight: 600, color: '#555', textDecoration: 'none', background: '#161616', border: '1px solid #222', borderRadius: 9, padding: '8px 14px' }}>
+                <Link href="/planners#plans" style={{ fontSize: 13, fontWeight: 600, color: '#999', textDecoration: 'none', background: '#161616', border: '1px solid #222', borderRadius: 9, padding: '8px 14px' }}>
                   Change plan
                 </Link>
-                <a href="mailto:hello@flashcam.app?subject=Cancel Subscription" style={{ fontSize: 13, fontWeight: 600, color: '#444', textDecoration: 'none', background: '#161616', border: '1px solid #222', borderRadius: 9, padding: '8px 14px' }}>
+                <a href="mailto:hello@flashcam.app?subject=Cancel Subscription" style={{ fontSize: 13, fontWeight: 600, color: '#8a8a8a', textDecoration: 'none', background: '#161616', border: '1px solid #222', borderRadius: 9, padding: '8px 14px' }}>
                   Manage billing
                 </a>
               </div>
@@ -188,7 +188,7 @@ function PlannerDashboardInner() {
             {limits.events !== null && (
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: 13, color: '#666', fontWeight: 500 }}>Events this month</span>
+                  <span style={{ fontSize: 13, color: '#9a9a9a', fontWeight: 500 }}>Events this month</span>
                   <span style={{ fontFamily: 'Space Mono, monospace', fontSize: 13, color: eventsThisMonth >= limits.events ? '#ff4757' : '#ccc', fontWeight: 700 }}>
                     {eventsThisMonth} / {limits.events}
                   </span>
@@ -205,7 +205,7 @@ function PlannerDashboardInner() {
             {limits.events === null && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#2ed573' }} />
-                <span style={{ fontSize: 13, color: '#555' }}>Unlimited events — {eventsThisMonth} created this month</span>
+                <span style={{ fontSize: 13, color: '#999' }}>Unlimited events — {eventsThisMonth} created this month</span>
               </div>
             )}
           </div>
@@ -219,7 +219,7 @@ function PlannerDashboardInner() {
             { label: 'Total shots', value: totalShots.toLocaleString(), sub: 'photos taken', color: '#f0f0f0' },
           ].map((s, i) => (
             <div key={i} style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 16, padding: '20px 18px' }}>
-              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase', color: '#444', marginBottom: 8 }}>{s.label}</div>
+              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase', color: '#8a8a8a', marginBottom: 8 }}>{s.label}</div>
               <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 28, fontWeight: 700, color: s.color, lineHeight: 1, marginBottom: 4 }}>{s.value}</div>
               <div style={{ fontSize: 11, color: '#333' }}>{s.sub}</div>
             </div>
@@ -241,7 +241,7 @@ function PlannerDashboardInner() {
                   <rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.2"/><path d="M7 6V4h4v2"/>
                 </svg>
               </div>
-              <div style={{ fontSize: 16, fontWeight: 600, color: '#444', marginBottom: 8 }}>No events yet</div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: '#8a8a8a', marginBottom: 8 }}>No events yet</div>
               <div style={{ fontSize: 13, color: '#333', marginBottom: 24 }}>Create your first event to start capturing memories.</div>
               <Link href="/create" style={{ background: '#ffb800', color: '#0a0a0a', borderRadius: 11, padding: '13px 28px', fontSize: 14, fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
                 Create event →
@@ -257,11 +257,11 @@ function PlannerDashboardInner() {
                     <div style={{ width: 8, height: 8, borderRadius: '50%', background: ev.is_active ? '#2ed573' : ev.revealed ? '#ffb800' : '#333', flexShrink: 0 }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: '#f0f0f0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ev.name}</div>
-                      <div style={{ fontSize: 11, color: '#444', marginTop: 2 }}>
+                      <div style={{ fontSize: 11, color: '#8a8a8a', marginTop: 2 }}>
                         {ev.event_date ? new Date(ev.event_date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' }) : 'No date set'}
                       </div>
                     </div>
-                    <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, color: '#444', letterSpacing: 1, flexShrink: 0 }}>{ev.join_code}</div>
+                    <div style={{ fontFamily: 'Space Mono, monospace', fontSize: 11, color: '#8a8a8a', letterSpacing: 1, flexShrink: 0 }}>{ev.join_code}</div>
                     <div style={{
                       fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase',
                       borderRadius: 6, padding: '3px 8px', flexShrink: 0,
@@ -289,7 +289,7 @@ function PlannerDashboardInner() {
             { label: 'Contact support', href: 'mailto:hello@flashcam.app', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> },
           ].map((ql, i) => (
             <Link key={i} href={ql.href}
-              style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#111', border: '1px solid #1a1a1a', borderRadius: 12, padding: '14px 16px', textDecoration: 'none', color: '#666', fontSize: 13, fontWeight: 600, transition: 'all .15s' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#111', border: '1px solid #1a1a1a', borderRadius: 12, padding: '14px 16px', textDecoration: 'none', color: '#9a9a9a', fontSize: 13, fontWeight: 600, transition: 'all .15s' }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = '#2a2a2a'; e.currentTarget.style.color = '#ccc' }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = '#1a1a1a'; e.currentTarget.style.color = '#666' }}>
               <span style={{ opacity: 0.6 }}>{ql.icon}</span>
