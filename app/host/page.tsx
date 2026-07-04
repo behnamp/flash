@@ -19,8 +19,10 @@ const EVENT_TYPE_ICONS: Record<string, any> = {
 }
 
 const STATUS = (ev: any) => {
+  // Unpaid = draft that was never activated — regardless of is_active
+  if (!ev.paid) return { label: 'Draft — not activated', color: '#ff9500', dot: '#ff9500' }
   if (ev.revealed) return { label: 'Revealed', color: '#2ed573', dot: '#2ed573' }
-  if (!ev.is_active) return { label: 'Ended', color: '#444', dot: '#333' }
+  if (!ev.is_active) return { label: 'Ended', color: '#888', dot: '#555' }
   return { label: 'Live', color: '#ffb800', dot: '#ffb800' }
 }
 
@@ -67,6 +69,29 @@ function HostDashboardInner() {
   const handleLogout = async () => {
     await supabase.auth.signOut()
     router.push('/')
+  }
+
+  const [creatingFree, setCreatingFree] = useState(false)
+  // One-tap free event: defaults for everything, active immediately on the free tier
+  const handleTryFree = async () => {
+    if (creatingFree) return
+    setCreatingFree(true)
+    try {
+      const { data: { user: u } } = await supabase.auth.getUser()
+      if (!u) { router.push('/login'); return }
+      const { data: event, error } = await supabase.from('events').insert({
+        host_id: u.id, name: 'My First Flash Event', event_type: 'party',
+        shot_limit: 10, guest_cap: 5, reveal_mode: 'end',
+        mode_control: 'lock', selected_modes: ['kodak'], locked_mode: 'kodak',
+        is_active: false, paid: false, cover_color: '#0a0a0a', cover_emoji: '⚡',
+      }).select().single()
+      if (error) throw error
+      await supabase.from('events').update({ paid: true, is_active: true, payment_tier: 'free', guest_cap: 5, paid_at: new Date().toISOString() }).eq('id', event.id)
+      router.push(`/host/${event.id}?payment=success`)
+    } catch {
+      showToast('Could not create free event')
+      setCreatingFree(false)
+    }
   }
 
   const handleDelete = async (id: string) => {
@@ -149,8 +174,9 @@ function HostDashboardInner() {
     </main>
   )
 
-  const liveEvents = events.filter(e => e.is_active && !e.revealed)
-  const pastEvents = events.filter(e => !e.is_active || e.revealed)
+  const draftEvents = events.filter(e => !e.paid)
+  const liveEvents = events.filter(e => e.paid && e.is_active && !e.revealed)
+  const pastEvents = events.filter(e => e.paid && (!e.is_active || e.revealed))
 
   return (
     <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>
@@ -170,7 +196,7 @@ function HostDashboardInner() {
             <rect x="18" y="18" width="3" height="3" rx="0.5" fill="currentColor" stroke="none"/>
           </svg>
         </button>
-<button onClick={handleLogout} style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 10, color: '#555', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+<button onClick={handleLogout} style={{ width: 36, height: 36, background: '#161616', border: 'none', borderRadius: 10, color: '#999', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <IconLogout size={18} />
         </button>
       </div>
@@ -178,7 +204,7 @@ function HostDashboardInner() {
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px 18px 40px' }}>
         {/* Greeting */}
         <div style={{ marginBottom: 28 }}>
-          <div style={{ fontSize: 12, color: '#444', marginBottom: 4 }}>Welcome back</div>
+          <div style={{ fontSize: 12, color: '#8a8a8a', marginBottom: 4 }}>Welcome back</div>
           <h1 style={{ fontSize: 26, fontWeight: 700, letterSpacing: -0.8, color: '#f0f0f0' }}>
             {user?.user_metadata?.display_name || user?.email?.split('@')[0]}
           </h1>
@@ -192,13 +218,13 @@ function HostDashboardInner() {
             </div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#2ed573', marginBottom: 2 }}>Payment confirmed!</div>
-              <div style={{ fontSize: 12, color: '#555' }}>Your event is now live. Share the QR code with your guests.</div>
+              <div style={{ fontSize: 12, color: '#999' }}>Your event is now live. Share the QR code with your guests.</div>
             </div>
           </div>
         )}
 
         {/* Create button */}
-        <Link href="/create" style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
+        <Link href="/create" style={{ textDecoration: 'none', display: 'block', marginBottom: 10 }}>
           <div style={{ background: '#ffb800', borderRadius: 16, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
             <div style={{ width: 42, height: 42, background: 'rgba(0,0,0,0.12)', borderRadius: 11, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <IconPlus size={22} color="#0a0a0a" weight="bold" />
@@ -210,12 +236,35 @@ function HostDashboardInner() {
           </div>
         </Link>
 
+        {/* Try free — one tap, no wizard */}
+        <button onClick={handleTryFree} disabled={creatingFree}
+          style={{ width: '100%', background: 'rgba(46,213,115,0.06)', border: '1px solid rgba(46,213,115,0.25)', borderRadius: 14, padding: '14px 20px', marginBottom: 32, display: 'flex', alignItems: 'center', gap: 12, cursor: creatingFree ? 'default' : 'pointer', fontFamily: 'inherit', textAlign: 'left' }}>
+          <div style={{ width: 34, height: 34, background: 'rgba(46,213,115,0.12)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <IconFlash size={17} color="#2ed573" />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#2ed573' }}>{creatingFree ? 'Setting up…' : 'Try free in 30 seconds'}</div>
+            <div style={{ fontSize: 12, color: '#888', marginTop: 1 }}>Instant 5-guest event with smart defaults — no payment</div>
+          </div>
+          <IconArrowRight size={16} color="#2ed573" />
+        </button>
+
+        {/* Drafts */}
+        {draftEvents.length > 0 && (
+          <div style={{ marginBottom: 28 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: '#ff9500', marginBottom: 14 }}>Drafts</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {draftEvents.map(ev => <EventCard key={ev.id} ev={ev} menuOpen={menuOpen} setMenuOpen={setMenuOpen} deleteConfirm={deleteConfirm} setDeleteConfirm={setDeleteConfirm} onEnd={handleEnd} onReveal={handleReveal} onDelete={handleDelete} onDuplicate={handleDuplicate} onCopyLink={copyJoinLink} />)}
+            </div>
+          </div>
+        )}
+
         {/* Live Events */}
         {liveEvents.length > 0 && (
           <div style={{ marginBottom: 28 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ffb800' }} className="pulse" />
-              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: '#555' }}>Live Now</div>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: '#999' }}>Live Now</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {liveEvents.map(ev => <EventCard key={ev.id} ev={ev} menuOpen={menuOpen} setMenuOpen={setMenuOpen} deleteConfirm={deleteConfirm} setDeleteConfirm={setDeleteConfirm} onEnd={handleEnd} onReveal={handleReveal} onDelete={handleDelete} onDuplicate={handleDuplicate} onCopyLink={copyJoinLink} />)}
@@ -225,19 +274,21 @@ function HostDashboardInner() {
 
         {/* All Events */}
         {events.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 0' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16, opacity: 0.15 }}>
-              <IconShutter size={48} color="white" />
+          <div style={{ textAlign: 'center', padding: '48px 24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16, opacity: 0.3 }}>
+              <IconShutter size={48} color="#ffb800" />
             </div>
-            <div style={{ fontSize: 16, fontWeight: 600, color: '#333', marginBottom: 6 }}>No events yet</div>
-            <div style={{ fontSize: 14, color: '#2a2a2a' }}>Create your first event above</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#e0e0e0', marginBottom: 8 }}>Host your first Flash event</div>
+            <div style={{ fontSize: 13, color: '#999', lineHeight: 1.7, maxWidth: 280, margin: '0 auto' }}>
+              Guests scan a QR code, shoot with film modes, and the gallery reveals when you say so. Tap <span style={{ color: '#ffb800', fontWeight: 600 }}>Create New Event</span> — or try the free 5-guest event to see it in action.
+            </div>
           </div>
         ) : (
           <div>
             {pastEvents.length > 0 && (
               <>
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: '#333', marginBottom: 14 }}>
-                  {liveEvents.length > 0 ? 'Past Events' : 'All Events'}
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: 'uppercase', color: '#888', marginBottom: 14 }}>
+                  Past Events
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {pastEvents.map(ev => <EventCard key={ev.id} ev={ev} menuOpen={menuOpen} setMenuOpen={setMenuOpen} deleteConfirm={deleteConfirm} setDeleteConfirm={setDeleteConfirm} onEnd={handleEnd} onReveal={handleReveal} onDelete={handleDelete} onDuplicate={handleDuplicate} onCopyLink={copyJoinLink} />)}
@@ -301,20 +352,24 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
           {/* Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
             {/* Quick go to dashboard */}
-            <button onClick={() => router.push(`/host/${ev.id}`)} style={{ width: 32, height: 32, background: '#1a1a1a', border: 'none', borderRadius: 9, color: '#555', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <button onClick={() => router.push(`/host/${ev.id}`)} style={{ width: 32, height: 32, background: '#1a1a1a', border: 'none', borderRadius: 9, color: '#999', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <IconArrowRight size={15} color="#555" />
             </button>
             {/* 3-dot menu */}
-            <button onClick={e => { e.stopPropagation(); setMenuOpen(isMenuOpen ? null : ev.id) }} style={{ width: 32, height: 32, background: isMenuOpen ? '#222' : '#1a1a1a', border: `1px solid ${isMenuOpen ? '#333' : 'transparent'}`, borderRadius: 9, color: '#555', cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>
+            <button onClick={e => { e.stopPropagation(); setMenuOpen(isMenuOpen ? null : ev.id) }} style={{ width: 32, height: 32, background: isMenuOpen ? '#222' : '#1a1a1a', border: `1px solid ${isMenuOpen ? '#333' : 'transparent'}`, borderRadius: 9, color: '#999', cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>
               ···
             </button>
           </div>
         </div>
 
-        {/* Download banner for revealed events */}
+        {/* Draft banner — pay to activate, or delete */}
         {!ev.paid && (
-          <div style={{ borderTop: '1px solid #1a1a1a', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,149,0,0.05)' }}>
-            <span style={{ fontSize: 12, color: '#ff9500' }}>Payment required to activate</span>
+          <div style={{ borderTop: '1px solid #1a1a1a', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, background: 'rgba(255,149,0,0.05)' }}>
+            <span style={{ fontSize: 12, color: '#ff9500', flex: 1 }}>Draft — pay to activate</span>
+            <button onClick={() => setDeleteConfirm(ev.id)}
+              style={{ background: 'transparent', color: '#888', border: '1px solid #2a2a2a', borderRadius: 8, padding: '7px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+              Delete
+            </button>
             <button onClick={() => router.push(`/pricing?eventId=${ev.id}`)}
               style={{ background: '#ff9500', color: '#000', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
               Pay Now
@@ -323,7 +378,7 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
         )}
         {ev.revealed && (
           <div style={{ borderTop: '1px solid #161616', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(46,213,115,0.04)' }}>
-            <div style={{ fontSize: 12, color: '#555' }}>Gallery revealed — download before photos expire</div>
+            <div style={{ fontSize: 12, color: '#999' }}>Gallery revealed — download before photos expire</div>
             <button onClick={() => router.push(`/host/${ev.id}/download`)} style={{ background: 'rgba(46,213,115,0.1)', border: '1px solid rgba(46,213,115,0.2)', borderRadius: 8, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: '#2ed573', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap' }}>
               <IconSave size={13} color="#2ed573" /> Download
             </button>
@@ -332,13 +387,13 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
         {/* Stats bar */}
         <div style={{ display: 'flex', borderTop: '1px solid #161616', padding: '10px 16px', gap: 20 }}>
           {[
-            { label: 'Shot limit', value: ev.shot_limit },
+            { label: 'Photos per guest', value: ev.shot_limit },
             { label: 'Reveal', value: ev.reveal_mode === 'instant' ? 'Instant' : ev.reveal_mode === 'end' ? 'End' : ev.reveal_mode === 'morning' ? 'Morning' : ev.reveal_mode === 'rolling' ? 'Rolling' : 'Milestone' },
             { label: 'Created', value: new Date(ev.created_at).toLocaleDateString('en', { month: 'short', day: 'numeric' }) },
           ].map(({ label, value }) => (
             <div key={label}>
               <div style={{ fontSize: 9, color: '#333', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 2 }}>{label}</div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#555', fontFamily: 'Space Mono, monospace' }}>{value}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#999', fontFamily: 'Space Mono, monospace' }}>{value}</div>
             </div>
           ))}
         </div>
@@ -365,9 +420,9 @@ function EventCard({ ev, menuOpen, setMenuOpen, deleteConfirm, setDeleteConfirm,
       {isDeleteConfirm && (
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(10,10,10,0.95)', borderRadius: 14, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 20, zIndex: 40 }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: '#e0e0e0', textAlign: 'center' }}>Delete "{ev.name}"?</div>
-          <div style={{ fontSize: 12, color: '#444', textAlign: 'center' }}>All photos and guests will be permanently removed.</div>
+          <div style={{ fontSize: 12, color: '#8a8a8a', textAlign: 'center' }}>All photos and guests will be permanently removed.</div>
           <div style={{ display: 'flex', gap: 8, width: '100%' }}>
-            <button onClick={() => setDeleteConfirm(null)} style={{ flex: 1, background: '#1a1a1a', border: '1px solid #222', borderRadius: 10, padding: '10px 0', color: '#666', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
+            <button onClick={() => setDeleteConfirm(null)} style={{ flex: 1, background: '#1a1a1a', border: '1px solid #222', borderRadius: 10, padding: '10px 0', color: '#9a9a9a', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>Cancel</button>
             <button onClick={() => onDelete(ev.id)} style={{ flex: 1, background: '#ff4757', border: 'none', borderRadius: 10, padding: '10px 0', color: 'white', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Delete</button>
           </div>
         </div>
