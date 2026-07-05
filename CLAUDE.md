@@ -84,6 +84,6 @@ Marketing copy for the landing and planners pages is editable at `/studio` (`san
 - Do not remove RTL support.
 - Do not use placeholder images in UI.
 
-## Stale docs warning
+## Session setup
 
-`AGENTS.md` and `.claude/skills/flash-context.md` predate major refactors — they reference Next.js 14, a `src/` directory, next-intl, and file paths that no longer exist. Where they conflict with this file or the actual code, the code wins.
+A SessionStart hook (`.claude/hooks/session-start.sh`) runs `npm install` automatically in Claude Code on the web sessions, so build/lint and the deploy gate work immediately. There is no test suite in this repo. A daily health-check routine (Claude Code trigger, fresh session per run) monitors Vercel deploys/errors and Supabase advisors.

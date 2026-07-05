@@ -1,18 +1,15 @@
 # /flash-feature
 
-Spawn a coordinated swarm to build a new Flash feature end-to-end.
+Build a new Flash feature end-to-end.
 
 Usage: /flash-feature [feature description]
 
 Steps:
-1. Load flash-context.md skill
-2. Spawn flash-architect to review feasibility + Supabase impact
-3. Spawn frontend-coder for UI components (Next.js 14, Tailwind, Phosphor Icons)
-4. Spawn supabase-specialist if schema or RLS changes needed
-5. Spawn i18n-specialist if any new strings added
-6. Spawn test-engineer to write component + E2E tests
-7. flash-reviewer checks design system compliance
-8. Run: npx tsc --noEmit && npx next build
-9. Print completion receipt with changed files
+1. Plan against CLAUDE.md (architecture, design system, constraints). Flag any Supabase schema impact — schema changes need a migration and a `types/database.ts` update.
+2. Implement the feature (mobile-first, inline styles + CSS variables from `app/globals.css`, icons from `components/icons.tsx`, motion tokens from `lib/motion.ts`).
+3. Run the `design-critic` agent on any UI changes — revise until PASS (max 3 rounds, then surface the disagreement).
+4. Run the `code-reviewer` agent on the full diff — fix blocking findings.
+5. Run `npm run build` — must pass.
+6. Print a receipt: changed files, review verdicts, build result.
 
-Anti-gaming: Do not fake passing tests. Do not skip RTL strings. Do not use placeholder images.
+Do not use placeholder images. Do not break RTL. Do not fake verification.

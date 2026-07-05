@@ -1,16 +1,14 @@
 # /flash-photo-mode
 
-Add a new photo mode to Flash (joins the existing 29).
+Add a new photo mode to Flash.
 
-Usage: /flash-photo-mode [mode name] [description]
+Usage: /flash-photo-mode [mode name] [look description]
 
 Steps:
-1. Load flash-context.md
-2. Spawn canvas-specialist to build CSS filter + optional canvas transform
-3. Spawn frontend-coder to add mode to src/lib/photo-modes.ts and UI selector
-4. Spawn i18n-specialist to add mode label to all 20+ locale files
-5. Spawn test-engineer to add snapshot test for new mode
-6. flash-reviewer verifies thumbnail matches luxury-minimal aesthetic
-7. Print: mode ID, filter string, canvas transform (if any), all changed files
-
-Constraints: Never modify or rename existing 29 modes. Mode ID must be kebab-case.
+1. Pick a kebab-case mode id. Never modify or rename existing mode ids — they are persisted in `shots.mode_id`.
+2. Add the CSS filter string (plus optional `fx` post-processing like vignette/grain) to `CANVAS_FILTERS` in `lib/filterCanvas.ts`.
+3. Add the mode to the appropriate category in `constants/photoModes.ts` with a preview gradient `bg`.
+4. Add preview imagery in `lib/modePreviews.ts` if the pattern there requires it.
+5. Verify the id is identical in both files — an id mismatch means the camera silently applies no filter.
+6. Run the `design-critic` agent on the mode's preview presentation, then `npm run build`.
+7. Print: mode id, filter string, changed files.
