@@ -70,6 +70,12 @@ Marketing copy for the landing and planners pages is editable at `/studio` (`san
 - Mobile-first (375px base) with safe-area insets; this is primarily used on phones at events.
 - RTL: `constants/languages.ts` defines 20+ languages with `dir` (`fa`, `ar`, `he` are RTL). Do not remove RTL support.
 
+## Agents & Gates
+
+- **Deploy gate (automatic):** a PreToolUse hook (`.claude/settings.json` → `.claude/hooks/deploy-gate.sh`) blocks any `git push` targeting `main` unless `npm run build` passes. Lint failures are reported as a warning but don't block (pre-existing lint debt). Pushes to feature branches are not gated.
+- **`design-critic` agent:** spawn after any UI change — scores it against the design-system rubric (tokens, icons, a11y, RTL, motion) and returns PASS/FAIL with file:line fixes. The producer never grades its own design work.
+- **`code-reviewer` agent:** spawn before pushing nontrivial changes — checks Flash's critical invariants (photo-mode id sync, schema/types sync, guest vs host auth, dual Stripe/StoreKit paths, service-role usage, RTL, subscription cleanup) and returns PASS/FAIL findings.
+
 ## Forbidden Shortcuts
 
 - Do not break existing photo modes or rename mode ids.
