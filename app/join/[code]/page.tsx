@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { IconFlash, IconShutter, IconGuests } from '@/components/icons'
+import { isGuestCapReached } from '@/lib/eventLogic'
 
 export default function JoinPage() {
   const params = useParams()
@@ -59,7 +60,7 @@ export default function JoinPage() {
           .from('guests')
           .select('*', { count: 'exact', head: true })
           .eq('event_id', event.id)
-        if ((count || 0) >= event.guest_cap) {
+        if (isGuestCapReached(count || 0, event.guest_cap)) {
           setError('This event is full — the guest limit has been reached.')
           setJoining(false)
           return

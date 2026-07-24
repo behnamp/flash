@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { ALL_MODES } from '@/constants/photoModes'
 import InstallPrompt from '@/components/InstallPrompt'
 import { applyFilterToCanvas, CANVAS_FILTERS } from '@/lib/filterCanvas'
+import { rollFullMessage } from '@/lib/eventLogic'
 
 export default function CameraPage() {
   const params = useParams()
@@ -366,12 +367,7 @@ export default function CameraPage() {
             </div>
             <div style={{ fontSize: 18, fontWeight: 800, color: '#f0f0f0', letterSpacing: -0.4 }}>Your roll is full</div>
             <div style={{ fontSize: 13, color: '#999', lineHeight: 1.6, maxWidth: 270 }}>
-              All {shotLimit} of your photos are in.{' '}
-              {event?.reveal_mode === 'instant' ? 'They’re already in the event gallery.'
-                : event?.reveal_mode === 'morning' ? 'They’ll be revealed tomorrow morning.'
-                : event?.reveal_mode === 'rolling' ? 'They’re developing into the gallery now.'
-                : event?.reveal_mode === 'milestone' ? 'They’ll be revealed once every roll is used up.'
-                : 'They’ll be revealed when the host opens the gallery.'}
+              {rollFullMessage(event?.reveal_mode, shotLimit)}
             </div>
             <button onClick={() => router.push(`/join/${code}/gallery`)}
               style={{ marginTop: 12, background: '#ffb800', color: '#0a0a0a', border: 'none', borderRadius: 13, padding: '14px 32px', fontSize: 14, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>

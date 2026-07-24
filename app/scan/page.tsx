@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { parseJoinCode } from '@/lib/eventLogic'
 
 export default function ScanPage() {
   const router = useRouter()
@@ -91,9 +92,8 @@ export default function ScanPage() {
   const handleResult = (value: string) => {
     scanningRef.current = false
     stopCamera()
-    const match = value.match(/\/join\/([A-Z0-9]{8})/i)
-    const code = match ? match[1].toUpperCase() : value.replace(/[^A-Z0-9]/gi, '').slice(0, 8).toUpperCase()
-    if (code.length === 8) {
+    const code = parseJoinCode(value)
+    if (code) {
       router.push(`/join/${code}`)
     } else {
       setError('Invalid QR code — scan a Flash event QR')

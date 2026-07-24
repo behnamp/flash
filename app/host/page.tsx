@@ -18,13 +18,9 @@ const EVENT_TYPE_ICONS: Record<string, any> = {
   sports: IconSports, club: IconNightlife, other: IconQuestion,
 }
 
-const STATUS = (ev: any) => {
-  // Unpaid = draft that was never activated — regardless of is_active
-  if (!ev.paid) return { label: 'Draft — not activated', color: '#ff9500', dot: '#ff9500' }
-  if (ev.revealed) return { label: 'Revealed', color: '#2ed573', dot: '#2ed573' }
-  if (!ev.is_active) return { label: 'Ended', color: '#888', dot: '#555' }
-  return { label: 'Live', color: '#ffb800', dot: '#ffb800' }
-}
+import { eventStatus } from '@/lib/eventLogic'
+
+const STATUS = (ev: any) => eventStatus(ev)
 
 function HostDashboardInner() {
   const router = useRouter()
