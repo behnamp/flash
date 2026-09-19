@@ -76,8 +76,32 @@ export default function GuestGalleryPage() {
     finally { setDeleting(false) }
   }
 
-  const myShots = shots.filter(s => s.guest_id === guestId)
-  const otherShots = shots.filter(s => s.guest_id !== guestId && s.revealed)
+  const reportShot = async (shot: any) => {
+    if (!confirm('Report this photo as inappropriate? It will be hidden from you and sent to the host for review.')) return
+    setDeleting(true)
+    try {
+      // Hide immediately on this device
+      try {
+        const hidden = JSON.parse(localStorage.getItem('flash_hidden_shots') || '[]')
+        if (!hidden.includes(shot.id)) { hidden.push(shot.id); localStorage.setItem('flash_hidden_shots', JSON.stringify(hidden)) }
+      } catch {}
+      setShots(s => s.filter(x => x.id !== shot.id))
+      setSelected(null)
+      // Notify the host/admin to review + remove
+      fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shotId: shot.id, eventId, reason: 'Reported by a guest' }),
+      }).catch(() => {})
+      showMsg('Reported — thanks. Hidden from your view.')
+    } catch { showMsg('Report failed') }
+    finally { setDeleting(false) }
+  }
+
+  const hiddenIds: string[] = (() => { try { return JSON.parse(localStorage.getItem('flash_hidden_shots') || '[]') } catch { return [] } })()
+  const visibleShots = shots.filter(s => !hiddenIds.includes(s.id))
+  const myShots = visibleShots.filter(s => s.guest_id === guestId)
+  const otherShots = visibleShots.filter(s => s.guest_id !== guestId && s.revealed)
   const allVisible = [...myShots, ...otherShots]
 
   if (loading) return (
@@ -171,7 +195,14 @@ export default function GuestGalleryPage() {
                   <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
                 </svg>
               </button>
-            ) : <div style={{ width: 36 }} />}
+            ) : (
+              <button onClick={() => reportShot(selected)} disabled={deleting} aria-label="Report photo"
+                style={{ background: '#161616', border: '1px solid #2a2a2a', borderRadius: 10, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff9f43" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
+                </svg>
+              </button>
+            )}
           </div>
 
           {/* Photo */}
