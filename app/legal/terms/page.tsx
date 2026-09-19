@@ -4,7 +4,7 @@ import { IconBack, IconFlash } from '@/components/icons'
 
 const LAST_UPDATED = 'June 25, 2026'
 const COMPANY = 'Flash'
-const EMAIL = 'legal@flash-roan.vercel.app'
+const EMAIL = 'legal@flashcam.app'
 const APP_URL = 'https://flashcam.app'
 
 export default function TermsOfService() {
