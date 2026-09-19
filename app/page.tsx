@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { useSanityContent } from '@/lib/sanity/useSanityContent'
+import StoreBadges from '@/components/StoreBadges'
 
 const IMAGES = {
   hero:    'https://d8j0ntlcm91z4.cloudfront.net/user_2y6wAIlmwDKTK54POxKgzxeDouA/hf_20260625_151843_1d70550d-dee8-4aac-b906-8a9d7b971f33.png',
@@ -286,6 +287,12 @@ export default function LandingPage() {
             </motion.div>
           </motion.div>
 
+          {/* Install badges */}
+          <motion.div variants={hi} style={{ marginBottom: 44 }}>
+            <div style={{ fontSize: 12, color: '#555', marginBottom: 12, textAlign: 'center' }}>or get the app</div>
+            <StoreBadges center />
+          </motion.div>
+
           {/* Phone mockup */}
           <motion.div variants={hi} style={{ position: 'relative', marginBottom: 40, width: 220 }}
             whileHover={{ y: -4 }} transition={{ duration: 0.3, ease: E }}>
@@ -481,6 +488,9 @@ export default function LandingPage() {
               See pricing
             </Link>
           </motion.div>
+          <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP} style={{ marginTop: 28, display: 'flex', justifyContent: 'center' }}>
+            <StoreBadges center />
+          </motion.div>
         </div>
       </section>
 
@@ -559,6 +569,9 @@ export default function LandingPage() {
             style={{ background: '#ffb800', color: '#0a0a0a', borderRadius: 14, padding: '18px 44px', fontSize: 17, fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
             Create your event →
           </Link>
+        </motion.div>
+        <motion.div variants={fu} initial="hidden" whileInView="visible" viewport={VP} style={{ marginTop: 28, display: 'flex', justifyContent: 'center' }}>
+          <StoreBadges center />
         </motion.div>
       </section>
 
