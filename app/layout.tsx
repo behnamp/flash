@@ -6,11 +6,12 @@ export const metadata: Metadata = {
   title: 'Flash — Disposable Camera for Events',
   description: 'Give everyone a camera. 29 film modes. Reveal it all together. Flash turns any event into a shared disposable camera experience.',
   keywords: ['disposable camera', 'event photos', 'wedding camera', 'party photos', 'film filters'],
-  metadataBase: new URL('https://flash-roan.vercel.app'),
+  metadataBase: new URL('https://flashcam.app'),
+  alternates: { canonical: 'https://flashcam.app' },
   openGraph: {
     title: 'Flash — Disposable Camera for Events',
     description: 'Give everyone a camera. 29 film modes. Reveal it all together.',
-    url: 'https://flash-roan.vercel.app',
+    url: 'https://flashcam.app',
     siteName: 'Flash',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Flash' }],
     locale: 'en_US',
@@ -49,6 +50,51 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 }
 
+const STRUCTURED_DATA = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': 'https://flashcam.app/#org',
+      name: 'Flash',
+      url: 'https://flashcam.app',
+      logo: 'https://flashcam.app/icon-512.png',
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': 'https://flashcam.app/#app',
+      name: 'Flash — Disposable Camera for Events',
+      applicationCategory: 'PhotographyApplication',
+      operatingSystem: 'Web, iOS, Android',
+      description:
+        'Flash turns any event into a shared disposable camera. Guests scan a QR code to join with no app, shoot on a limited roll of film-look photos, and the gallery is revealed together.',
+      url: 'https://flashcam.app',
+      publisher: { '@id': 'https://flashcam.app/#org' },
+      offers: [
+        { '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'CAD', description: 'Up to 5 guests' },
+        { '@type': 'Offer', name: 'Starter', price: '1.99', priceCurrency: 'CAD', description: 'Up to 10 guests' },
+        { '@type': 'Offer', name: 'Small', price: '4.99', priceCurrency: 'CAD', description: 'Up to 25 guests' },
+        { '@type': 'Offer', name: 'Medium', price: '9.99', priceCurrency: 'CAD', description: 'Up to 50 guests' },
+        { '@type': 'Offer', name: 'Large', price: '14.99', priceCurrency: 'CAD', description: 'Up to 100 guests' },
+        { '@type': 'Offer', name: 'XL', price: '29.99', priceCurrency: 'CAD', description: 'Up to 200 guests' },
+        { '@type': 'Offer', name: 'Unlimited', price: '99.99', priceCurrency: 'CAD', description: 'No guest cap' },
+      ],
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': 'https://flashcam.app/#faq',
+      mainEntity: [
+        { q: 'Do guests need to download anything?', a: 'No. Guests scan a QR code and the camera opens in their browser. No account, no app, no friction.' },
+        { q: 'How does the reveal work?', a: 'You choose: instant (photos show as taken), end of event (you tap Reveal), morning after (9am next day), or milestone (when everyone uses all their shots).' },
+        { q: 'What happens to photos after 14 days?', a: 'Photos are permanently deleted after 14 days. Upgrade to Keep Forever ($4.99 CAD) to store them indefinitely with unlimited downloads.' },
+        { q: 'What film modes are available?', a: 'Five: Kodak Gold, Black & White (Ilford), Portra 400, Polaroid, and Golden Hour. Each is baked into the photo before upload.' },
+        { q: "What's the difference between plans?", a: 'Plans are per-event based on guest count: Starter (10 guests, $1.99) up to Unlimited ($99.99). You pay once per event, no subscriptions.' },
+        { q: 'Can I embed the gallery on my website?', a: 'Yes. The download page gives you an embed code — paste it anywhere and the live gallery appears in an iframe.' },
+      ].map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+    },
+  ],
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -62,6 +108,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+        {/* Structured data — helps Google rich results and lets AI answer engines cite Flash accurately (SEO/AEO/GEO) */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA) }} />
       </head>
       <body>
         {children}

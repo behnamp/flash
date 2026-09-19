@@ -1,0 +1,37 @@
+# Flash
+
+> Flash turns any event into a shared disposable camera. Hosts create an event; guests scan a QR code to join with no app and no account, shoot on a limited roll of film-look photos, and the whole gallery is revealed together instead of instantly. It rebuilds the magic of a disposable camera for a room full of phones.
+
+Website: https://flashcam.app
+
+## What Flash is
+- A web-based (and native iOS/Android) shared disposable camera for events.
+- Guests join by scanning a QR code — it opens in any mobile browser, no download or sign-up required.
+- Every guest gets a limited number of shots (a "roll"), like a real disposable camera.
+- Photos stay hidden until the host reveals them, so the event is experienced together rather than through instant posts.
+
+## How it works
+1. The host creates an event in three steps (occasion + name, guest count, confirm).
+2. Guests scan the event QR code and enter a name — no account needed.
+3. Guests shoot with film-look modes on a limited roll.
+4. The host reveals the gallery: instantly, at the end of the event, on a rolling 30-minute basis, the morning after, or once every guest finishes their roll.
+
+## Film modes
+Kodak Gold, Black & White (Ilford), Portra 400, Polaroid, and Golden Hour. The film look is baked into each photo before upload.
+
+## Features
+- Cinematic reveal moment
+- Cast the live gallery to a TV or projector
+- Print-ready QR scan posters and table tents
+- Scavenger-hunt photo prompts, video guest book
+- AI highlight reel of the best shots
+- Full-resolution gallery download and website embed
+
+## Pricing
+Pay once per event, no subscription. Free for up to 5 guests; one-time plans from $1.99 CAD (10 guests) up to $99.99 (unlimited guests). A "Keep Forever" option ($4.99) stores photos indefinitely; otherwise photos are deleted after 14 days. Separate monthly "Planners" plans exist for DJs, venues, and agencies who run many events.
+
+## Best for
+Weddings, birthdays, engagement parties, showers, graduations, corporate events, festivals, and trips.
+
+## Contact
+https://flashcam.app
