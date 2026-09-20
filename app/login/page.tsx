@@ -71,7 +71,7 @@ function LoginPageInner() {
   const canSubmit = mode === 'forgot' ? !!email : (!!email && !!password)
 
   return (
-    <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', padding: '20px 22px', paddingTop: 'max(60px, env(safe-area-inset-top))', paddingBottom: 'max(40px, env(safe-area-inset-bottom))', overflowY: 'auto' }}>
+    <main style={{ height: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 22px', paddingTop: 'max(24px, env(safe-area-inset-top))', paddingBottom: 'max(24px, env(safe-area-inset-bottom))', overflowY: 'auto', overscrollBehavior: 'none' }}>
       <Link href="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0, marginBottom: 32, textDecoration: 'none' }}>
         <div style={{ width: 72, height: 72, background: '#ffb800', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
           <IconFlash size={36} color="#0a0a0a" />

@@ -21,6 +21,11 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; background: var(--bg); color: var(--text); overscroll-behavior: none; }
+/* iOS WKWebView: stop the rubber-band bounce that makes the whole app feel
+   like it shifts, while still allowing pages that scroll the body (pricing,
+   landing, legal) to scroll normally. */
+html { overscroll-behavior-y: none; }
+body { overscroll-behavior-y: none; -webkit-overflow-scrolling: touch; }
 body { font-family: 'Space Grotesk', -apple-system, sans-serif; }
 input, button, textarea, select { font-family: inherit; }
 

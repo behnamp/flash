@@ -102,7 +102,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Native app: skip the marketing landing entirely — redirect to /login before the page paints */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var c=window.Capacitor;if(c&&typeof c.isNativePlatform==='function'&&c.isNativePlatform()){var p=window.location.pathname;if(p==='/'||p===''){document.documentElement.style.background='#0a0a0a';window.location.replace('/login');}}}catch(e){}})();`,
+            __html: `(function(){try{var c=window.Capacitor;if(c&&typeof c.isNativePlatform==='function'&&c.isNativePlatform()){var p=window.location.pathname;if(p==='/'||p===''){document.documentElement.style.background='#0a0a0a';window.location.replace('/login');return;}
+// Native app: hide the splash only once the page has actually painted, so
+// there is no black gap between splash and first screen.
+var hide=function(){try{var s=c.Plugins&&c.Plugins.SplashScreen;if(s&&s.hide){s.hide({fadeOutDuration:200});}}catch(e){}};
+if(document.readyState==='complete'){setTimeout(hide,150);}else{window.addEventListener('load',function(){setTimeout(hide,150);});}
+setTimeout(hide,4000);}}catch(e){}})();`,
           }}
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
