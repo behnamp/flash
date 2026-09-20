@@ -70,11 +70,7 @@
 			</dict>
 		</dict>
 	</dict>
-	<!-- WKWebView settings -->
-	<key>WKAppBoundDomains</key>
-	<array>
-		<string>flashcam.app</string>
-		<string>onvdddlkrlwaxwufgodq.supabase.co</string>
-	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

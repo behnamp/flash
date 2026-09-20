@@ -13,9 +13,9 @@ const config: CapacitorConfig = {
     contentInset: 'always',
     backgroundColor: '#0a0a0a',
     preferredContentMode: 'mobile',
-    limitsNavigationsToAppBoundDomains: true,
-    // Stop the rubber-band bounce so the app feels like a native screen,
-    // not a web page floating inside one.
+    // NOTE: limitsNavigationsToAppBoundDomains is deliberately OFF.
+    // With it on, WKWebView restricts the app to WKAppBoundDomains only,
+    // which breaks auth/API/Stripe calls ("Load failed" on login).
     scrollEnabled: true,
     allowsLinkPreview: false,
   },
