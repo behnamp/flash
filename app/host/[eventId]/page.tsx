@@ -134,7 +134,7 @@ export default function EventDashboard() {
   return (
     <main style={{ height: '100dvh', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
       {/* Top bar */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '13px 16px', background: 'rgba(10,10,10,0.96)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingTop: 'max(13px, env(safe-area-inset-top))', paddingBottom: 13, paddingLeft: 16, paddingRight: 16, background: 'rgba(10,10,10,0.96)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10 }}>
         <button onClick={() => router.push('/host')} style={{ width: 36, height: 36, background: 'var(--surface2)', border: 'none', borderRadius: 10, color: 'var(--text)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconBack size={18} /></button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1, minWidth: 0 }}>
           {event?.event_type && (() => { const Icon = EVENT_TYPE_ICONS[event.event_type] || IconQuestion; return <div style={{ width: 30, height: 30, background: 'var(--surface3)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Icon size={16} color="#ffb800" /></div> })()}

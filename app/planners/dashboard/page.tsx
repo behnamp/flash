@@ -119,7 +119,7 @@ function PlannerDashboardInner() {
     <main style={{ minHeight: '100dvh', background: '#0a0a0a', color: '#f0f0f0', fontFamily: "'Space Grotesk', sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
-      <nav style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', padding: '0 20px' }}>
+      <nav style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #161616', padding: '0 20px', paddingTop: 'env(safe-area-inset-top)' }}>
         <div style={{ maxWidth: 1060, margin: '0 auto', display: 'flex', alignItems: 'center', height: 58, gap: 14 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginRight: 'auto' }}>
             <div style={{ width: 26, height: 26, background: '#ffb800', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
