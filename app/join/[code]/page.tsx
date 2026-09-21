@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { IconFlash, IconShutter, IconGuests } from '@/components/icons'
 import { isGuestCapReached } from '@/lib/eventLogic'
+import { isPastEnd } from '@/lib/eventLogic'
 
 export default function JoinPage() {
   const params = useParams()
@@ -21,12 +22,18 @@ export default function JoinPage() {
     async function load() {
       const { data } = await supabase
         .from('events')
-        .select('id, name, event_type, is_active, paid, join_code, shot_limit, guest_cap')
+        .select('*')
         .eq('join_code', code.toUpperCase())
         .single()
       if (!data) { setError('Event not found'); setLoading(false); return }
       if (!data.paid) { setError('This event is not active yet'); setLoading(false); return }
-      if (!data.is_active) { setError('This event has ended'); setLoading(false); return }
+      if (!data.is_active || isPastEnd(data)) {
+        // Guests who shot at this event go to their photos; everyone else is told it's over
+        const joined = (() => { try { return !!localStorage.getItem(`flash_guest_${data.id}`) } catch { return false } })()
+        if (joined && data.revealed) { router.replace(`/join/${code}/gallery`); return }
+        setError(joined ? 'This event has ended — the gallery unlocks soon' : 'This event has ended')
+        setLoading(false); return
+      }
       setEvent(data)
       // Returning guest — prefill their name so re-entry doesn't create a duplicate
       try {

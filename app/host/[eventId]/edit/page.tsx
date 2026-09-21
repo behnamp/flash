@@ -7,6 +7,7 @@ import { REVEAL_MODES } from '@/constants/revealModes'
 import { PHOTO_MODES } from '@/constants/photoModes'
 import { MODE_PREVIEWS } from '@/lib/modePreviews'
 import { useRef } from 'react'
+import { FEATURES } from '@/lib/features'
 
 const MODE_CONTROLS = [
   { id: 'lock', label: 'Lock to one mode', desc: 'Everyone shoots in the same look' },
@@ -34,10 +35,10 @@ export default function EditEvent() {
   const [saving, setSaving] = useState(false)
   const [toast, setToast] = useState('')
   const [form, setForm] = useState({
-    name: '', venue: '', date: '', shot_limit: 12,
+    name: '', venue: '', date: '', ends: '', shot_limit: 12,
     guest_cap: 50, reveal_mode: 'end', allow_captions: true,
     guest_book: false, live_slideshow: false, scavenger_hunt: false,
-    ai_reel: true, print_enabled: false, stats_card_enabled: true,
+    ai_reel: false, print_enabled: false, stats_card_enabled: true,
     white_label: false, brand_name: '',
     mode_control: 'lock', selected_modes: ['kodak'] as string[], locked_mode: 'kodak',
     cover_emoji: '⚡', cover_image_url: '',
@@ -50,7 +51,7 @@ export default function EditEvent() {
       const { data } = await supabase.from('events').select('*').eq('id', eventId).single()
       if (!data) { router.push('/host'); return }
       setForm({
-        name: data.name || '', venue: data.venue || '', date: data.event_date || '',
+        name: data.name || '', venue: data.venue || '', date: data.event_date || '', ends: toLocalInput(data.ends_at),
         shot_limit: data.shot_limit, guest_cap: data.guest_cap,
         reveal_mode: data.reveal_mode, allow_captions: data.allow_captions,
         guest_book: data.guest_book, live_slideshow: data.live_slideshow,
@@ -80,7 +81,7 @@ export default function EditEvent() {
       const { error: upErr } = await supabase.storage.from('shots').upload(path, coverFile, { contentType: coverFile.type, upsert: false })
       if (!upErr) coverUrl = supabase.storage.from('shots').getPublicUrl(path).data.publicUrl
     }
-    const { error } = await supabase.from('events').update({
+    const payload: Record<string, any> = {
       name: form.name, venue: form.venue || null,
       event_date: form.date || null, shot_limit: form.shot_limit,
       guest_cap: form.guest_cap, reveal_mode: form.reveal_mode as any,
@@ -95,7 +96,14 @@ export default function EditEvent() {
       cover_emoji: form.cover_emoji,
       cover_image_url: coverUrl,
       updated_at: new Date().toISOString(),
-    }).eq('id', eventId)
+      ends_at: form.ends ? new Date(form.ends).toISOString() : null,
+    }
+    let { error } = await supabase.from('events').update(payload).eq('id', eventId)
+    // Databases without the ends_at column yet: save everything else
+    if (error && /ends_at/.test(error.message || '')) {
+      delete payload.ends_at
+      ;({ error } = await supabase.from('events').update(payload).eq('id', eventId))
+    }
 
     setSaving(false)
     if (error) { setToast('Failed to save'); return }
@@ -147,6 +155,16 @@ export default function EditEvent() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <input value={form.name} onChange={e => set('name', e.target.value)} placeholder="Event Name" style={inp} />
             <input type="date" value={form.date} onChange={e => set('date', e.target.value)} style={inp} />
+            <div>
+              <div style={{ fontSize: 12, color: '#999', margin: '4px 2px 6px' }}>Event ends</div>
+              <input type="datetime-local" value={form.ends} onChange={e => set('ends', e.target.value)} style={{ ...inp, colorScheme: 'dark' }} />
+              <div style={{ fontSize: 12, color: '#777', margin: '6px 2px 0', lineHeight: 1.5 }}>
+                {form.ends
+                  ? 'The event closes and the gallery reveals at this time.'
+                  : 'Leave empty: closes and reveals automatically at 9:00 AM the morning after the event date.'}
+                {form.ends && <button onClick={() => set('ends', '')} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 12, cursor: 'pointer', padding: '0 0 0 6px', fontFamily: 'inherit' }}>Use default</button>}
+              </div>
+            </div>
             <input value={form.venue} onChange={e => set('venue', e.target.value)} placeholder="Venue (optional)" style={inp} />
           </div>
         </div>
@@ -268,8 +286,8 @@ export default function EditEvent() {
         {/* Post event */}
         <div style={{ marginBottom: 28 }}>
           <Label>Post-Event</Label>
-          <Toggle k="ai_reel" label="AI Highlight Reel" />
-          <Toggle k="print_enabled" label="Print Integration" />
+          {FEATURES.aiReel && <Toggle k="ai_reel" label="AI Highlight Reel" />}
+          {FEATURES.printIntegration && <Toggle k="print_enabled" label="Print Integration" />}
           <Toggle k="stats_card_enabled" label="Stats Card" />
         </div>
 
@@ -291,4 +309,14 @@ export default function EditEvent() {
       </div>
     </main>
   )
+}
+
+
+/** ISO timestamp -> value for <input type="datetime-local"> in the viewer's local time. */
+function toLocalInput(iso?: string | null): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return ''
+  const p = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`
 }

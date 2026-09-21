@@ -6,6 +6,11 @@ export type EventLike = {
   paid?: boolean
   is_active?: boolean
   revealed?: boolean
+  /** Host-chosen end time (ISO). Column may not exist on older databases. */
+  ends_at?: string | null
+  /** Calendar date of the event, 'YYYY-MM-DD'. */
+  event_date?: string | null
+  created_at?: string | null
 }
 
 export type EventStatus = {
@@ -26,10 +31,10 @@ export type EventStatus = {
  * An UNPAID event is always a draft, even if some other flag is set — paying
  * is what activates it. This is the bug that used to label drafts "Ended".
  */
-export function eventStatus(ev: EventLike): EventStatus {
+export function eventStatus(ev: EventLike, now: Date = new Date()): EventStatus {
   if (!ev.paid) return { label: 'Draft — not activated', color: '#ff9500', dot: '#ff9500', state: 'draft' }
   if (ev.revealed) return { label: 'Revealed', color: '#2ed573', dot: '#2ed573', state: 'revealed' }
-  if (!ev.is_active) return { label: 'Ended', color: '#888', dot: '#555', state: 'ended' }
+  if (!ev.is_active || isPastEnd(ev, now)) return { label: 'Ended', color: '#888', dot: '#555', state: 'ended' }
   return { label: 'Live', color: '#ffb800', dot: '#ffb800', state: 'live' }
 }
 
@@ -87,4 +92,37 @@ export function clampShotLimit(shotLimit: number, isFreeTier: boolean): number {
 export function guestCapToNumber(cap: string): number {
   if (cap === '∞') return 9999
   return parseInt(cap, 10) || 5
+}
+
+
+/**
+ * When an event closes on its own.
+ *   1. The host's explicit end time (ends_at), if set.
+ *   2. Otherwise 9:00 AM the morning after the event date. Stored dates carry
+ *      no timezone, so this uses 13:00 UTC = 9:00 AM Toronto (EDT). This is
+ *      also what delivers the advertised "Morning After" reveal.
+ *   3. Otherwise (no date at all) 3 days after the event was created.
+ * Returns null only when there is nothing to go on.
+ */
+export function eventEndsAt(ev: EventLike): Date | null {
+  if (ev.ends_at) {
+    const d = new Date(ev.ends_at)
+    if (!isNaN(d.getTime())) return d
+  }
+  if (ev.event_date && /^\d{4}-\d{2}-\d{2}/.test(ev.event_date)) {
+    const d = new Date(`${ev.event_date.slice(0, 10)}T13:00:00Z`)
+    d.setUTCDate(d.getUTCDate() + 1)
+    return d
+  }
+  if (ev.created_at) {
+    const d = new Date(ev.created_at)
+    if (!isNaN(d.getTime())) return new Date(d.getTime() + 3 * 24 * 60 * 60 * 1000)
+  }
+  return null
+}
+
+/** True once an event's end time has passed. */
+export function isPastEnd(ev: EventLike, now: Date = new Date()): boolean {
+  const end = eventEndsAt(ev)
+  return !!end && now.getTime() >= end.getTime()
 }

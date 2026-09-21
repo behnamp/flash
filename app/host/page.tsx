@@ -49,6 +49,9 @@ function HostDashboardInner() {
       setUser(user)
       await loadEvents(user.id)
       setLoading(false)
+      // Close any events past their end time, then refresh if anything changed
+      fetch('/api/events/close-expired', { method: 'POST' })
+        .then(r => r.json()).then(r => { if (r?.closed > 0) loadEvents(user.id) }).catch(() => {})
     }
     load()
   }, [])
@@ -56,7 +59,7 @@ function HostDashboardInner() {
   const loadEvents = async (userId: string) => {
     const { data } = await supabase
       .from('events')
-      .select('id, name, event_type, join_code, is_active, revealed, paid, shot_limit, created_at, reveal_mode, guest_cap, cover_image_url, cover_color')
+      .select('*')
       .eq('host_id', userId)
       .order('created_at', { ascending: false })
     setEvents(data || [])
@@ -171,8 +174,10 @@ function HostDashboardInner() {
   )
 
   const draftEvents = events.filter(e => !e.paid)
-  const liveEvents = events.filter(e => e.paid && e.is_active && !e.revealed)
-  const pastEvents = events.filter(e => e.paid && (!e.is_active || e.revealed))
+  // Grouping follows the same lifecycle rule as the status labels, so an event
+  // past its end time moves to Past immediately, even before the sweep lands.
+  const liveEvents = events.filter(e => eventStatus(e).state === 'live')
+  const pastEvents = events.filter(e => e.paid && eventStatus(e).state !== 'live')
 
   return (
     <main style={{ minHeight: '100dvh', background: '#0a0a0a', display: 'flex', flexDirection: 'column' }}>

@@ -67,6 +67,7 @@ export default function AdminPage() {
         return
       }
       setAuthorized(true)
+      fetch('/api/events/close-expired', { method: 'POST' }).catch(() => {})
       await loadData()
       setLoading(false)
     }

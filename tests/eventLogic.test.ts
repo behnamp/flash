@@ -121,3 +121,40 @@ describe('guestCapToNumber', () => {
     expect(guestCapToNumber('abc')).toBe(5)
   })
 })
+
+import { eventEndsAt, isPastEnd } from '../lib/eventLogic'
+
+describe('event end time', () => {
+  it('uses the host-chosen end time when set', () => {
+    expect(eventEndsAt({ ends_at: '2026-09-20T02:00:00Z', event_date: '2026-09-19' })?.toISOString())
+      .toBe('2026-09-20T02:00:00.000Z')
+  })
+  it('defaults to 9am Toronto (13:00 UTC) the morning after the event date', () => {
+    expect(eventEndsAt({ event_date: '2026-09-19' })?.toISOString()).toBe('2026-09-20T13:00:00.000Z')
+  })
+  it('handles month rollover', () => {
+    expect(eventEndsAt({ event_date: '2026-06-30' })?.toISOString()).toBe('2026-07-01T13:00:00.000Z')
+  })
+  it('falls back to 3 days after creation when there is no date', () => {
+    expect(eventEndsAt({ created_at: '2026-06-01T10:00:00Z' })?.toISOString()).toBe('2026-06-04T10:00:00.000Z')
+  })
+  it('returns null with nothing to go on, and never counts as ended', () => {
+    expect(eventEndsAt({})).toBeNull()
+    expect(isPastEnd({})).toBe(false)
+  })
+  it('a June event is past its end in September', () => {
+    expect(isPastEnd({ event_date: '2026-06-26' }, new Date('2026-09-21T12:00:00Z'))).toBe(true)
+  })
+  it('an event tonight is not past its end yet', () => {
+    expect(isPastEnd({ event_date: '2026-09-21' }, new Date('2026-09-21T23:00:00Z'))).toBe(false)
+  })
+})
+
+describe('eventStatus with end times', () => {
+  it('a live-flagged event past its end shows as Ended', () => {
+    expect(eventStatus({ paid: true, is_active: true, event_date: '2026-06-26' }, new Date('2026-09-21T12:00:00Z')).state).toBe('ended')
+  })
+  it('a live event before its end stays Live', () => {
+    expect(eventStatus({ paid: true, is_active: true, event_date: '2026-09-21' }, new Date('2026-09-21T20:00:00Z')).state).toBe('live')
+  })
+})

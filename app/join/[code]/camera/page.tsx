@@ -6,6 +6,7 @@ import { ALL_MODES } from '@/constants/photoModes'
 import InstallPrompt from '@/components/InstallPrompt'
 import { applyFilterToCanvas, CANVAS_FILTERS } from '@/lib/filterCanvas'
 import { rollFullMessage } from '@/lib/eventLogic'
+import { isPastEnd } from '@/lib/eventLogic'
 
 export default function CameraPage() {
   const params = useParams()
@@ -44,6 +45,8 @@ export default function CameraPage() {
   useEffect(() => {
     async function load() {
       const { data: ev } = await supabase.from('events').select('*').eq('join_code', code.toUpperCase()).single()
+      // Past its end time: no more shooting — back to the join screen, which explains
+      if (ev && (!ev.is_active || isPastEnd(ev)) && !ev.revealed) { router.replace(`/join/${code}`); return }
       if (!ev) { router.push(`/join/${code}`); return }
       setEvent(ev); setShotLimit(ev.shot_limit || 10)
       const stored = localStorage.getItem(`flash_guest_${ev.id}`)

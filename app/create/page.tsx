@@ -212,6 +212,7 @@ export default function CreateEvent() {
             <div style={{ marginTop: 24 }}>
               <Inp label="Event Name *" placeholder="e.g. Sarah & Marco's Wedding" value={form.eventName} onChange={(e: any) => set('eventName', e.target.value)} />
               <Inp label="Event Date *" type="date" value={form.date} style={{ colorScheme: 'dark', width: '100%', boxSizing: 'border-box' }} onChange={(e: any) => set('date', e.target.value)} />
+              <div style={{ fontSize: 12, color: '#888', marginTop: -4, lineHeight: 1.5 }}>Closes and reveals the gallery automatically at 9:00 AM the morning after. You can change this in event settings.</div>
               <Inp label="Venue (optional)" placeholder="e.g. Grand Ballroom, Toronto" value={form.venue} onChange={(e: any) => set('venue', e.target.value)} />
             </div>
           </div>

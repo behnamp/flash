@@ -10,6 +10,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import QRCode from 'react-qr-code'
+import { FEATURES } from '@/lib/features'
+import { eventEndsAt } from '@/lib/eventLogic'
 
 export default function EventDashboard() {
   const params = useParams()
@@ -233,6 +235,11 @@ export default function EventDashboard() {
                 End Event
               </button>
             )}
+            {event?.is_active && !event?.revealed && eventEndsAt(event) && (
+              <div style={{ fontSize: 12, color: '#888', marginTop: 4, textAlign: 'center' }}>
+                Closes &amp; reveals automatically · {eventEndsAt(event)!.toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+              </div>
+            )}
           </div>
         )}
 
@@ -272,7 +279,7 @@ export default function EventDashboard() {
             )}
 
             {/* AI Highlight Reel — shows after reveal */}
-            {event?.revealed && (
+            {FEATURES.aiReel && event?.revealed && (
               <div style={{ background: '#111', border: '1px solid #1e1e1e', borderRadius: 14, padding: '16px', marginTop: 16 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
