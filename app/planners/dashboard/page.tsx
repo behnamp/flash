@@ -70,7 +70,7 @@ function PlannerDashboardInner() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user: u } } = await supabase.auth.getUser()
+      const u = (await supabase.auth.getSession()).data.session?.user ?? null
       if (!u) { router.push('/login?next=/planners/dashboard'); return }
       setUser(u)
 

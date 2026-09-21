@@ -107,7 +107,7 @@ export default function CreateEvent() {
   const handleCreate = async () => {
     setSaving(true); setError('')
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const user = (await supabase.auth.getSession()).data.session?.user ?? null
       if (!user) { router.push('/login'); return }
 
       // Upload cover image if selected

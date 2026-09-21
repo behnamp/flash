@@ -74,7 +74,7 @@ export default function EditEvent() {
     // Upload a newly chosen cover photo before saving
     let coverUrl = form.cover_image_url || null
     if (coverFile) {
-      const { data: { user } } = await supabase.auth.getUser()
+      const user = (await supabase.auth.getSession()).data.session?.user ?? null
       const ext = (coverFile.name.split('.').pop() || 'jpg')
       const path = `covers/${user?.id}/${Date.now()}.${ext}`
       const { error: upErr } = await supabase.storage.from('shots').upload(path, coverFile, { contentType: coverFile.type, upsert: false })

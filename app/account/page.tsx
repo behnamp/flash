@@ -15,7 +15,7 @@ export default function AccountPage() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser()
+      const user = (await supabase.auth.getSession()).data.session?.user ?? null
       if (!user) { router.push('/login'); return }
       setEmail(user.email || '')
       setLoading(false)

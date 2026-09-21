@@ -41,7 +41,7 @@ export default function EventDashboard() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser()
+      const user = (await supabase.auth.getSession()).data.session?.user ?? null
       if (!user) { router.push('/login'); return }
 
       const [{ data: ev }, { data: st }, { data: gu }, { data: sh }] = await Promise.all([

@@ -61,7 +61,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     async function check() {
-      const { data: { user } } = await supabase.auth.getUser()
+      const user = (await supabase.auth.getSession()).data.session?.user ?? null
       if (!user || !ADMIN_EMAILS.includes(user.email!)) {
         router.replace('/')
         return

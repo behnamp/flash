@@ -30,7 +30,7 @@ export default function PosterPage() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser()
+      const user = (await supabase.auth.getSession()).data.session?.user ?? null
       if (!user) { router.push('/login'); return }
       const { data: ev } = await supabase.from('events').select('id, name, join_code, venue, event_date, cover_emoji, brand_color').eq('id', code).single()
       if (!ev) { router.push('/host'); return }

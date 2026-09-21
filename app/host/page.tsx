@@ -44,7 +44,7 @@ function HostDashboardInner() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser()
+      const user = (await supabase.auth.getSession()).data.session?.user ?? null
       if (!user) { router.push('/login'); return }
       setUser(user)
       await loadEvents(user.id)
@@ -73,7 +73,7 @@ function HostDashboardInner() {
     if (creatingFree) return
     setCreatingFree(true)
     try {
-      const { data: { user: u } } = await supabase.auth.getUser()
+      const u = (await supabase.auth.getSession()).data.session?.user ?? null
       if (!u) { router.push('/login'); return }
       const { data: event, error } = await supabase.from('events').insert({
         host_id: u.id, name: 'My First Flash Event', event_type: 'party',
@@ -113,7 +113,7 @@ function HostDashboardInner() {
   }
 
   const handleDuplicate = async (ev: any) => {
-    const { data: { user: u } } = await supabase.auth.getUser()
+    const u = (await supabase.auth.getSession()).data.session?.user ?? null
     if (!u) return
     // Copy the full configuration — everything except identity, state, payment, and timestamps
     const { data } = await supabase.from('events').insert({
