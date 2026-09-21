@@ -2,12 +2,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { createGuestClient, ensureGuestToken } from '@/lib/guestClient'
 
 export default function GuestGalleryPage() {
   const params = useParams()
   const router = useRouter()
   const code = params.code as string
-  const supabase = createClient()
+  const [supabase, setSupabase] = useState(() => createGuestClient(code))
 
   const [shots, setShots] = useState<any[]>([])
   const [guestId, setGuestId] = useState<string | null>(null)
@@ -26,8 +27,8 @@ export default function GuestGalleryPage() {
     toastTimer.current = setTimeout(() => setShowToast(false), 2000)
   }
 
-  const loadShots = useCallback(async (evId: string) => {
-    const { data } = await supabase
+  const loadShots = useCallback(async (evId: string, client = supabase) => {
+    const { data } = await client
       .from('shots')
       .select('id, storage_url, storage_path, mode_name, taken_at, guest_id, revealed')
       .eq('event_id', evId)
@@ -43,7 +44,10 @@ export default function GuestGalleryPage() {
       const stored = localStorage.getItem(`flash_guest_${ev.id}`)
       if (!stored) { router.push(`/join/${code}`); return }
       setGuestId(JSON.parse(stored).id)
-      await loadShots(ev.id)
+      await ensureGuestToken(code, JSON.parse(stored).id)
+      const sb = createGuestClient(code)   // carries the guest token
+      setSupabase(sb)
+      await loadShots(ev.id, sb)
       setLoading(false)
 
       // If already revealed and guest hasn't watched the reveal, play it
@@ -52,12 +56,12 @@ export default function GuestGalleryPage() {
       }
 
       // Realtime updates — shots + reveal trigger
-      const channel = supabase.channel(`gallery-${ev.id}`)
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'shots', filter: `event_id=eq.${ev.id}` }, () => loadShots(ev.id))
+      const channel = sb.channel(`gallery-${ev.id}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'shots', filter: `event_id=eq.${ev.id}` }, () => loadShots(ev.id, sb))
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'events', filter: `id=eq.${ev.id}` },
           (payload: any) => { if (payload.new?.revealed && !localStorage.getItem(`flash_reveal_seen_${ev.id}`)) router.push(`/reveal/${code}`) })
         .subscribe()
-      channelCleanupRef.current = () => { supabase.removeChannel(channel) }
+      channelCleanupRef.current = () => { sb.removeChannel(channel) }
     }
     load()
     return () => { channelCleanupRef.current?.() }

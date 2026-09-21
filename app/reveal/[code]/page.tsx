@@ -1,8 +1,9 @@
 'use client'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { CinematicReveal } from '@/components/CinematicReveal'
+import { createGuestClient } from '@/lib/guestClient'
 
 type Stage = 'loading' | 'intro' | 'developing' | 'revealing' | 'finale'
 
@@ -10,7 +11,7 @@ export default function RevealPage() {
   const params = useParams()
   const router = useRouter()
   const code = (params.code as string)?.toUpperCase()
-  const supabase = createClient()
+  const supabase = useMemo(() => createGuestClient(code), [code])
 
   const [stage, setStage] = useState<Stage>('loading')
   const [event, setEvent] = useState<any>(null)

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { IconFlash, IconShutter, IconGuests } from '@/components/icons'
 import { isGuestCapReached } from '@/lib/eventLogic'
 import { isPastEnd } from '@/lib/eventLogic'
+import { createGuestClient, storeGuestToken, ensureGuestToken } from '@/lib/guestClient'
 
 export default function JoinPage() {
   const params = useParams()
@@ -53,9 +54,13 @@ export default function JoinPage() {
       const stored = localStorage.getItem(`flash_guest_${event.id}`)
       if (stored) {
         const g = JSON.parse(stored)
+        // Make sure we have this guest's token (older guests won't), so the
+        // rename below passes the token-scoped update policy.
+        await ensureGuestToken(code, g.id)
+        const gsb = createGuestClient(code)
         // Update the stored nickname in case they changed it
         if (g.nickname !== nickname.trim()) {
-          await supabase.from('guests').update({ nickname: nickname.trim() }).eq('id', g.id)
+          await gsb.from('guests').update({ nickname: nickname.trim() }).eq('id', g.id)
           localStorage.setItem(`flash_guest_${event.id}`, JSON.stringify({ id: g.id, nickname: nickname.trim() }))
         }
         router.push(`/join/${code}/camera`)
@@ -79,6 +84,7 @@ export default function JoinPage() {
         .select()
         .single()
       if (err) throw err
+      storeGuestToken(code, (guest as any).session_token)
       localStorage.setItem(`flash_guest_${event.id}`, JSON.stringify({ id: guest.id, nickname: guest.nickname }))
       router.push(`/join/${code}/camera`)
     } catch (e: any) {

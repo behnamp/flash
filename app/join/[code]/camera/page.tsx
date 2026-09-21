@@ -7,12 +7,13 @@ import InstallPrompt from '@/components/InstallPrompt'
 import { applyFilterToCanvas, CANVAS_FILTERS } from '@/lib/filterCanvas'
 import { rollFullMessage } from '@/lib/eventLogic'
 import { isPastEnd } from '@/lib/eventLogic'
+import { createGuestClient, ensureGuestToken } from '@/lib/guestClient'
 
 export default function CameraPage() {
   const params = useParams()
   const router = useRouter()
   const code = params.code as string
-  const supabase = createClient()
+  const [supabase, setSupabase] = useState(() => createGuestClient(code))
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -52,7 +53,11 @@ export default function CameraPage() {
       const stored = localStorage.getItem(`flash_guest_${ev.id}`)
       if (!stored) { router.push(`/join/${code}`); return }
       const g = JSON.parse(stored); setGuestData(g)
-      const { count } = await supabase.from('shots')
+      // Make sure this guest can read their own in-progress photos under RLS
+      const tok = await ensureGuestToken(code, g.id)
+      const sb = tok ? createGuestClient(code) : supabase
+      if (tok) setSupabase(sb)
+      const { count } = await sb.from('shots')
         .select('*', { count: 'exact', head: true })
         .eq('event_id', ev.id).eq('guest_id', g.id)
       setShotsUsed(count || 0)
