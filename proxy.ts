@@ -2,6 +2,13 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
+  const path = request.nextUrl.pathname
+
+  // Web visitors on "/" get the marketing page untouched — no auth call,
+  // no added latency for the landing page.
+  const isNativeApp = (request.headers.get('user-agent') || '').includes('FlashApp')
+  if (path === '/' && !isNativeApp) return NextResponse.next()
+
   let response = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -27,7 +34,14 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const path = request.nextUrl.pathname
+  // Native app opening at "/": go straight to the right screen in one hop
+  // instead of loading the marketing page and redirecting client-side.
+  if (path === '/' && isNativeApp) {
+    const url = request.nextUrl.clone()
+    url.pathname = user ? '/host' : '/login'
+    return NextResponse.redirect(url)
+  }
+
   const isProtected = path.startsWith('/host') || path.startsWith('/create') || path.startsWith('/admin')
 
   if (isProtected && !user) {
@@ -48,5 +62,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/host/:path*', '/create/:path*', '/admin/:path*', '/login'],
+  matcher: ['/', '/host/:path*', '/create/:path*', '/admin/:path*', '/login'],
 }

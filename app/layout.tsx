@@ -1,4 +1,12 @@
 import type { Metadata, Viewport } from 'next'
+// Self-hosted fonts: served from our own domain, no render-blocking
+// request to Google before the first screen can draw.
+import '@fontsource/space-grotesk/400.css'
+import '@fontsource/space-grotesk/500.css'
+import '@fontsource/space-grotesk/600.css'
+import '@fontsource/space-grotesk/700.css'
+import '@fontsource/space-mono/400.css'
+import '@fontsource/space-mono/700.css'
 import './globals.css'
 import { SanityVisualEditing } from './components/SanityVisualEditing'
 
@@ -106,14 +114,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 // Native app: hide the splash only once the page has actually painted, so
 // there is no black gap between splash and first screen.
 var hide=function(){try{var s=c.Plugins&&c.Plugins.SplashScreen;if(s&&s.hide){s.hide({fadeOutDuration:200});}}catch(e){}};
-if(document.readyState==='complete'){setTimeout(hide,150);}else{window.addEventListener('load',function(){setTimeout(hide,150);});}
-setTimeout(hide,4000);}}catch(e){}})();`,
+if(document.readyState!=='loading'){setTimeout(hide,120);}else{document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,120);});}
+setTimeout(hide,2500);}}catch(e){}})();`,
           }}
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
         {/* Structured data — helps Google rich results and lets AI answer engines cite Flash accurately (SEO/AEO/GEO) */}
+        <link rel="preconnect" href="https://onvdddlkrlwaxwufgodq.supabase.co" crossOrigin="" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA) }} />
       </head>
       <body>

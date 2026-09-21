@@ -24,6 +24,8 @@
     "@capacitor/keyboard": "^8.0.5",
     "@capacitor/splash-screen": "^8.0.1",
     "@capacitor/status-bar": "^8.0.2",
+    "@fontsource/space-grotesk": "^5.3.0",
+    "@fontsource/space-mono": "^5.3.0",
     "@phosphor-icons/react": "^2.1.10",
     "@sanity/client": "^7",
     "@sanity/visual-editing": "^2",
